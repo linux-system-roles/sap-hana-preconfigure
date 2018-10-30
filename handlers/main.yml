@@ -1,0 +1,8 @@
+---
+
+- name: sysctl -p /etc/sysctl.d/sap_hana.conf
+  shell: sysctl -p /etc/sysctl.d/sap_hana.conf
+
+- name: regenerate grub2 conf
+  shell: grub2-mkconfig -o /boot/grub2/grub.cfg
+

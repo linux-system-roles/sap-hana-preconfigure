@@ -1,0 +1,20 @@
+---
+# Check EUS Channels
+# https://launchpad.support.sap.com/#/notes/2009879
+# Todo: Check EUS Channels
+
+- name: Check EUS Channel
+  command: "yum repolist | grep EUS" 
+  register: eus
+
+- debug:
+    msg: "System {{ ansible_distribution }} has uuid {{ ansible_distribution_major_version }} and {{ ansible_distribution_version }}"
+  when: eus.stderr == "1"
+
+
+#- name: "Check if EUS Channels are enabled"
+#  warning:
+#    msg: "EUS Channels can not be found. They are strongly advised! See https://access.redhat.com/support/policy/updates/errata and SAP Note: 2009879"
+#  when: euschannel is not defined
+#
+...

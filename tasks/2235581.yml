@@ -1,0 +1,45 @@
+---
+# https://launchpad.support.sap.com/#/notes/2235581
+# Todo: Check SPS to Operating System
+# Todo: Check PPC Architeture variable name
+
+
+#- debug:
+#    msg: "System {{ ansible_distribution }} has uuid {{ ansible_distribution_major_version }} and {{ ansible_distribution_version }}"
+#
+- name: Check Supported Operating Systems for SAP HANA 1.0 on x86_64
+  command: /bin/echo 1
+  when: (ansible_distribution == "RedHat" and 
+         ansible_distribution_major_version == "7" and 
+         ansible_distribution_version >= "7.2" and
+         ansible_architecture == "x86_64") or
+        (ansible_distribution == "RedHat" and 
+         ansible_distribution_major_version == "6" and
+         ansible_distribution_version >= "6.5" and
+         ansible_architecture == "x86_64")
+  register: supported_hana_v1_x86_64
+
+- name: Check Supported Operating Systems for SAP HANA 2.0 on x86_64
+  command: /bin/echo 1
+  when: (ansible_distribution == "RedHat" and 
+         ansible_distribution_major_version == "7" and 
+         ansible_distribution_version >= "7.2" and
+         ansible_architecture == "x86_64") 
+  register: supported_hana_v2_x86_64
+
+- name: Check Supported Operating Systems for SAP HANA 2.0 on ppc
+  command: /bin/echo 1
+  when: (ansible_distribution == "RedHat" and
+         ansible_distribution_major_version == "7" and
+         ansible_distribution_version >= "7.3" and
+         ansible_architecture == "ppc_le")
+  register: supported_hana_v2_ppc
+
+- name: "Check if HANA System is Supported."
+  fail:
+    msg: "Operating System {{ ansible_distribution }} {{ ansible_distribution_version }} on {{ ansible_architecture }} is not Supported: Read SAP Note 2235581"
+  when: supported_hana_v1_x86_64.stdout is not defined and 
+        supported_hana_v2_x86_64.stdout is not defined and
+        supported_hana_v2_ppc is not defined
+
+...

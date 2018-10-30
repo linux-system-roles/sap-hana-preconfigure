@@ -1,0 +1,68 @@
+---
+- hosts: hana
+  remote_user: root
+
+  vars:
+          # subscribe-rhn role variables
+          reg_activation_key: myregistration
+          reg_organization_id: 123456
+
+          repositories:
+                  - rhel-7-server-rpms
+                  - rhel-sap-hana-for-rhel-7-server-rpms
+
+          # disk-init role variables
+          disks:
+                  /dev/vdc: vg00
+                  /dev/vdb: vg00
+          logvols:
+                  hana_shared:
+                          size: 24G
+                          vol: vg00
+                          mountpoint: /hana/shared
+                  hana_data:
+                          size: 24G
+                          vol: vg00
+                          mountpoint: /hana/data
+                  hana_logs:
+                          size: 12G
+                          vol: vg00
+                          mountpoint: /hana/logs
+                  usr_sap:
+                          size: 49G
+                          vol: vg00
+                          mountpoint: /usr/sap
+
+
+          # rhel-system-roles.timesync variables
+          ntp_servers:
+                  - hostname: 0.rhel.pool.ntp.org
+                    iburst: yes
+                  - hostname: 1.rhel.pool.ntp.org
+                    iburst: yes
+                  - hostname: 2.rhel.pool.ntp.org
+                    iburst: yes
+                  - hostname: 3.rhel.pool.ntp.org
+                    iburst: yes
+
+
+          # SAP Precoonfigure role
+
+          # SAP-Media Check
+          install_nfs: "mynfsserver:/installi-export"
+          installroot: /install
+          hana_installdir: "{{ installroot + '/HANA2SPS02' }}"
+
+          hana_pw_hostagent_ssl: "MyS3cret!"
+          id_user_sapadm: "20202"
+          id_group_shm: "20202"
+          id_group_sapsys: "20202"
+          pw_user_sapadm_clear: "MyS3cret!"
+
+  roles:
+          - { role: mk-ansible-roles.subscribe-rhn }
+          - { role: mk-ansible-roles.disk-init }
+          - { role: linux-system-roles.timesync }
+          - { role: mk-ansible-roles.preconfigure }
+          - { role: mk-ansible-roles.deployment }
+          - { role: mk-ansible-roles.hsr }

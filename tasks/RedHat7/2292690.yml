@@ -1,0 +1,128 @@
+---
+
+- name: import variables
+  include_vars: "{{ ansible_distribution }}{{ ansible_distribution_version }}.yml"
+# Supported Kernel versions and patches to use with certified Hardware for SAP HANA on RHEL 7
+- name: install required packages
+  yum:
+    state: latest
+    name: "{{ packages }}"
+
+# Configure tuned to use profile "sap-hana"
+# Todo:
+# force_latency=70 for older tuned versions
+# see sap note
+
+- name: install tuned packages
+  yum:
+    state: latest
+    name: tuned-profiles-sap-hana
+
+- name: enable tuned
+  service: name=tuned state=started enabled=yes
+
+- name: apply tuned profile
+  shell: /usr/sbin/tuned-adm profile sap-hana
+  when: ansible_virtualization_type != 'vmware'
+
+- name: apply tuned profile on VMware systems
+  shell: /usr/sbin/tuned-adm profile sap-hana-vmware
+  when: ansible_virtualization_type == 'vmware'
+
+
+# Turn off auto-numa balancing
+
+- name: ensure file /etc/sysctl.d/sap_hana.conf exists
+  copy:
+    content: ""
+    dest: /etc/sysctl.d/sap_hana.conf
+    force: no
+    group: root 
+    owner: root
+    mode: 0555
+
+- name: set sap_hana.conf 
+  lineinfile:
+    path: /etc/sysctl.d/sap_hana.conf 
+    regexp: '^kernel.numa_balancing'
+    line: 'kernel.numa_balancing = 0'
+  notify: sysctl -p /etc/sysctl.d/sap_hana.conf
+
+- name: disable numad
+  service: name=numad state=stopped enabled=no
+  ignore_errors: True
+
+# Disable transparent hugepages
+
+# configured by tuned package
+# see sap note 
+
+#Configure C-States for lower latency in Linux (applies to Intel-based systems only)
+  # TODO: This is not generally TRUE, because it should only add the parameter to others in the variable ....
+- name: disable intel c states in grub config (RHEL 7)
+  lineinfile: dest=/etc/default/grub line=GRUB_CMDLINE_LINUX_DEFAULT="processor.max_cstate=1 intel_idle.max_cstate=1"
+  notify: regenerate grub2 conf
+  when: ansible_architecture == "x86_64" and
+        ansible_os_family == 'RedHat' and 
+        ansible_distribution_major_version == '7'
+
+# CPU Frequency/Voltage scaling (applies to Intel-based systems only)
+
+# configured by tuned package
+# see sap note
+
+# Energy Performance Bias (EPB, applies to Intel-based systems only)
+
+# configured by tuned package
+# see sap note
+
+# Kernel samepage merging (KSM)
+
+- name: ensure file /etc/init.d/boot.local exists
+  copy:
+    content: ""
+    dest: /etc/init.d/boot.local
+    force: no
+    group: root 
+    owner: root
+    mode: 0755
+
+- name: Kernel samepage merging (KSM) 
+  lineinfile: 
+    dest: /etc/init.d/boot.local 
+    line: echo 0 > /sys/kernel/mm/ksm/run
+
+# SELinux
+
+- name: disable selinux
+  selinux: state=disabled
+
+# Update systemd to avoid HANA crashes due to unintended deletion of IPC segments (semaphores, shared memory, message queues)
+
+- name: install systemd packages
+  yum:
+    state: latest
+    name: systemd-219-19.el7_2.4 
+
+
+# database startup fails with an error message "/etc/sudoers mismatch for required permissions of Storage Connector" when using hdb_ha.fcClientLVM
+- name: set /etc/sudoers
+  lineinfile:
+    path: /etc/sysctl.d/sap_hana.conf
+    regexp: '^Defaults    requiretty'
+    line: '#Defaults    requiretty'
+
+
+#Message "ERROR: ld.so: object '/opt/rh/SAP/lib64/compat-sap-c++.so' from LD_PRELOAD cannot be preloaded: ignored." when running commands as <SID>adm user on commandline
+
+# not a operating system problem
+
+# Message "Cannot access required library '/opt/rh/SAP/lib64/compat-sap-c++-5.so': No such file or directory" when installing SAP HANA 2
+
+- name: install compat-sap-c++ packages
+  yum:
+    state: latest
+    name: compat-sap-c++-5 
+
+
+...
