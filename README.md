@@ -1,0 +1,1 @@
+# sap-hana-preconfigure
