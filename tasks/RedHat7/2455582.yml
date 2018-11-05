@@ -1,0 +1,7 @@
+---
+- name: install compat-sap-c++6 packages
+  yum:
+    state: latest
+    name: compat-sap-c++-6
+
+...
