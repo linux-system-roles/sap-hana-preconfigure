@@ -58,13 +58,32 @@
 # see sap note 
 
 #Configure C-States for lower latency in Linux (applies to Intel-based systems only)
-  # TODO: This is not generally TRUE, because it should only add the parameter to others in the variable ....
+# TODO: This is not generally TRUE, because it should only add the parameter to others in the variable ....
+#- name: disable intel c states in grub config (RHEL 7)
+#  lineinfile: dest=/etc/default/grub line=GRUB_CMDLINE_LINUX_DEFAULT="processor.max_cstate=1 intel_idle.max_cstate=1"
+#  notify: regenerate grub2 conf
+#  when: ansible_architecture == "x86_64" and
+#        ansible_os_family == 'RedHat' and 
+#        ansible_distribution_major_version == '7'
+#
+
 - name: disable intel c states in grub config (RHEL 7)
-  lineinfile: dest=/etc/default/grub line=GRUB_CMDLINE_LINUX_DEFAULT="processor.max_cstate=1 intel_idle.max_cstate=1"
+  lineinfile:
+    path: /etc/default/grub
+    backup: yes
+    backrefs: yes
+    state: present
+    regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT=(?!.* {{ item }}).*). *$'
+    line: "\\1 {{ item }}'"
+  with_items:
+     - "processor.max_cstate=1"
+     - "intel_idle.max_cstate=1"
   notify: regenerate grub2 conf
   when: ansible_architecture == "x86_64" and
         ansible_os_family == 'RedHat' and 
         ansible_distribution_major_version == '7'
+  tags: grubconfig
+
 
 # CPU Frequency/Voltage scaling (applies to Intel-based systems only)
 

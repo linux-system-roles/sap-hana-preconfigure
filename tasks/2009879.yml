@@ -2,6 +2,7 @@
 # Check EUS Channels
 # https://launchpad.support.sap.com/#/notes/2009879
 # Todo: Check EUS Channels
+# TODO: EUS CHANNELS ARE OUTDATED, Need to check for E4S channels. (suggest replace "grep EUS" by "egrep -i "[e4s|eus]" )
 
 - name: Check EUS Channel
   command: "yum repolist | grep EUS" 
