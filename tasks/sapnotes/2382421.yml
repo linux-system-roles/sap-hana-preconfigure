@@ -3,7 +3,14 @@
 # SAP Note: 2382421 - Optimizing the Network Configuration on HANA- and OS-Level
 #
 - name: setting kernel tunables
-  sysctl: name={{ item.name }} value={{ item.value }} state=present sysctl_set=yes reload=yes
+  sysctl: 
+      sysctl_file: /etc/sysctl.d/sap_hana.conf
+      name: "{{ item.name }}"
+      value: "{{ item.value }}" 
+      state: present
+      sysctl_set: yes
+      reload: yes
+
   with_items:
     - { name: net.core.somaxconn, value: 4096 }
     - { name: net.ipv4.tcp_max_syn_backlog, value: 8192}

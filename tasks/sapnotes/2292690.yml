@@ -44,6 +44,8 @@
 #    owner: root
 #    mode: 0555
 #
+# The following is done by tuned-profile
+# This is just to make sure
 - name: Turn off auto-numa balancing
   sysctl:
           sysctl_file: /etc/sysctl.d/sap_hana.conf
