@@ -45,7 +45,7 @@
 ### Add Symbolic Links -- done in RHEL 7 specific 
 ### Disable THP at boot time
 ### Increase the Maximum Number of Processes a User is Allowed to Run
-- include_tasks: 2009879_{{ ansible_distribution_major }}.yml
+- include_tasks: 2009879_{{ ansible_distribution_major_version }}.yml
 
 ### configure c-states
 ### This is described in SAP NOTE#2292690 
