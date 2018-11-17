@@ -3,6 +3,13 @@
 - name: sysctl -p /etc/sysctl.d/sap_hana.conf
   shell: sysctl -p /etc/sysctl.d/sap_hana.conf
 
+
+### TODO:  currently works only for non-uefi server
+# On a machine without UEFI activate this option by issuing:
+# grub2-mkconfig -o /boot/grub2/grub.cfg
+# On a machine with UEFI activate this option by issuing:
+# grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg
+
 - name: regenerate grub2 conf
   shell: grub2-mkconfig -o /boot/grub2/grub.cfg
 

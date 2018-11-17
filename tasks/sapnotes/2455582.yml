@@ -1,4 +1,7 @@
 ---
+# OS RELEASE: RHEL 7
+# SAP Note: 2455582
+
 - name: install compat-sap-c++6 packages
   yum:
     state: latest

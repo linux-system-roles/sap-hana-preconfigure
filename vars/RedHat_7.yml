@@ -1,0 +1,76 @@
+---
+
+# required SAP Notes for RHEL 7
+
+sap_hana_preconfigure_sapnotes:
+        - "2235581"
+        - "{% if euscheck is defined %}2009879{% endif %}"
+        - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
+        - "2292690"
+        - "2455582"
+
+
+sap_hana_preconfigure_min_packages:
+  - kernel-3.10.0-327.62.4.el7 
+  - systemd-219-19.el7_2.4
+when: ansible_distribution_version == "7.2"
+
+sap_hana_preconfigure_min_packages:
+  - kernel-3.10.0-514.36.5.el7
+  - glibc-2.17-157.el7_3.5
+  - tuned-profiles-sap-hana-2.7.1-3.el7_3.3
+when: ansible_distribution_version == "7.3"
+
+sap_hana_preconfigure_min_packages:
+  - kernel-3.10.0-693.11.6.el7
+  - tuned-profiles-sap-hana-2.8.0-5.el7_4.2
+when: ansible_distribution_version == "7.4"
+
+sap_hana_preconfigure_packages:
+    - chrony
+    - xfsprogs
+    - libaio
+    - net-tools
+    - bind-utils
+    - gtk2
+    - libicu
+    - xulrunner
+    - tcsh
+    - sudo
+    - libssh2
+    - expect
+    - cairo
+    - graphviz
+    - iptraf-ng
+    - krb5-workstation
+    - krb5-libs
+    - libpng12
+    - nfs-utils
+    - lm_sensors
+    - rsyslog
+    - openssl
+    - PackageKit-gtk3-module
+    - libcanberra-gtk2
+    - libtool-ltdl
+    - xorg-x11-xauth
+    - numactl
+    - tuned
+    # SAP NOTE 2292690
+    - tuned-profiles-sap-hana
+    - compat-sap-c++-5
+    # SAP NOTE 22455582
+    - compat-sap-c++-6
+    # Recommended Packages
+    - libtool-ltdl
+
+sap_hana_preconfigure_packagegroups_x86_64:
+    - "@base"
+    - "@large-systems"
+    - "@network-file-system-client"
+    - "@performance"
+    - "@compat-libraries"
+
+sap_hana_preconfigure_packagegroups_ppc64le:
+    - "@base"
+    - "@compat-libraries"
+...

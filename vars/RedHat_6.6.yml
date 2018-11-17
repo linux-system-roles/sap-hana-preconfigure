@@ -1,0 +1,9 @@
+---
+
+# required SAP Notes for RHEL 6.6
+
+sap-hana-prepare-sapnotes:
+        - "2235581"
+        - "2136965"
+
+

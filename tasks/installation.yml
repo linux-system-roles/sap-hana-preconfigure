@@ -1,0 +1,58 @@
+---
+
+#- name: Enable Debugging
+#  debug:
+#    verbosity: "{{ debuglevel }}"
+#
+# Minimum supported Supported Kernel versions and patches to use with certified Hardware for SAP HANA on RHEL 7
+- name: ensure minimal required packages are installed
+  yum:
+    state: present
+    name: "{{ sap_hana_preconfigure_min_pkgs }}"
+  when: not( (sap_hana_preconfigure_min_pkgs is undefined) or (sap_hana_preconfigure_min_pkgs is none) or (sap_hana_preconfigure_min_pkgs | trim == '') )
+
+- name: install required packagegroups for x86_64
+  yum: 
+    state: latest 
+    name: "{{ sap_hana_preconfigure_packagegroups_x86_64 }}"
+  when: ( ansible_architecture == "x86_64" )
+
+- name: install required packagegroups for ppc64le
+  yum: 
+    state: latest 
+    name: "{{ sap_hana_preconfigure_packagegroups_ppc64le }}"
+  when: ( ansible_architecture == "ppc64le" )
+
+- name: ensure required packages are installed
+  yum:
+    state: latest
+    name: "{{ sap_hana_preconfigure_packages }}"
+
+- name: ensure system is updated to the latest release
+  yum:
+    state: latest
+    name: "*"
+
+- name: check if reboot is required
+  command: needs-restarting -r
+  changed_when: false
+  failed_when: false
+  register: reboot_required
+
+- name: Reboot if required
+  block:
+      # Reboot the server now and wait until it is back
+      # inspired by https://support.ansible.com/hc/en-us/articles/201958037-Reboot-a-server-and-wait-for-it-to-come-back
+      - name: restart machine if required
+        shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+        async: 1
+        poll: 0
+        become: true
+        ignore_errors: true
+
+      - name: waiting for server to come back
+        local_action: wait_for host={{ inventory_hostname }} port=22 state=started delay=90 sleep=2 timeout=900
+        become: false
+  when: ( reboot_after_update == true ) and ( reboot_required.rc != 0 )
+
+...

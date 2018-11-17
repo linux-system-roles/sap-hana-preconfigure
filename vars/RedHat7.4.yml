@@ -1,6 +1,0 @@
----
-packages:
-  - kernel-3.10.0-693.11.6.el7
-  - tuned-profiles-sap-hana-2.8.0-5.el7_4.2
-
-...

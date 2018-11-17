@@ -1,0 +1,7 @@
+---
+# OS RELEASE: RHEL 7
+# Platform: PPC64LE
+
+debug:
+        msg: "Special Configuration for ppcle not done yet !"
+

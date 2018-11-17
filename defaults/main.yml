@@ -39,6 +39,7 @@ hana_version: 2
 sap_hana_preconfigure_hana_version: "2" 
 sap_hana_preconfigure_no_strict_version_check: "yes"
 
+reboot_after_update: true
 
 ...
   

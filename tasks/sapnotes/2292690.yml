@@ -1,33 +1,37 @@
 ---
-
-- name: import variables
-  include_vars: "{{ ansible_distribution }}{{ ansible_distribution_version }}.yml"
-# Supported Kernel versions and patches to use with certified Hardware for SAP HANA on RHEL 7
-- name: install required packages
-  yum:
-    state: latest
-    name: "{{ packages }}"
+# OS RELEASE: RHEL 7
+# SAP Note: 2292690
+#
+# This is the configuration part of the OS
+# See ../../vars/RedHat_7.yml for all packages that need to be installed
+# The packages are also sorted by SAP Note
 
 # Configure tuned to use profile "sap-hana"
 # Todo:
 # force_latency=70 for older tuned versions
 # see sap note
 
-- name: install tuned packages
-  yum:
-    state: latest
-    name: tuned-profiles-sap-hana
+# Package added to vars/RedH
+#- name: install tuned packages
+#  yum:
+#    state: latest
+#    name: tuned-profiles-sap-hana
 
 - name: enable tuned
   service: name=tuned state=started enabled=yes
 
+- name: get current tuned profile
+  command: cat /etc/tuned/active_profile
+  register: current_profile
+  changed_when: false
+
 - name: apply tuned profile
   shell: /usr/sbin/tuned-adm profile sap-hana
-  when: ansible_virtualization_type != 'vmware'
+  when: (ansible_virtualization_type != 'vmware') and ( current_profile.stdout != 'sap-hana' )
 
 - name: apply tuned profile on VMware systems
   shell: /usr/sbin/tuned-adm profile sap-hana-vmware
-  when: ansible_virtualization_type == 'vmware'
+  when: ansible_virtualization_type == 'vmware' and ( current_profile.stdout != 'sap-hana-vmware' )
 
 
 # Turn off auto-numa balancing
@@ -116,19 +120,22 @@
 - name: disable selinux
   selinux: state=disabled
 
+# ADDED to the minimum required packages in Variables
 # Update systemd to avoid HANA crashes due to unintended deletion of IPC segments (semaphores, shared memory, message queues)
+#
+#- name: install systemd packages
+#  yum:
+#    state: latest
+#    name: systemd-219-19.el7_2.4 
+#
 
-- name: install systemd packages
-  yum:
-    state: latest
-    name: systemd-219-19.el7_2.4 
 
-
+# THOMAS: Please double check! I changed to /etc/sudoers.conf
 # database startup fails with an error message "/etc/sudoers mismatch for required permissions of Storage Connector" when using hdb_ha.fcClientLVM
 - name: set /etc/sudoers
   lineinfile:
     path: /etc/sysctl.d/sap_hana.conf
-    regexp: '^Defaults    requiretty'
+    regexp: '^Defaults *requiretty'
     line: '#Defaults    requiretty'
 
 
@@ -138,10 +145,11 @@
 
 # Message "Cannot access required library '/opt/rh/SAP/lib64/compat-sap-c++-5.so': No such file or directory" when installing SAP HANA 2
 
-- name: install compat-sap-c++-5 packages
-  yum:
-    state: latest
-    name: compat-sap-c++-5 
+### moved to vars/RedHat_7.yml
+#- name: install compat-sap-c++-5 packages
+#  yum:
+#    state: latest
+#    name: compat-sap-c++-5 
 
 
 ...

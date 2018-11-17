@@ -1,4 +1,5 @@
 ---
+# OS RELEASE: RHEL 6.x, 7.x
 # https://launchpad.support.sap.com/#/notes/2235581
 # Todo: Check SPS to Operating System
 # Todo: Check PPC Architeture variable name
