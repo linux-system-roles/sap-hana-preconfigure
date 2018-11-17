@@ -1,5 +1,8 @@
 ---
-## Next task should be moved to sap-deploy, or sap-hostagent install !
+
+## Most of this is described in SAP Note 2009879
+
+## TODO: Next task should be moved to sap-deploy, or sap-hostagent install !
 - name: ensure sapadm group and sapadm user is created 
   block:
           - name: ensure sapdm user exists      

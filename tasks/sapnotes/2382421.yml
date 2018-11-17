@@ -1,0 +1,27 @@
+---
+# OS RELEASE: RHEL 7
+# SAP Note: 2382421 - Optimizing the Network Configuration on HANA- and OS-Level
+#
+- name: setting kernel tunables
+  sysctl: name={{ item.name }} value={{ item.value }} state=present sysctl_set=yes reload=yes
+  with_items:
+    - { name: net.core.somaxconn, value: 4096 }
+    - { name: net.ipv4.tcp_max_syn_backlog, value: 8192}
+    - { name: net.ipv4.ip_local_port_range, value: "40000 61000" }
+    - { name: net.ipv4.tcp_timestamps, value: 1 }
+    - { name: net.ipv4.tcp_tw_recycle, value: 1 }
+    - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
+    - { name: net.ipv4.tcp_syn_retries, value: 8 }
+     # Not sure about these .... they were in the old script and not set in tuned
+    - { name: kernel.shmmni, value: 65536 }
+    - { name: kernel.msgmni, value: 32768 }
+    - { name: kernel.sysrq, value: 1 }
+
+
+
+# Additional possible tuning parameters. See SAP Note for detaisl
+# The following parameter do not work if communicates with hosts behind NAT firewall
+#    - { name: net.ipv4.tcp_tw_reuse, value: 1 }
+# Tune these for low latency system replication
+#    net.ipv4.tcp_wmem and net.ipv4.tcp_rmem
+#

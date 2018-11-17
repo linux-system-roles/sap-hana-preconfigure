@@ -4,11 +4,11 @@
 
 sap_hana_preconfigure_sapnotes:
         - "2235581"
-        - "{% if euscheck is defined %}2009879{% endif %}"
+        - "2009879"
         - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
         - "2292690"
         - "2455582"
-
+        - "2382421"
 
 sap_hana_preconfigure_min_packages:
   - kernel-3.10.0-327.62.4.el7 
@@ -27,6 +27,7 @@ sap_hana_preconfigure_min_packages:
 when: ansible_distribution_version == "7.4"
 
 sap_hana_preconfigure_packages:
+    # SAP NOTE 2009879
     - chrony
     - xfsprogs
     - libaio

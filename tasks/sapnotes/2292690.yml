@@ -7,11 +7,10 @@
 # The packages are also sorted by SAP Note
 
 # Configure tuned to use profile "sap-hana"
-# Todo:
-# force_latency=70 for older tuned versions
-# see sap note
+# force_latency=70 for older tuned versions, hence the script requires appropriate min releases
+# see sap note 2292690
 
-# Package added to vars/RedH
+# Package added to vars/RedHat_7.yml
 #- name: install tuned packages
 #  yum:
 #    state: latest
@@ -36,27 +35,45 @@
 
 # Turn off auto-numa balancing
 
-- name: ensure file /etc/sysctl.d/sap_hana.conf exists
-  copy:
-    content: ""
-    dest: /etc/sysctl.d/sap_hana.conf
-    force: no
-    group: root 
-    owner: root
-    mode: 0555
-
-- name: set sap_hana.conf 
-  lineinfile:
-    path: /etc/sysctl.d/sap_hana.conf 
-    regexp: '^kernel.numa_balancing'
-    line: 'kernel.numa_balancing = 0'
-  notify: sysctl -p /etc/sysctl.d/sap_hana.conf
+#- name: ensure file /etc/sysctl.d/sap_hana.conf exists
+#  copy:
+#    content: ""
+#    dest: /etc/sysctl.d/sap_hana.conf
+#    force: no
+#    group: root 
+#    owner: root
+#    mode: 0555
+#
+- name: Turn off auto-numa balancing
+  sysctl:
+          sysctl_file: /etc/sysctl.d/sap_hana.conf
+          name: kernel.numa_balancing
+          value: 0
+          state: present
+          reload: yes
 
 - name: disable numad
   service: name=numad state=stopped enabled=no
   ignore_errors: True
 
 # Disable transparent hugepages
+# The following steps are  also done by the tuned-adm profile
+# but this makes sure it is done already at boottime
+- name: disable transparent hugepages at boot
+  lineinfile:
+    path: /etc/default/grub
+    backup: yes
+    backrefs: yes
+    state: present
+    regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT=(?!.* {{ item }}).*). *$'
+    line: "\\1 {{ item }}'"
+  with_items:
+     - "transparent_hugepage=never"
+  notify: regenerate grub2 conf
+  when: ansible_architecture == "x86_64" and
+        ansible_os_family == 'RedHat' and
+        ansible_distribution_major_version == '7'
+  tags: grubconfig
 
 # configured by tuned package
 # see sap note 
@@ -90,12 +107,10 @@
 
 
 # CPU Frequency/Voltage scaling (applies to Intel-based systems only)
-
 # configured by tuned package
 # see sap note
 
 # Energy Performance Bias (EPB, applies to Intel-based systems only)
-
 # configured by tuned package
 # see sap note
 
@@ -122,27 +137,27 @@
 
 # ADDED to the minimum required packages in Variables
 # Update systemd to avoid HANA crashes due to unintended deletion of IPC segments (semaphores, shared memory, message queues)
-#
+# see: https://access.redhat.com/solutions/2062273
 #- name: install systemd packages
 #  yum:
 #    state: latest
 #    name: systemd-219-19.el7_2.4 
 #
 
-
-# THOMAS: Please double check! I changed to /etc/sudoers.conf
 # database startup fails with an error message "/etc/sudoers mismatch for required permissions of Storage Connector" when using hdb_ha.fcClientLVM
-- name: set /etc/sudoers
+- name: ensure "Defaults requiretty" is not set in /etc/sudoers
   lineinfile:
-    path: /etc/sysctl.d/sap_hana.conf
-    regexp: '^Defaults *requiretty'
-    line: '#Defaults    requiretty'
+    path: /etc/sudoers
+    state: absent
+    regexp: '^Defaults[ \s]*requiretty'
+    validate: '/usr/sbin/visudo -cf %s'
 
 
 #Message "ERROR: ld.so: object '/opt/rh/SAP/lib64/compat-sap-c++.so' from LD_PRELOAD cannot be preloaded: ignored." when running commands as <SID>adm user on commandline
-
 # not a operating system problem
-
+# See also SAP NOTE 2338763 -> minimum required compat-sap-c++-5-5.3.1-10 (for HANA 2 only)
+# Can only occur with HANA 1.0 on RHEL 7.2, because compat-sap-c++ is not required, because it is default
+# If this happens setenv LD_PRELOAD has to be removed from hdbenv.[c]sh in ~sidadm
 # Message "Cannot access required library '/opt/rh/SAP/lib64/compat-sap-c++-5.so': No such file or directory" when installing SAP HANA 2
 
 ### moved to vars/RedHat_7.yml
@@ -151,5 +166,21 @@
 #    state: latest
 #    name: compat-sap-c++-5 
 
+#### Special recommendations for Power 8
+# The On Chip Controller (OCC) controls core frequency. Any tunings for turbo frequency should be done using the 
+# Flexible Service Processor Advanced System Management (FSP ASM) page or the IBM Hardware Management Console (HMC) 
+# and not from within a PowerVM guest partition. 
+# The package pseries-energy must not be installed.  (<== TODO)
+# Kindly refer to IBM’s EnergyScale documentation for this feature at http://www-01.ibm.com/common/ssi/cgi-bin/ssialias?htmlfid=POW03125USEN.
+#
+#- name: ensure pseries-energy package is not installed
+#  yum:
+#    name: pseries-energy
+#    state: absent
+#  when: ansible_architecture == "ppc64le"
+
+#### Network Settings are implemented by SAP Note 2382421
+# These settings are not done by tuned :-(
+# 
 
 ...

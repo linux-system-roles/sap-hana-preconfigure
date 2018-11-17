@@ -22,24 +22,6 @@
   when: 
      ( {{ ansible_distribution_version }}  != '7.2' )
 
-# The following steps are  also done by the tuned-adm profile
-# but this makes sure it is done already at boottime
-- name: disable transparent hugepages at boot 
-  lineinfile:
-    path: /etc/default/grub
-    backup: yes
-    backrefs: yes
-    state: present
-    regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT=(?!.* {{ item }}).*). *$'
-    line: "\\1 {{ item }}'"
-  with_items:
-     - "transparent_hugepage=never"
-  notify: regenerate grub2 conf
-  when: ansible_architecture == "x86_64" and
-        ansible_os_family == 'RedHat' and
-        ansible_distribution_major_version == '7'
-  tags: grubconfig
-
 - name: increase file handles to 32800 for sapsys group
   pam_limits: 
     dest: /etc/security/limits.d/99-sapsys.conf

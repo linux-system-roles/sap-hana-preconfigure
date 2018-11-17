@@ -1,7 +1,7 @@
 ---
 
-- name: sysctl -p /etc/sysctl.d/sap_hana.conf
-  shell: sysctl -p /etc/sysctl.d/sap_hana.conf
+#- name: sysctl -p /etc/sysctl.d/sap_hana.conf
+#  shell: sysctl -p /etc/sysctl.d/sap_hana.conf
 
 
 ### TODO:  currently works only for non-uefi server

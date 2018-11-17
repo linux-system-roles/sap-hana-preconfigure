@@ -4,7 +4,7 @@
 
 sap-hana-prepare-sapnotes:
         - "2235581"
-        - "{% if euscheck is defined %}2009879{% endif %}"
+        - "2009879"
         - "2247020"
 
 
