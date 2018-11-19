@@ -1,4 +1,7 @@
 ---
+###
+# TODO: Rework of defaults
+#
 # Global Default variables
 # Adapt to your default settings
 
@@ -33,13 +36,21 @@ hana_components: "client,server"
 hana_system_type: "Master"
 
 
-hana_version: 2 
+######################################
+# HANA Default Variables 
+#
 
+# HANA Major and minor version
+# Thes variables are also set by sap-hana-mediacheck
+sap_hana_version: "2" 
+sap_hana_sps: "0"
 
 sap_hana_preconfigure_hana_version: "2" 
 sap_hana_preconfigure_no_strict_version_check: "yes"
 
-reboot_after_update: true
+# I do not want to boot by default
+# You can set this to true if you want to reboot after updating and before configuring the rest
+reboot_after_update: false
 
 ...
   
