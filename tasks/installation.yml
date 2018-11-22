@@ -23,6 +23,7 @@
     name: "{{ sap_hana_preconfigure_packagegroups_ppc64le }}"
   when: ( ansible_architecture == "ppc64le" )
 
+# temporary
 - name: ensure required packages are installed
   yum:
     state: latest
@@ -37,20 +38,22 @@
   command: needs-restarting -r
   register: reboot_required
   changed_when: false
-  failed_when: reboot_required.rc > 1
-  when: ( ansible_distribution_version != "7.2" ) and ( ansible_distribution_major_version == "7" )
+  failed_when: reboot_required.rc > 1 
+  when: ( ansible_distribution_version >= "7.3" ) and ( ansible_distribution_major_version == "7" )
 
-- name: check if reboot is required (7.2)
-  command: needs-restarting
-  register: reboot_required
-  changed_when: false
-  failed_when: reboot_required.rc > 1
-  when: ( ansible_distribution_version == "7.2" ) and ( ansible_distribution_major_version == "7" )
+# This did not work properly because, the last register variable is used in the next when statement.
+#- name: check if reboot is required (7.2)
+#  command: needs-restarting
+#  register: reboot_required_72
+#  changed_when: false
+#  failed_when: reboot_required_72.rc > 1
+#  when: ( ansible_distribution_version == "7.2" ) and ( ansible_distribution_major_version == "7" )
  
   # Not sure if this works for RHEL 7.2, 7.3, tested on 7.4+
 - name: Debug output of Reboot requirement
   debug:
-          msg: "Reboot required: {{ reboot_required.rc }}"
+    var: reboot_required 
+#   msg: "Reboot required: {{ reboot_required.rc }}"
 
 - name: Reboot if required
   block:
@@ -58,6 +61,7 @@
       # inspired by https://support.ansible.com/hc/en-us/articles/201958037-Reboot-a-server-and-wait-for-it-to-come-back
       - name: restart machine if required
         shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+        #shell: sleep 2 
         async: 1
         poll: 0
         become: true
@@ -66,6 +70,6 @@
       - name: waiting for server to come back
         local_action: wait_for host={{ inventory_hostname }} port=22 state=started delay=90 sleep=2 timeout=900
         become: false
-  when: ( reboot_after_update == true ) and ( reboot_required.rc == 1 )
+  when: reboot_after_update == true and reboot_required.rc == 1
 
 ...

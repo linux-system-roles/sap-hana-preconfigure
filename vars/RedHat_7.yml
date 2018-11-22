@@ -62,7 +62,7 @@ sap_hana_preconfigure_packages:
     # SAP NOTE 22455582
     - compat-sap-c++-6
     # Recommended Packages
-    - libtool-ltdl
+#    - libtool-ltdl
 
 sap_hana_preconfigure_packagegroups_x86_64:
     - "@base"
