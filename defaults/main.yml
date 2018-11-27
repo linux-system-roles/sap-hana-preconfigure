@@ -48,13 +48,3 @@ sap_hana_preconfigure_reboot_after_update: false
 # sap_hana_id_group_sapsys:
 # sap_hana_id_user_sapadm:
 
-#hana_sid: HXE
-#hana_instance_number: 90
-#
-#hana_system_usage: custom
-#
-#
-hana_system_type: "Master"
-
-
-...
