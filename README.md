@@ -137,6 +137,11 @@ Here is an example playbook that prepares a server for hana installation.
         - { role: linux-system-roles.sap-hana-preconfigure }
 ```
 
+Contribution
+------------
+
+Please read [./README.DEV.md](the developer guidelines)  if you want to contribute
+
 License
 -------
 
