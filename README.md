@@ -140,7 +140,7 @@ Here is an example playbook that prepares a server for hana installation.
 Contribution
 ------------
 
-Please read [./README.DEV.md](the developer guidelines)  if you want to contribute
+Please read the [developer guidelines](./README.DEV.md)  if you want to contribute
 
 License
 -------
