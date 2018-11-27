@@ -22,13 +22,11 @@
 #
 ### Package installation is done in installation.yml
 #
-### Hostname is done in sap-base-settings - so we just check that it is set correctly
-###
-### TODO:
+### Hostname is done & checked in sap-base-settings - so we just check that it is set correctly
 
 ### NTP Setup should be done with rhel-system-role.timeserver
 ###
-### TODO: Any way to check that ntp/chrony is working?
+### TODO: Any way to check that ntp/chrony is working correctly?
 
 ### Storage configuration needs to be done properly
 ### TODO: Can we check at least proper space?

@@ -62,8 +62,14 @@ sap_hana_preconfigure_packages:
     # SAP NOTE 22455582
     - compat-sap-c++-6
     # Recommended Packages
-#    - libtool-ltdl
+    - libtool-ltdl
+#
+#   libtool ltdl: https://answers.sap.com/questions/476177/hana-db-installation-ended-with-exit-code-127.html
 
+#
+# TODO: Check if we can define sap_hana_preconfigure_packagegroups in dependancy of the architecture
+# to simplify installation.yml
+#
 sap_hana_preconfigure_packagegroups_x86_64:
     - "@base"
     - "@large-systems"

@@ -1,56 +1,60 @@
 ---
-###
-# TODO: Rework of defaults
+######################################
+# HANA Default Variables 
 #
-# Global Default variables
-# Adapt to your default settings
 
 # Want extensive debugging
 debuglevel: 3
+
+# HANA Major and minor version
+# These variables are used in all sap-hana scripts
+# Thes variables are also set by sap-hana-mediacheck
+# Used in SAP Note 2235581 check
+sap_hana_version: "2" 
+sap_hana_sps: "0"
+
+# Used in SAP Note 2235581 check
+sap_hana_preconfigure_no_strict_version_check: "yes"
+
+# default Kernel Parameters set in SAP Note 238241
+# Additional possible tuning parameters. See SAP Note for detaisl
+# The following parameter do not work if communicates with hosts behind NAT firewall
+#    - { name: net.ipv4.tcp_tw_reuse, value: 1 }
+# Tune these for low latency system replication
+#    net.ipv4.tcp_wmem and net.ipv4.tcp_rmem
+sap_hana_preconfigure_kernel_parameters: 
+    - { name: net.core.somaxconn, value: 4096 }
+    - { name: net.ipv4.tcp_max_syn_backlog, value: 8192}
+    - { name: net.ipv4.ip_local_port_range, value: "40000 61000" }
+    - { name: net.ipv4.tcp_timestamps, value: 1 }
+    - { name: net.ipv4.tcp_tw_recycle, value: 1 }
+    - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
+    - { name: net.ipv4.tcp_syn_retries, value: 8 }
+     # Not sure about these .... they were in the old script and not set in tuned
+    - { name: kernel.shmmni, value: 65536 }
+    - { name: kernel.msgmni, value: 32768 }
+    - { name: kernel.sysrq, value: 1 }
+
+# I do not want to boot by default
+# You can set this to true if you want to reboot after updating and before configuring the rest
+sap_hana_preconfigure_reboot_after_update: false
+
+###
 #
-#  System Registration. 
-# assuming system is properly configured, just want to add required channels
-
-# HANA Parameters
-#hsr_name: demoinstall
-
-# directory, where Hana install binaries are unpacked
-#hana_installdir: /install
-
-# User and GroupIDs to use for sap (Default: undef)
-#id_user_sapadm: "30200"
-#id_user_sidadm: "30210"
-#id_group_shm: "30220"
-#id_group_sapsys: "30200"
-#pw_user_sapadm_clear: "Adm12356"
-#pw_user_sidadm: "Adm12356"
-#hana_pw_system_user_clear: "System123"
+# The following variables are optional 
+# If they are defined the user sapadm and sapsys will already be created
+# this is necessary for installation of hostagent, but some customers require it at an earlier stage
 #
+# sap_hana_id_group_sapsys:
+# sap_hana_id_user_sapadm:
+
 #hana_sid: HXE
 #hana_instance_number: 90
 #
 #hana_system_usage: custom
 #
-hana_components: "client,server"
 #
 hana_system_type: "Master"
 
 
-######################################
-# HANA Default Variables 
-#
-
-# HANA Major and minor version
-# Thes variables are also set by sap-hana-mediacheck
-sap_hana_version: "2" 
-sap_hana_sps: "0"
-
-sap_hana_preconfigure_hana_version: "2" 
-sap_hana_preconfigure_no_strict_version_check: "yes"
-
-# I do not want to boot by default
-# You can set this to true if you want to reboot after updating and before configuring the rest
-reboot_after_update: false
-
 ...
-  

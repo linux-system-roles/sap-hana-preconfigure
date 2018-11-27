@@ -1,8 +1,8 @@
 ---
 # OS RELEASE: RHEL 6.x, 7.x
 # https://launchpad.support.sap.com/#/notes/2235581
-# Todo: Check SPS to Operating System
-# Todo: Check PPC Architeture variable name
+# TODO: Check SPS to Operating System
+# TODO: Check PPC Architeture variable name
 
 
 #- debug:
@@ -21,9 +21,9 @@
          ansible_distribution_major_version == "6" and
          ansible_distribution_version >= "6.5" and
          ansible_architecture == "x86_64")
-    msg: "This sytem supports HANA {{ sap_hana_preconfigure_hana_version }}"
+    msg: "This sytem supports HANA {{ sap_hana_version }}"
   when: (ansible_distribution == "RedHat" and 
-         sap_hana_preconfigure_hana_version|int == 1)
+         sap_hana_version|int == 1)
   ignore_errors: "{{sap_hana_preconfigure_no_strict_version_check|bool}}"
 
 
@@ -38,12 +38,10 @@
          ansible_distribution_major_version == "7" and
          ansible_distribution_version >= "7.3" and
          ansible_architecture == "ppc_le")
-    msg: "This sytem supports HANA {{ sap_hana_preconfigure_hana_version }}"
+    msg: "This sytem supports HANA {{ sap_hana_version }}"
   when: (ansible_distribution == "RedHat" and 
-         sap_hana_preconfigure_hana_version|int == 2)
+         sap_hana_version|int == 2)
   ignore_errors: "{{sap_hana_preconfigure_no_strict_version_check|bool}}"
-
-
 
 
 ...

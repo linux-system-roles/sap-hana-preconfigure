@@ -132,8 +132,10 @@
     dest: /etc/init.d/boot.local 
     line: echo 0 > /sys/kernel/mm/ksm/run
 
-# SELinux
+- name: make sure Kernel samepage merging is off in the running system
+  command: echo 0 > /sys/kernel/mm/ksm/run
 
+# SELinux
 - name: disable selinux
   selinux: state=disabled
 
@@ -175,11 +177,11 @@
 # The package pseries-energy must not be installed.  (<== TODO)
 # Kindly refer to IBM’s EnergyScale documentation for this feature at http://www-01.ibm.com/common/ssi/cgi-bin/ssialias?htmlfid=POW03125USEN.
 #
-#- name: ensure pseries-energy package is not installed
-#  yum:
-#    name: pseries-energy
-#    state: absent
-#  when: ansible_architecture == "ppc64le"
+- name: ensure pseries-energy package is not installed
+  yum:
+    name: pseries-energy
+    state: absent
+  when: ansible_architecture == "ppc64le"
 
 #### Network Settings are implemented by SAP Note 2382421
 # These settings are not done by tuned :-(

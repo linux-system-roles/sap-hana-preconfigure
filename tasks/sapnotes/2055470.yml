@@ -1,6 +1,9 @@
 ---
 # OS RELEASE: RHEL 7
 # Platform: PPC64LE
+# SAP Note: 2055470
+# https://launchpad.support.sap.com/#/notes/2055470
+
 
 debug:
         msg: "Special Configuration for ppcle not done yet !"

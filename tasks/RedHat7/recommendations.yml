@@ -8,23 +8,18 @@
           - name: ensure sapdm user exists      
             group: 
               name: sapsys 
-              gid: "{{ id_group_sapsys }}"
+              gid: "{{ sap_hana_id_group_sapsys }}"
           - name: ensure sapadm user exists
             user:
               name: sapadm
-              uid: "{{ id_user_sapadm }}"
+              uid: "{{ sap_hana_id_user_sapadm }}"
               group: sapsys
               password: "{{ pw_user_sapadm_clear|password_hash('sha512') }}"
-  when: (id_group_sapsys is defined) and (id_user_sapadm is defined)
-
-#- name: install libtool-ltdl packages
-#  yum:
-#    state: latest
-#    name: libtool-ltdl
+  when: (sap_hana_id_group_sapsys is defined) and (sap_hana_id_user_sapadm is defined)
 
 ### Firewall Settings can only be done if SAP instance ID is known, 
 ### otherwise disable firewall
-### TODO: Set proper firewall rules
+### TODO: Set proper firewall rules if SID/instance number is known
 
 - name: Ensure firewall is disabled when instance ID unknown
   service: name=firewalld state=stopped enabled=no

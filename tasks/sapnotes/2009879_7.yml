@@ -3,7 +3,7 @@
 # Check EUS Channels
 # https://launchpad.support.sap.com/#/notes/2009879
 # 
-# This SAP Note Contains the general installation guides for all RHEL systems in PDF format
+# This SAP Note Contains the general installation guides for all RHEL 7.x systems in PDF format
 #
 # Create the compatiility links for HANA 
 - name: create compatibility links for RHEL 7.2

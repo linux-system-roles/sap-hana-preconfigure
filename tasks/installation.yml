@@ -70,6 +70,6 @@
       - name: waiting for server to come back
         local_action: wait_for host={{ inventory_hostname }} port=22 state=started delay=90 sleep=2 timeout=900
         become: false
-  when: reboot_after_update == true and reboot_required.rc == 1
+  when: sap_hana_preconfigure_reboot_after_update == true and reboot_required.rc == 1
 
 ...
