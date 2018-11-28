@@ -10,21 +10,24 @@ sap_hana_preconfigure_sapnotes:
         - "2455582"
         - "2382421"
 
-sap_hana_preconfigure_min_packages:
+# In SAP Note 2235581 certain minimal required packages for the different RHEL 7 minor releases are listed
+# The following will assign them properly to sap_hana_preconfigure_min_packages. If you do not define a variable sap_hana_preconfigure_min_packages_VERSION, sap_hana_preconfigure_min_packages keeps undefined as well
+
+sap_hana_preconfigure_min_packages_7.2:
   - kernel-3.10.0-327.62.4.el7 
   - systemd-219-19.el7_2.4
-when: ansible_distribution_version == "7.2"
 
-sap_hana_preconfigure_min_packages:
+sap_hana_preconfigure_min_packages_7.3:
   - kernel-3.10.0-514.36.5.el7
   - glibc-2.17-157.el7_3.5
   - tuned-profiles-sap-hana-2.7.1-3.el7_3.3
-when: ansible_distribution_version == "7.3"
 
-sap_hana_preconfigure_min_packages:
+sap_hana_preconfigure_min_packages_7.4:
   - kernel-3.10.0-693.11.6.el7
   - tuned-profiles-sap-hana-2.8.0-5.el7_4.2
-when: ansible_distribution_version == "7.4"
+
+sap_hana_preconfigure_min_packages: "{{ lookup('vars','sap_hana_preconfigure_min_packages_' + ansible_distribution_version|string ) }}"
+
 
 sap_hana_preconfigure_packages:
     # SAP NOTE 2009879
@@ -65,10 +68,10 @@ sap_hana_preconfigure_packages:
     - libtool-ltdl
 #
 #   libtool ltdl: https://answers.sap.com/questions/476177/hana-db-installation-ended-with-exit-code-127.html
+#   it is required since HANA 2 SPS 03, and as such installed in general
 
 #
-# TODO: Check if we can define sap_hana_preconfigure_packagegroups in dependancy of the architecture
-# to simplify installation.yml
+# Intel needs additional packages over x86_64
 #
 sap_hana_preconfigure_packagegroups_x86_64:
     - "@base"
@@ -80,4 +83,6 @@ sap_hana_preconfigure_packagegroups_x86_64:
 sap_hana_preconfigure_packagegroups_ppc64le:
     - "@base"
     - "@compat-libraries"
+
+sap_hana_preconfigure_packagegroups: "{{ lookup('vars','sap_hana_preconfigure_packagegroups_' + ansible_architecture|string ) }}"
 ...
