@@ -39,6 +39,11 @@ sap_hana_preconfigure_kernel_parameters:
 # You can set this to true if you want to reboot after updating and before configuring the rest
 sap_hana_preconfigure_reboot_after_update: false
 
+# Reboot timeout. 
+# Large servers may take very long to reboot (Default: 1800s = 30min). 
+# you may want to change this according to your environment
+sap_hana_preconfigure_reboot_timeout: 1800
+
 ###
 #
 # The following variables are optional 
