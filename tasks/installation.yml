@@ -9,7 +9,9 @@
   yum:
     state: present
     name: "{{ sap_hana_preconfigure_min_pkgs }}"
-  when: not( (sap_hana_preconfigure_min_pkgs is undefined) or (sap_hana_preconfigure_min_pkgs is none) or (sap_hana_preconfigure_min_pkgs | trim == '') )
+  when: 
+    - sap_hana_preconfigure_min_package_check 
+    - not( (sap_hana_preconfigure_min_pkgs is undefined) or (sap_hana_preconfigure_min_pkgs is none) or (sap_hana_preconfigure_min_pkgs | trim == '') ) 
 
 # Note: This command will fail if sap_hana_preconfigure_packagegroups is undefined, which happens on an unsupported architecture
 - name: ensure required packagegroups are installed
@@ -27,12 +29,13 @@
   yum:
     state: latest
     name: "*"
+  when: sap_hana_preconfigure_update
 
 - name: check if reboot is required (7.3+)
   command: needs-restarting -r
   register: sap_hana_preconfigure_register_reboot_required
   changed_when: false
-  failed_when: reboot_required.rc > 1 
+  failed_when: sap_hana_preconfigure_register_reboot_required.rc > 1 
   when: ( ansible_distribution_version >= "7.3" ) and ( ansible_distribution_major_version == "7" )
 
 # This did not work properly because, the last register variable is used in the next when statement.
