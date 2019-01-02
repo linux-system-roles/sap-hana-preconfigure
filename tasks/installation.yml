@@ -35,6 +35,7 @@
     state: latest
     name: "{{ sap_hana_preconfigure_packages }}"
   check_mode: "{{ sap_hana_preconfigure_installation_check_only }}"
+  register: sap_hana_preconfigure_register_groupinstall
 
 - name: ensure system is updated to the latest patchlevel
   yum:
@@ -42,6 +43,7 @@
     name: "*"
   when: sap_hana_preconfigure_update
   check_mode: "{{ sap_hana_preconfigure_installation_check_only }}"
+  register: sap_hana_preconfigure_register_packageinstall
 
 - name: check if reboot is required (7.3+)
   command: needs-restarting -r
