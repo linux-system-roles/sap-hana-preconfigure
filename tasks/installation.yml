@@ -1,10 +1,20 @@
 ---
 
+##########################################################################################
+# 
+# NOTE: THE installation part will completely fail, 
+# - if the system is not connected to proper copied RedHat Repositories 
+#   (no group definition available)
+# - is disconnected with no repos configured at all
+#
+##########################################################################################
+
 #- name: Enable Debugging
 #  debug:
 #    verbosity: "{{ debuglevel }}"
 #
 # Minimum supported Supported Kernel versions and patches to use with certified Hardware for SAP HANA on RHEL 7
+
 - name: ensure minimal required packages are installed
   yum:
     state: present
@@ -13,23 +23,25 @@
     - sap_hana_preconfigure_min_package_check 
     - not( (sap_hana_preconfigure_min_pkgs is undefined) or (sap_hana_preconfigure_min_pkgs is none) or (sap_hana_preconfigure_min_pkgs | trim == '') ) 
 
-# Note: This command will fail if sap_hana_preconfigure_packagegroups is undefined, which happens on an unsupported architecture
 - name: ensure required packagegroups are installed
   yum: 
     state: latest 
     name: "{{ sap_hana_preconfigure_packagegroups }}"
+  check_mode: "{{ sap_hana_preconfigure_installation_check_only }}"
 
 # temporary
 - name: ensure required packages are installed
   yum:
     state: latest
     name: "{{ sap_hana_preconfigure_packages }}"
+  check_mode: "{{ sap_hana_preconfigure_installation_check_only }}"
 
 - name: ensure system is updated to the latest patchlevel
   yum:
     state: latest
     name: "*"
   when: sap_hana_preconfigure_update
+  check_mode: "{{ sap_hana_preconfigure_installation_check_only }}"
 
 - name: check if reboot is required (7.3+)
   command: needs-restarting -r

@@ -4,7 +4,7 @@
 # SAP Note: 2055470
 # https://launchpad.support.sap.com/#/notes/2055470
 
-
-debug:
+- name: TODO
+  debug:
         msg: "Special Configuration for ppcle not done yet !"
 
