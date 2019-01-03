@@ -21,6 +21,12 @@ sap_hana_preconfigure_no_strict_version_check: "yes"
 # Set to no if you want to ignore these requirements
 sap_hana_preconfigure_min_package_check: True
 
+# The installation part of this script will install missing packages and package groups
+# If the system is disconnected, not properly subscribed or repositories missing group
+# information set this to false and the missing packages are reported at the end of the playbook
+# if you set this to true, the installation part is run in check_mode only
+sap_hana_preconfigure_installation_check_only: false
+
 # default Kernel Parameters set in SAP Note 238241
 # Additional possible tuning parameters. See SAP Note for details
 # The following parameter do not work if communicates with hosts behind NAT firewall
