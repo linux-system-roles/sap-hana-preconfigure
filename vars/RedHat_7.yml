@@ -26,7 +26,10 @@ sap_hana_preconfigure_min_packages_7.4:
   - kernel-3.10.0-693.11.6.el7
   - tuned-profiles-sap-hana-2.8.0-5.el7_4.2
 
+## TODO: Double check with SAP NOTE 2235581
 sap_hana_preconfigure_min_packages_7.5:
+
+sap_hana_preconfigure_min_packages_7.6:
 
 sap_hana_preconfigure_min_pkgs: "{{ lookup('vars','sap_hana_preconfigure_min_packages_' + ansible_distribution_version|string ) }}"
 
