@@ -2,7 +2,7 @@ galaxy_info:
   author: Markus Koch, Thomas Bludau
   description: Configures a RHEL OS to be ready for SAP HANA installation 
   license: Apache 2.0
-  min_ansible_version: 2.2
+  min_ansible_version: 2.5
   platforms:
   - name: EL
     versions: [ 6, 7 ]
