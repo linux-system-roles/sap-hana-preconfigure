@@ -8,7 +8,7 @@ sap-hana-prepare-sapnotes:
         - "2247020"
         - "2382421"
 
-sap_hana_preconfigure_min_packages:
+sap_hana_preconfigure_min_pkgs:
   - kernel-3.10.0-693.11.6.el7
   - tuned-profiles-sap-hana-2.8.0-5.el7_4.2
 when: ansible_distribution_version == "7.4"

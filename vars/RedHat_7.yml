@@ -28,7 +28,6 @@ sap_hana_preconfigure_min_packages_7.4:
 
 sap_hana_preconfigure_min_packages_7.5:
 
-sap_hana_preconfigure_min_packages: "{{ lookup('vars','sap_hana_preconfigure_min_packages_' + ansible_distribution_version|string ) }}"
 sap_hana_preconfigure_min_pkgs: "{{ lookup('vars','sap_hana_preconfigure_min_packages_' + ansible_distribution_version|string ) }}"
 
 
