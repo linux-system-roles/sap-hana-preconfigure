@@ -1,0 +1,66 @@
+---
+
+# required SAP Notes for RHEL 8
+# WORK IN PROGRESS
+
+sap_hana_preconfigure_sapnotes:
+        - "2235581"
+        - "2009879" 
+        - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
+        - "2777782" ## this needs to be exhanged with the new RHEL 8 SAP Note
+        - "2455582"
+        - "2382421"
+
+# In SAP Note 2235581 certain minimal required packages for the different RHEL 7 minor releases are listed
+# The following will assign them properly to sap_hana_preconfigure_min_packages. If you do not define a variable sap_hana_preconfigure_min_packages_VERSION, sap_hana_preconfigure_min_packages keeps undefined as well
+
+sap_hana_preconfigure_min_pkgs: 
+
+
+sap_hana_preconfigure_packages:
+    # SAP NOTE 2009879
+    - chrony
+    - xfsprogs
+    - libaio
+    - net-tools
+    - bind-utils
+    - gtk2
+    - libicu
+    - xulrunner
+    - tcsh
+    - sudo
+    - libssh2
+    - expect
+    - cairo
+    - graphviz
+    - iptraf-ng
+    - krb5-workstation
+    - krb5-libs
+    - libpng12
+    - nfs-utils
+    - lm_sensors
+    - rsyslog
+    - openssl
+    - PackageKit-gtk3-module
+    - libcanberra-gtk2
+    - libtool-ltdl
+    - xorg-x11-xauth
+    - numactl
+    - tuned
+    # SAP NOTE 2292690
+    - tuned-profiles-sap-hana
+    # SAP NOTE 22455582
+    # Recommended Packages # 2772999 / 2002167
+    - libtool-ltdl
+    - libatomic
+#
+#   libtool ltdl: https://answers.sap.com/questions/476177/hana-db-installation-ended-with-exit-code-127.html
+#   it is required since HANA 2 SPS 03, and as such installed in general
+
+#
+# Intel needs additional packages over x86_64
+#
+
+sap_hana_preconfigure_packagegroups: 
+    - "@base"
+...
