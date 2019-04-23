@@ -14,7 +14,7 @@
               name: sapadm
               uid: "{{ sap_uid_sapadm }}"
               group: sapsys
-              password: "{{ pw_user_sapadm_clear|password_hash('sha512') }}"
+              password: "{{ sap_uid_sapadm_pw_clear|password_hash('sha512') }}"
   when: (sap_gid_sapsys is defined) and (sap_uid_sapadm is defined)
 
 ### Firewall Settings can only be done if SAP instance ID is known, 

@@ -26,7 +26,7 @@
   pam_limits: 
     dest: /etc/security/limits.d/99-sapsys.conf
     domain: "@sapsys" 
-    limit_item: core 
+    limit_item: nofile 
     limit_type: "{{ item }}" 
     value: 32800
   with_items:
