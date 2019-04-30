@@ -1,0 +1,77 @@
+# Test Implementation S15
+---
+### legacy module ###
+
+SUSEConnect -p sle-module-legacy/15/x86_64
+
+#####################
+
+### Packages ###
+
+- name: Packages libopenssl installed
+  hosts: HANA
+  become: yes
+  tasks:
+  - name: latest Packages installed
+    yum:
+      name: libopenssl1_0_0
+      state: latest
+
+if scaleout:
+then:
+
+- name: Packages libssh2 installed
+  hosts: HANA
+  become: yes
+  tasks:
+  - name: latest Packages installed
+    yum:
+      name: libssh2-1
+      state: latest
+
+endif
+
+########################
+
+### install saptune & sapconf ###
+
+- name: Packages saptune installed
+  hosts: HANA
+  become: yes
+  tasks:
+  - name: latest Packages installed
+    yum:
+      name: saptune
+      state: latest
+      name: sapconf
+      state: latest
+
+###########################
+
+### NOTE 1275776 ###
+
+- name: sapconf enabled and running
+    service:
+      name: sapconf
+      enabled: true
+      state: started
+
+- name: saptune enabled and running
+    service:
+      name: saptune
+      enabled: true
+      state: started
+
+#- name: sysctl -p /etc/sysctl.d/sap_hana.conf
+#  shell: sysctl -p /etc/sysctl.d/sap_hana.conf
+
+
+### TODO:  currently works only for non-uefi server
+# On a machine without UEFI activate this option by issuing:
+# grub2-mkconfig -o /boot/grub2/grub.cfg
+# On a machine with UEFI activate this option by issuing:
+# grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg
+
+- name: regenerate grub2 conf
+  shell: grub2-mkconfig -o /boot/grub2/grub.cfg
+
