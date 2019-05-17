@@ -1,4 +1,5 @@
 ---
+## Totally outdated: look into defaults/main.yml for current variable definitions
 - hosts: hana
   remote_user: root
 

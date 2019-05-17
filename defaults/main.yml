@@ -64,6 +64,6 @@ sap_hana_preconfigure_reboot_timeout: 1800
 # If they are defined the user sapadm and sapsys will already be created
 # this is necessary for installation of hostagent, but some customers require it at an earlier stage
 #
-# sap_hana_id_group_sapsys:
-# sap_hana_id_user_sapadm:
-
+# sap_sapadm_uid:
+# sap_sapadm_pw_clear
+# sap_sapsys_gid

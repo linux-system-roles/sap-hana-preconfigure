@@ -8,14 +8,18 @@
           - name: ensure sapdm user exists      
             group: 
               name: sapsys 
-              gid: "{{ sap_gid_sapsys }}"
+              gid: "{{ sap_sapsys_gid }}"
           - name: ensure sapadm user exists
             user:
               name: sapadm
-              uid: "{{ sap_uid_sapadm }}"
+              uid: "{{ sap_sapadm_uid }}"
               group: sapsys
-              password: "{{ sap_uid_sapadm_pw_clear|password_hash('sha512') }}"
-  when: (sap_gid_sapsys is defined) and (sap_uid_sapadm is defined)
+              password: "{{ sap_sapadm_pw_clear|password_hash('sha512') }}"
+  when:
+    - sap_sapsys_gid is defined
+    - sap_sapadm_uid is defined
+    - sap_sapadm_pw_clear is defined
+    
 
 ### Firewall Settings can only be done if SAP instance ID is known, 
 ### otherwise disable firewall
