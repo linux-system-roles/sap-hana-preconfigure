@@ -15,7 +15,8 @@ sap_hana_preconfigure_required_ppc64le:
         - librtas
         - src
         - rsct.core.utils
-        - rsct.core rsct.basic
+        - rsct.core
+        - rsct.basic
         - rsct.opt.storagerm
         - devices.chrp.base.ServiceRM
         - DynamicRM
