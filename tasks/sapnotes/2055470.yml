@@ -18,14 +18,14 @@
 - name: ensure MTU size is 9000
   shell: |
     mtu=$(nmcli conn show {{ item }} | grep 802-3-ethernet.mtu | awk -F: '{printf("%d", $2)}')
-    if [ "$mtu" != "9000" ];
+    if [ "$mtu" != "9000" ]; then
        nmcli conn mod {{ item }} 802-3-ethernet.mtu "9000"
        ip link set mtu 9000 dev {{ item }}
     else
        exit 90
     fi
   register: sapnote_2055470_mtusize
-  changed_when: sapnote_2055470_mtusize.rc| success
+  changed_when: sapnote_2055470_mtusize.rc == 0
   failed_when: sapnote_2055470_mtusize.rc > 0 and sapnote_2055470_mtusize.rc != 90
   with_items: "{{ ansible_interfaces| difference(['lo'])  }}"
 
