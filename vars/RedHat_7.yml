@@ -98,6 +98,9 @@ sap_hana_preconfigure_packages:
     - compat-sap-c++-6
     # Recommended Packages
     - libtool-ltdl
+    # Required for HANA 2.0 SPS 4
+    - compat-sap-c++-7
+    - libatomic
 #
 #   libtool ltdl: https://answers.sap.com/questions/476177/hana-db-installation-ended-with-exit-code-127.html
 #   it is required since HANA 2 SPS 03, and as such installed in general

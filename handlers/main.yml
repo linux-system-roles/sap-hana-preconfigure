@@ -13,3 +13,12 @@
 - name: regenerate grub2 conf
   shell: grub2-mkconfig -o /boot/grub2/grub.cfg
 
+
+# Required for IBM SAP Note 
+- name: restart multipathd
+  service:
+           name: multipathd
+           state: restarted
+
+- name: activate MTU size
+  command: "ip link set mtu 9000 dev eth0"
