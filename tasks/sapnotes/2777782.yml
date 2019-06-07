@@ -1,5 +1,181 @@
 ---
-# OS RELEASE: RHEL 8
+# tasks file for sap-hana-preconfigure on RHEL 8: configuration
 
-fail:
-        msg: "RHEL 8 is not implemented yet"
+# 01-disable-abrt-coredumps-kdump.yml
+  - debug:
+      msg: "SAP note 2777782 Step 1: Disable ABRT, core dumps, and kdump"
+  - name: "Stop and disable service kdump"
+    systemd:
+      name: kdump
+      state: stopped
+      enabled: no
+
+  - name: "Create file /etc/security/limits.d/99-sap.conf if it does not exist"
+    file:
+      path: /etc/security/limits.d/99-sap.conf
+      state: touch
+      mode: 0644
+
+  - name: "Disable core file creation for all users, hard limit"
+    lineinfile:
+      path: /etc/security/limits.d/99-sap.conf
+      line: "hard core 0"
+      state: present
+
+  - name: "Disable core file creation for all users, soft limit"
+    lineinfile:
+      path: /etc/security/limits.d/99-sap.conf
+      line: "soft core 0"
+      state: present
+
+# alternative approach: use module "pam_limits" (using file /etc/security/limits.conf)
+# - name: disable core dumps
+#   pam_limits:
+#     domain: "*"
+#     limit_item: core
+#     limit_type: "{{ item }}"
+#     value: 0
+#   with_items:
+#     - soft
+#     - hard
+
+# 02-turn-off-auto-numa-balancing.yml
+  - debug:
+      msg: "SAP note 2777782 Step 2: Turn off auto-numa balancing"
+  - name: "Check if numad is installed"
+    package:
+      name: numad
+      state: present
+    check_mode: true
+    register: numad_check
+    ignore_errors: yes
+  - debug:
+      var: numad_check
+
+  - name: "Disable numad if installed"
+    systemd:
+      name: numad
+      state: stopped
+      enabled: no
+    when: not numad_check.changed
+
+  - name: "Get status of numad"
+    command: bash -lc "systemctl status numad"
+    register: command_result
+    ignore_errors: True
+  - debug:
+      var: command_result.stdout_lines, command_result.stderr_lines
+
+# 03-disable-thp.yml
+  - debug:
+      msg: "SAP note 2777782 Step 3: Disable THP"
+  - name: "Disable Transparent Hugepages (THP)"
+    command: bash -lc "echo never > /sys/kernel/mm/transparent_hugepage/enabled"
+    register: command_result
+  - debug:
+      var: command_result.stdout_lines, command_result.stderr_lines
+
+  - name: "Get status of THP"
+    command: bash -lc "cat /sys/kernel/mm/transparent_hugepage/enabled"
+    register: command_result
+    ignore_errors: True
+  - debug:
+      var: command_result.stdout_lines, command_result.stderr_lines
+
+  - debug:
+      msg: "sap_hana_preconfigure_grub_file: {{ sap_hana_preconfigure_grub_file }}"
+  - name: "Copy /etc/default/grub on remote system to /tmp for testing"
+    copy:
+      src: /etc/default/grub
+      dest: "{{ sap_hana_preconfigure_grub_file }}"
+      remote_src: yes
+
+  - name: "Disable Transparent Hugepages (THP) at boot time"
+    lineinfile:
+#      path: /etc/default/grub
+#      path: /tmp/grub
+      path: "{{ sap_hana_preconfigure_grub_file }}"
+#      regexp: '^(GRUB_CMDLINE_LINUX=(.*)$)'
+      regexp: '^(GRUB_CMDLINE_LINUX=(?!.*transparent_hugepage)\"[^\"]+)(\".*)'
+      line: '\1 transparent_hugepage=never\2'
+      backrefs: yes
+      state: present
+
+  - name: "grep GRUB_CMDLINE_LINUX {{ sap_hana_preconfigure_grub_file }}"
+    command: bash -lc "grep GRUB_CMDLINE_LINUX {{ sap_hana_preconfigure_grub_file }}"
+    register: shell_result
+  - debug:
+      var: shell_result.stdout_lines, shell_result.stderr_lines
+
+# 04-configure-c-states-intel.yml
+  - debug:
+      msg: "SAP note 2777782 Step 4: Configure C-States at boot time (Intel only); architecture = {{ ansible_architecture }}"
+  - name: "Configure C-states at boot time (Intel only)"
+    lineinfile:
+#      path: /etc/default/grub
+      path: "{{ sap_hana_preconfigure_grub_file }}"
+#      regexp: '^(GRUB_CMDLINE_LINUX=(.*)$)'
+      regexp: '^(GRUB_CMDLINE_LINUX=(?!.*max_cstate)\"[^\"]+)(\".*)'
+#      regexp: '^(GRUB_CMDLINE_LINUX=(?!.*)\"[^\"]+)(\".*)'
+#      line: '\1 transparent_hugepage=never processor.max_cstate=1 intel_idle.max_cstate=1\2'
+      line: '\1 processor.max_cstate=1 intel_idle.max_cstate=1\2'
+      backrefs: yes
+      state: present
+    when:
+      - ansible_facts['architecture'] == "x86_64"
+
+  - name: "grep GRUB_CMDLINE_LINUX {{ sap_hana_preconfigure_grub_file }}"
+    command: bash -lc "grep GRUB_CMDLINE_LINUX {{ sap_hana_preconfigure_grub_file }}"
+    register: shell_result
+  - debug:
+      var: shell_result.stdout_lines, shell_result.stderr_lines
+
+# 05-modify-grub2.yml
+  - debug:
+      msg: "SAP note 2777782 Step 5: Modify grub2"
+  - name: "grep GRUB_CMDLINE_LINUX {{ sap_hana_preconfigure_grub_file }}"
+    command: bash -lc "grep GRUB_CMDLINE_LINUX {{ sap_hana_preconfigure_grub_file }}"
+    register: shell_result
+  - debug:
+      var: shell_result.stdout_lines, shell_result.stderr_lines
+
+  - name: "Check if server is booted in BIOS or UEFI mode"
+    stat:
+      path: /sys/firmware/efi
+      get_checksum: no
+    register: efi_exists
+  - debug:
+      var: efi_exists.stat.exists
+
+  - name: "Run grub-mkconfig (BIOS mode)"
+    command: bash -lc "echo grub2-mkconfig -o /boot/grub2/grub.cfg"
+    register: command_result
+    when: not efi_exists.stat.exists
+  - debug:
+      var: command_result.stdout_lines, command_result.stderr_lines
+
+  - name: "Run grub-mkconfig (UEFI mode)"
+    command: bash -lc "echo grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg"
+    register: command_result
+    when: efi_exists.stat.exists
+  - debug:
+      var: command_result.stdout_lines, command_result.stderr_lines
+
+# 05-configure-cpu-governor-for-performance.yml
+  - debug:
+      msg: "SAP note 2777782 Step 5: Configure CPU governor for performance"
+#  - name: "Configure CPU Governor for Performance now"
+#    command: bash -lc "cpupower frequency-set -g performance"
+#    register: command_result
+#    ignore_errors: True
+#  - debug:
+#      var: command_result.stdout_lines, command_result.stderr_lines
+
+#  - name: "Configure CPU Governor for Performance"
+#    lineinfile:
+#      path: /etc/rc.d/rc.local
+#      mode: 0744
+#      line: 'cpupower frequency-set -g performance'
+#      state: present
+
+
