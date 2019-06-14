@@ -3,8 +3,52 @@
 # Platform: PPC64LE
 # SAP Note: 2055470
 # https://launchpad.support.sap.com/#/notes/2055470
+# The SAP Note points to http://www-03.ibm.com/support/techdocs/atsmastr.nsf/WebIndex/WP102502
 
-- name: TODO
+- name: No special configuration required on RHEL 
   debug:
-        msg: "Special Configuration for ppcle not done yet !"
+        msg: "No special configuration for ppcle required on RHEL !"
 
+
+
+## The Network Configuration from Walter should go here
+## Configuring your Network for SAP HANA (Ethernet connectivity): 
+## http://www-03.ibm.com/support/techdocs/atsmastr.nsf/5cb5ed706d254a8186256c71006d2e0a/c32b40501f4f76c886257de0004fa1d4/$FILE/Network_Configuration_for_HANA_Workloads_on_IBM_Power_Servers_V4.pdf
+
+- name: ensure MTU size is 9000
+  shell: |
+    mtu=$(nmcli conn show {{ item }} | grep 802-3-ethernet.mtu | awk -F: '{printf("%d", $2)}')
+    if [ "$mtu" != "9000" ]; then
+       nmcli conn mod {{ item }} 802-3-ethernet.mtu "9000"
+       ip link set mtu 9000 dev {{ item }}
+    else
+       exit 90
+    fi
+  register: sapnote_2055470_mtusize
+  changed_when: sapnote_2055470_mtusize.rc == 0
+  failed_when: sapnote_2055470_mtusize.rc > 0 and sapnote_2055470_mtusize.rc != 90
+  with_items: "{{ ansible_interfaces| difference(['lo'])  }}"
+
+## This works in the lab, but needs to be done better !!!
+## This only works if interfacename= device name, otherwise might fail !!
+- name: add largesend options to interface
+  lineinfile:
+        regexp: '^ETHTOOL_OPTIONS_tso='
+        line: ETHTOOL_OPTIONS_tso='-K iface tso on'
+        path: /etc/sysconfig/network-scripts/ifcfg-{{ item }}
+  with_items: "{{ ansible_interfaces| difference(['lo'])  }}"
+
+- name: add largesend parameter
+  sysctl:
+          sysctl_file: /etc/sysctl.d/ibm_largesend.conf
+          name: "{{ item.name }}"
+          value: "{{ item.value }}"
+          state: present
+          sysctl_set: yes
+          reload: yes
+  with_items:
+    - { name: net.core.rmem_max, value: 56623104 }
+    - { name: net.core.wmem_max, value: 56623104 }
+    - { name: net.ipv4.tcp_rmem, value: "65536 262088 56623104" }
+    - { name: net.ipv4.tcp_wmem, value: "65536 262088 56623104" }
+    - { name: net.ipv4.tcp_mem, value: "56623104 56623104 56623104" }

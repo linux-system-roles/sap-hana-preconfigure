@@ -1,6 +1,0 @@
----
-# OS RELEASE: RHEL 8
-
-fail:
-        msg: "RHEL 8 is not implemented yet"
-

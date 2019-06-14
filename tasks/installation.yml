@@ -45,6 +45,19 @@
   check_mode: "{{ sap_hana_preconfigure_installation_check_only }}"
   register: sap_hana_preconfigure_register_packageinstall
 
+### If this task fails, you need to enable the IBM PowerTools repository
+### see https://www14.software.ibm.com/support/customercare/sas/f/lopdiags/home.html for details
+##
+### # yum -y install http://public.dhe.ibm.com/software/server/POWER/Linux/yum/download/ibm-power-repo-latest.noarch.rpm
+### # /opt/ibm/lop/configure
+### # yum -y install ibm-power-managed-rhel7
+###
+- name: Install IBM Tools 
+  package:
+    state: latest
+    name: "{{ sap_hana_preconfigure_required_ppc64le }}"
+  when: ansible_architecture == "ppc64le" 
+
 - name: check if reboot is required (7.3+)
   command: needs-restarting -r
   register: sap_hana_preconfigure_register_reboot_required

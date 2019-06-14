@@ -18,6 +18,3 @@ sap_hana_preconfigure_packages:
     - chrony
     - xfsprogs
     - libaio
-
-
-
