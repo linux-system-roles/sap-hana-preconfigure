@@ -4,6 +4,8 @@
 
 sap_hana_preconfigure_sapnotes:
 #        - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
+        - "1944799"
+        - "1275776"
         - "2684254"
 
 # In SAP Note 2235581, certain minimal required packages for the different RHEL 8 minor releases might be listed

@@ -1,0 +1,25 @@
+---
+# base pattern defined in installation pdf
+# sap-hana and sap_server added by SVA (Thomas Bludau)
+
+- name: "1944799- PDF 8.1 Package List Pattern"
+  zypper:
+    name: "{{ packages }}"
+    type: pattern
+  vars:
+    packages:
+      - base
+      - sap-hana
+      - sap_server
+
+# Requires SLE-Module-Legacy15 Module
+- name: "1944799- PDF 8.1 Package List Packages"
+  zypper:
+    name: "{{ packages }}"
+    type: package 
+  vars:
+    packages:
+      - libssh2-1
+      - libopenssl1_0_0
+...
+    
