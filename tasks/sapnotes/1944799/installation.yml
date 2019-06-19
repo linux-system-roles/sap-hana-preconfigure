@@ -2,18 +2,27 @@
 # base pattern defined in installation pdf
 # sap-hana and sap_server added by SVA (Thomas Bludau)
 
-- name: "1944799- PDF 8.1 Package List Pattern"
+# show zypper patterns
+- name: "1944799 - PDF 8.1 Package List Pattern Also 3.5 Software selection"
   zypper:
-    name: "{{ packages }}"
+    name: "{{ pattern }}"
     type: pattern
   vars:
-    packages:
+    pattern:
+      - gnome_basic
       - base
+      - enhanced_base
+      - apparmor
+      - 32bit
+      - yast2_basis
+      - sw_management
+      - fonts
+      - x11
       - sap-hana
       - sap_server
 
 # Requires SLE-Module-Legacy15 Module
-- name: "1944799- PDF 8.1 Package List Packages"
+- name: "1944799 - PDF 8.1 Package List Packages"
   zypper:
     name: "{{ packages }}"
     type: package 
