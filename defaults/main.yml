@@ -48,7 +48,6 @@ sap_hana_preconfigure_reboot_timeout: 1800
 # sap_sapadm_uid:
 # sap_sapadm_pw_clear:
 # sap_sapsys_gid:
-=======
 # sap_hana_id_group_sapsys: not yet used
 # sap_hana_id_user_sapadm: not yet used
 
