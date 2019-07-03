@@ -61,7 +61,6 @@ sap_hana_preconfigure_min_packages_7.6:
 
 sap_hana_preconfigure_min_pkgs: "{{ lookup('vars','sap_hana_preconfigure_min_packages_' + ansible_distribution_version|string ) }}"
 
-
 sap_hana_preconfigure_packages:
     # SAP NOTE 2009879
     - chrony
@@ -106,9 +105,6 @@ sap_hana_preconfigure_packages:
 #   libtool ltdl: https://answers.sap.com/questions/476177/hana-db-installation-ended-with-exit-code-127.html
 #   it is required since HANA 2 SPS 03, and as such installed in general
 
-#
-# Intel needs additional packages over x86_64
-#
 sap_hana_preconfigure_packagegroups_x86_64:
     - "@base"
     - "@large-systems"

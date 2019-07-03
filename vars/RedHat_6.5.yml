@@ -2,6 +2,6 @@
 
 # required SAP Notes for RHEL 6.5
 
-sap-hana-prepare-sapnotes:
+sap-hana-preconfigure-sapnotes:
         - "2235581"
         - "2013638"

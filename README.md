@@ -1,7 +1,7 @@
 sap-hana-preconfigure
 =====================
 
-This role configures a RHEL 7.x system according to the SAP notes so that SAP HANA is installable
+This role configures a RHEL 7.x or RHEL 8 system according to the SAP notes so that SAP HANA is installable
 
 Requirements
 ------------
@@ -9,12 +9,20 @@ Requirements
 To use this role your system needs to be installed with at least the RHEL core packges.
 It is strongly recommended that you have run the following roles before this:
  - 'linux-system-roles.timesync'
- - 'linux-system-roles.sap-base-settings'
+ - 'linux-system-roles.sap-base-settings' (for RHEL 7.x)
+ - 'linux-system-roles.sap-preconfigure' (for RHEL 8.x)
 
 It needs to be properly registered and have at least the following RedHat repositories accessable (see also example playbook):
 
+for RHEL 7.x:
  - RHEL Base Repository
  - RHEL SAP HANA Repository
+
+for RHEL 8.x:
+ - Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+ - Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+ - Red Hat Enterprise Linux 8 for x86_64 - SAP Solutions (RPMs)
+
 
 For details see the Red Hat knowledge base article: [How to subscribe SAP HANA systems to the Update Services for SAP Solutions](https://access.redhat.com/solutions/3075991))
 You can use the [subscribe-rhn](https://galaxy.ansible.com/mk-ansible-roles/subscribe-rhn/)  role to automate this process
@@ -99,12 +107,10 @@ The `installation.yaml` tasks install and update the system to with the current 
 sap_hana_preconfigure_reboot_after_update: false
 ```
 
-
 Example Playbook
 ----------------
 
 Here is an example playbook that prepares a server for hana installation.
-
 
 ```yaml
 ---
@@ -137,20 +143,29 @@ Here is an example playbook that prepares a server for hana installation.
         - { role: linux-system-roles.sap-hana-preconfigure }
 ```
 
+Here is a simple playbook:
+
+```yaml
+---
+    - hosts: all
+      roles:
+         - role: sap-preconfigure
+         - role: sap-hana-preconfigure
+```
+
 Contribution
 ------------
 
-Please read the [developer guidelines](./README.DEV.md)  if you want to contribute
+Please read the [developer guidelines](./README.DEV.md) if you want to contribute
 
 License
 -------
 
-Apache License
-Version 2.0, January 2004
+GNU General Public License v3.0
 
 Author Information
 ------------------
 
-Markus Koch, Thomas Bludau
+Markus Koch, Thomas Bludau, Bernd Finger
 
 Please leave comments in the github repo issue list

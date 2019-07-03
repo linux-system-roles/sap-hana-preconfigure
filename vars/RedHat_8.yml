@@ -3,11 +3,11 @@
 # required SAP Notes for RHEL 8
 
 sap_hana_preconfigure_sapnotes:
-#        - "2235581" # no specific requirements for RHEL 8 yet
-#        - "2009879" # now part of SAP note 2772999
         - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
         - "2777782"
-#        - "2382421" # not yet verified for RHEL 8
+        - "2382421"
+#        - "2382421" # not yet implamented for RHEL 8
+#        - "2235581" # no specific requirements for RHEL 8 yet
 
 # In SAP Note 2235581, certain minimal required packages for the different RHEL 8 minor releases might be listed
 # The following will assign them properly to sap_hana_preconfigure_min_packages. If you do not define a variable sap_hana_preconfigure_min_packages_VERSION, sap_hana_preconfigure_min_packages keeps undefined as well

@@ -9,9 +9,9 @@
     var: sap_hana_preconfigure_sapnotes | difference([''])
 
 - name: include configuration actions for required sapnotes 
-  include_tasks: "sapnotes/{{ item }}.yml"
+  include_tasks: "sapnote/{{ item }}.yml"
   with_items: "{{ sap_hana_preconfigure_sapnotes | difference(['']) }}"
      
-- include: "{{ './' + ansible_distribution + ansible_distribution_major_version + '/recommendations.yml' }}"
+- include: "{{ './' + ansible_distribution + '_' + ansible_distribution_major_version + '/recommendations.yml' }}"
 
 ...
