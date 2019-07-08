@@ -166,6 +166,6 @@ GNU General Public License v3.0
 Author Information
 ------------------
 
-Markus Koch, Thomas Bludau, Bernd Finger
+Markus Koch, Thomas Bludau, Bernd Finger, Than Ngo
 
 Please leave comments in the github repo issue list
