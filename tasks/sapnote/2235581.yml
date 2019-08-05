@@ -43,5 +43,4 @@
          sap_hana_version|int == 2)
   ignore_errors: "{{sap_hana_preconfigure_no_strict_version_check|bool}}"
 
-
 ...
