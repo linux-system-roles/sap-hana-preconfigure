@@ -12,6 +12,7 @@
           - name: ensure sapadm user exists
             user:
               name: sapadm
+              update_password: on_create
               uid: "{{ sap_sapadm_uid }}"
               group: sapsys
               password: "{{ sap_sapadm_pw_clear|password_hash('sha512') }}"
