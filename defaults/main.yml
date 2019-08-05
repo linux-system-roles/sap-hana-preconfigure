@@ -27,27 +27,8 @@ sap_hana_preconfigure_min_package_check: True
 # if you set this to true, the installation part is run in check_mode only
 sap_hana_preconfigure_installation_check_only: false
 
-# default Kernel Parameters set in SAP Note 238241
-# Additional possible tuning parameters. See SAP Note for details
-# The following parameter do not work if communicates with hosts behind NAT firewall
-#    - { name: net.ipv4.tcp_tw_reuse, value: 1 }
-# Tune these for low latency system replication
-#    net.ipv4.tcp_wmem and net.ipv4.tcp_rmem
-sap_hana_preconfigure_kernel_parameters: 
-    - { name: net.core.somaxconn, value: 4096 }
-    - { name: net.ipv4.tcp_max_syn_backlog, value: 8192}
-    - { name: net.ipv4.ip_local_port_range, value: "40000 61000" }
-    - { name: net.ipv4.tcp_timestamps, value: 1 }
-    - { name: net.ipv4.tcp_tw_recycle, value: 1 }
-    - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
-    - { name: net.ipv4.tcp_syn_retries, value: 8 }
-     # Not sure about these .... they were in the old script and not set in tuned
-    - { name: kernel.shmmni, value: 65536 }
-    - { name: kernel.msgmni, value: 32768 }
-    - { name: kernel.sysrq, value: 1 }
-
-# Set the following to false, if you do not want to update the system to the latest release
-sap_hana_preconfigure_update: true
+# Set the following to false if you do not want to update the system to the latest release
+sap_hana_preconfigure_update: false
 
 # I do not want to boot by default
 # You can set this to true if you want to reboot after updating and before configuring the rest
@@ -60,10 +41,14 @@ sap_hana_preconfigure_reboot_timeout: 1800
 
 ###
 #
-# The following variables are optional 
-# If they are defined the user sapadm and sapsys will already be created
-# this is necessary for installation of hostagent, but some customers require it at an earlier stage
+# The following variables are optional.
+# If they are defined, the users sapadm and sapsys will already be created
+# This is necessary for installation of hostagent, but some customers require it at an earlier stage.
 #
 # sap_sapadm_uid:
-# sap_sapadm_pw_clear
-# sap_sapsys_gid
+# sap_sapadm_pw_clear:
+# sap_sapsys_gid:
+# sap_hana_id_group_sapsys: not yet used
+# sap_hana_id_user_sapadm: not yet used
+
+...
