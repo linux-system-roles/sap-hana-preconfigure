@@ -9,7 +9,7 @@
     var: sap_hana_preconfigure_sapnotes | difference([''])
 
 - name: include configuration actions for required sapnotes 
-  include_tasks: "sapnotes/{{ item }}/installation.yml"
+  include_tasks: "tasks/sapnote/{{ item }}/installation.yml"
   with_items: "{{ sap_hana_preconfigure_sapnotes | difference(['']) }}"
      
 ...
