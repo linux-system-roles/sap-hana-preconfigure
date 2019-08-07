@@ -51,4 +51,12 @@ sap_hana_preconfigure_reboot_timeout: 1800
 # sap_hana_id_group_sapsys: not yet used
 # sap_hana_id_user_sapadm: not yet used
 
+##  HANA kernel parameters
+# [SAP Note 238241](https://launchpad.support.sap.com/#/notes/238241) defines kernel parameters that all Linux systems need to set. 
+# The parameters recomendation default is different dependant on the OS release. Hence the os dependant default setting is defined in 
+# ./vars/{{ansible_os_reelease}}.yml If you need to add or change parameters for your system copy these parameters from the vars file in
+# to your system ivariable definitions and change them in the sap_hana_preconnfigure_kernel_parameters variable
+
+sap_hana_preconfigure_kernel_parameters: "{{ sap_hana_preconfigure_kernel_parameters_default }}"
+
 ...
