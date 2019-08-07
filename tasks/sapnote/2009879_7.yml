@@ -7,52 +7,62 @@
 #
 # Create the compatiility links for HANA 
 - name: create compatibility links for RHEL 7.2
-  file: src=/usr/lib64/{{ item.src }} dest=/usr/lib64/{{ item.dest }} state=link
+  file: src=/usr/lib64/{{ line_item.src }} dest=/usr/lib64/{{ line_item.dest }} state=link
   with_items:
     - { src: 'libssl.so.1.0.1e', dest: 'libssl.so.1.0.1' }
     - { src: 'libcrypto.so.1.0.1e', dest: 'libcrypto.so.1.0.1' }
   when: 
      ( ansible_distribution_version  == '7.2' )
+  loop_control:
+    loop_var: line_item
 
 - name: create compatibility links for RHEL 7.3+
-  file: src=/usr/lib64/{{ item.src }} dest=/usr/lib64/{{ item.dest }} state=link
+  file: src=/usr/lib64/{{ line_item.src }} dest=/usr/lib64/{{ line_item.dest }} state=link
   with_items:
     - { src: 'libssl.so.10', dest: 'libssl.so.1.0.1' }
     - { src: 'libcrypto.so.10', dest: 'libcrypto.so.1.0.1' }
   when: 
      ( ansible_distribution_version  != '7.2' )
+  loop_control:
+    loop_var: line_item
 
 - name: increase file handles to 32800 for sapsys group
   pam_limits: 
     dest: /etc/security/limits.d/99-sapsys.conf
     domain: "@sapsys" 
     limit_item: nofile 
-    limit_type: "{{ item }}" 
+    limit_type: "{{ line_item }}" 
     value: 32800
   with_items:
     - soft
     - hard
+  loop_control:
+    loop_var: line_item
 
 - name: set number of process to unlimited for sapsys group
   pam_limits: 
     dest: /etc/security/limits.d/99-sapsys.conf  
     domain: "@sapsys" 
     limit_item: nproc 
-    limit_type: "{{ item }}"
+    limit_type: "{{ line_item }}"
     value: unlimited
   with_items:
     - soft
     - hard
+  loop_control:
+    loop_var: line_item
 
 - name: disable core dumps
   pam_limits: 
     domain: "*" 
     limit_item: core 
-    limit_type: "{{ item }}" 
+    limit_type: "{{ line_item }}" 
     value: 0
   with_items:
     - soft
     - hard
+  loop_control:
+    loop_var: line_item
 
 ### Firewall Calculation for SID=xx
 ##################################################################
@@ -85,5 +95,4 @@
 # <port port="39907" protocol="tcp"/>
 # <destination ipv4="192.168.0.33"/>
 # </service>
-
-...
+#

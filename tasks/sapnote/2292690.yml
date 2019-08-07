@@ -67,8 +67,8 @@
     backup: yes
     backrefs: yes
     state: present
-    regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT=(?!.* {{ item }}).*). *$'
-    line: "\\1 {{ item }}\""
+    regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT=(?!.* {{ line_item }}).*). *$'
+    line: "\\1 {{ line_item }}\""
   with_items:
      - "transparent_hugepage=never"
   notify: regenerate grub2 conf
@@ -76,6 +76,8 @@
         ansible_os_family == 'RedHat' and
         ansible_distribution_major_version == '7'
   tags: grubconfig
+  loop_control:
+    loop_var: line_item
 
 # configured by tuned package
 # see sap note 
@@ -96,8 +98,8 @@
     backup: yes
     backrefs: yes
     state: present
-    regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT=(?!.* {{ item }}).*). *$'
-    line: "\\1 {{ item }}\""
+    regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT=(?!.* {{ line_item }}).*). *$'
+    line: "\\1 {{ line_item }}\""
   with_items:
      - "processor.max_cstate=1"
      - "intel_idle.max_cstate=1"
@@ -106,6 +108,8 @@
         ansible_os_family == 'RedHat' and 
         ansible_distribution_major_version == '7'
   tags: grubconfig
+  loop_control:
+    loop_var: line_item
 
 
 # CPU Frequency/Voltage scaling (applies to Intel-based systems only)
