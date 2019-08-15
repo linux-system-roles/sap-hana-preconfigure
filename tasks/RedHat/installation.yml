@@ -27,6 +27,7 @@
   package: 
     state: present 
     name: "{{ sap_hana_preconfigure_packagegroups }}"
+    update_only: true
   check_mode: "{{ sap_hana_preconfigure_installation_check_only }}"
 
 # temporary
