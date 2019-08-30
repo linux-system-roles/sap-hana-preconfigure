@@ -12,6 +12,6 @@
       reload: yes
   with_items: "{{ sap_hana_preconfigure_kernel_parameters }}"
   loop_control:
-    loop_var: line_item
+      loop_var: line_item
 
 # See defaults file for details

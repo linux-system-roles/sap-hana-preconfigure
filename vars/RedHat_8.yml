@@ -73,7 +73,7 @@ sap_hana_preconfigure_kernel_parameters_default:
     - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
     - { name: net.ipv4.tcp_syn_retries, value: 8 }
      # Not sure about these .... they were in the old script and not set in tuned
-    - { name: kernel.shmmni, value: 65536 }
+#    - { name: kernel.shmmni, value: 65536 } - Invalid argument, the value not supported
     - { name: kernel.msgmni, value: 32768 }
     - { name: kernel.sysrq, value: 1 }
 

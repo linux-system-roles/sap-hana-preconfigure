@@ -1,5 +1,5 @@
 galaxy_info:
-  author: Markus Koch, Thomas Bludau, Bernd Finger
+  author: Markus Koch, Thomas Bludau, Bernd Finger <bfinger@redhat.com>, Than Ngo <than@redhat.com>
   description: Configures a RHEL OS to be ready for SAP HANA installation
   license: GNU General Public License v3.0
   min_ansible_version: 2.5
