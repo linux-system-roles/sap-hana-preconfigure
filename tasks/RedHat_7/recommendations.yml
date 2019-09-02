@@ -1,8 +1,8 @@
 ---
 
-## Most of this is described in SAP Note 2009879
-
-## TODO: Next task should be moved to sap-deploy, or sap-hostagent install !
+## This creates the SAP Users in case you define them in your playbook
+## This has been done for providers who want to create the SAP users before handing 
+## over the image to clients
 - name: ensure sapadm group and sapadm user is created 
   block:
           - name: ensure sapdm user exists      
@@ -20,30 +20,6 @@
     - sap_sapadm_uid is defined
     - sap_sapadm_pw_clear is defined
     
-
-### Firewall Settings can only be done if SAP instance ID is known, 
-### otherwise disable firewall
-### TODO: Set proper firewall rules if SID/instance number is known
-
-- name: Ensure firewall is disabled when instance ID unknown
-  service: name=firewalld state=stopped enabled=no
-  ignore_errors: True
-
-### TODO: instead of disabling kdump, linux system-role-kdump should be used / included here
-#         to configure kdump in proper way
-#         This is currently in research
-- name: disable kdump
-  service: name=kdump state=stopped enabled=no
-  ignore_errors: True
-
-# Disable abrt service
-- name: disable abrt
-  service: name=abrtd state=stopped enabled=no
-  ignore_errors: True
-- name: disable abrt-ccpp
-  service: name=abrt-ccpp state=stopped enabled=no
-  ignore_errors: True
-
 ### Disable tempfile handling, otherwise things are gone after reboot
 - name: disable temp file handling for SAP applications
   copy: src=etc/tmpfiles.d/sap.conf dest=/etc/tmpfiles.d/sap.conf

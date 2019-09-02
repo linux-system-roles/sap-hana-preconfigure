@@ -139,7 +139,8 @@
 - name: make sure Kernel samepage merging is off in the running system
   command: echo 0 > /sys/kernel/mm/ksm/run
 
-# SELinux
+# SELinux 
+# duplicate from SAP Note 2002167
 - name: disable selinux
   selinux: state=disabled
 
