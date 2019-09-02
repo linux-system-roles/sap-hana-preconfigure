@@ -4,48 +4,27 @@
 # https://launchpad.support.sap.com/#/notes/2009879
 # 
 # This SAP Note Contains the general installation guides for all RHEL systems in PDF format
-# Hence we do the stuff that is generic for all RHEL releases here and include the release specific parts
+# We include the release specific stuff here
 #
-# TODO: EUS CHANNELS ARE OUTDATED, Need to check for E4S channels. (suggest replace "grep EUS" by "egrep -i "[e4s|eus]" )
 
-#- name: Check EUS Channel
-#  command: "yum repolist | grep EUS" 
-#  register: eus
-#
-#- debug:
-#    msg: "System {{ ansible_distribution }} has uuid {{ ansible_distribution_major_version }} and {{ ansible_distribution_version }}"
-#  when: eus.stderr == "1"
-#- name: "Check if EUS Channels are enabled"
-#  warning:
-#    msg: "EUS Channels can not be found. They are strongly advised! See https://access.redhat.com/support/policy/updates/errata and SAP Note: 2009879"
-#  when: euschannel is not defined
-#
+- name: Check for EUS or E4S repository
+  shell: |
+    yum repolist | awk '
+       BEGIN {a=0} 
+       /rhel-{{ ansible_distribution_major_version }}-server-e[4u]s-rpms/ {a++} 
+       /rhel-sap-hana-for-rhel-{{ ansible_distribution_major_version }}-server-e[4u]s-rpms/ {a++} 
+       END {print a}'
+  register: sap_hana_preconfigure_register_eus
+  changed_when: false
+
+- name: Output warning
+    msg: "We could not recognize the correct RHEL repositories for SAP HANA. Please make sure you the proper EUS or E4S repositories available"
+  when: 
+    - sap_hana_preconfigure_register_eus.stdout != "2" 
+  ignore_errors: true
+
 ### Package installation is done in installation.yml
-#
-### Hostname is done & checked in sap-base-settings - so we just check that it is set correctly
 
-### NTP Setup should be done with rhel-system-role.timeserver
-###
-### TODO: Any way to check that ntp/chrony is working correctly?
-
-### Storage configuration needs to be done properly
-### TODO: Can we check at least proper space?
-
-### Activate HANA specific profile
-### This is described in SAP NOTE#2292690 
-
-### Disable SE Linux
-### This is described in SAP NOTE#2292690 
-
-### disable Numa
-### This is described in SAP NOTE#2292690 
-
-### Add Symbolic Links -- done in RHEL 7 specific 
-### Disable THP at boot time
-### Increase the Maximum Number of Processes a User is Allowed to Run
 - include_tasks: 2009879_{{ ansible_distribution_major_version }}.yml
-
-### configure c-states
-### This is described in SAP NOTE#2292690 
 
 ...
