@@ -14,6 +14,7 @@
 #    verbosity: "{{ debuglevel }}"
 #
 # Minimum supported Supported Kernel versions and patches to use with certified Hardware for SAP HANA on RHEL 7
+#  TODO: use jinja function version (version_compare) -> ansible user guide
 
 - name: ensure minimal required packages are installed
   package:

@@ -18,6 +18,7 @@
   changed_when: false
 
 - name: Output warning
+  debug:
     msg: "We could not recognize the correct RHEL repositories for SAP HANA. Please make sure you the proper EUS or E4S repositories available"
   when: 
     - sap_hana_preconfigure_register_eus.stdout != "2" 
