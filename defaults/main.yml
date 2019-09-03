@@ -59,4 +59,13 @@ sap_hana_preconfigure_reboot_timeout: 1800
 
 sap_hana_preconfigure_kernel_parameters: "{{ sap_hana_preconfigure_kernel_parameters_default }}"
 
+#### The following parameters are for PPC LE only
+## add a list of interfaces where MTU size will be set to 9000
+## defaults to empty
+#sap_hana_preconfigure_ppcle_mtu9000_if: "{{ ansible_interfaces| difference(['lo']) }}" # all interfaces
+sap_hana_preconfigure_ppcle_mtu9000_if: ''
+## list where tso flag should be set 
+## defaults to all interfaces
+sap_hana_preconfigure_ppcle_tso_if: "{{ ansible_interfaces| difference(['lo']) }}"
+
 ...

@@ -21,7 +21,8 @@
   register: sapnote_2055470_mtusize
   changed_when: sapnote_2055470_mtusize.rc == 0
   failed_when: sapnote_2055470_mtusize.rc > 0 and sapnote_2055470_mtusize.rc != 90
-  with_items: "{{ ansible_interfaces| difference(['lo'])  }}"
+  with_items: "{{ sap_hana_preconfigure_ppcle_mtu9000_if }}"
+  when: not( (sap_hana_preconfigure_ppcle_mtu9000_if) or ( sap_hana_preconfigure_ppcle_mtu9000_if is none) or (sap_hana_preconfigure_ppcle_mtu9000_if | trim == '') )
 
 ## This only works if interfacename=device name, otherwise it fails 
 - name: add largesend options to interface
@@ -29,7 +30,9 @@
         regexp: '^ETHTOOL_OPTIONS_tso='
         line: ETHTOOL_OPTIONS_tso='-K iface tso on'
         path: /etc/sysconfig/network-scripts/ifcfg-{{ item }}
-  with_items: "{{ ansible_interfaces| difference(['lo'])  }}"
+  with_items: "{{ sap_hana_preconfigure_ppcle_tso_if }}"
+  when: not( (sap_hana_preconfigure_ppcle_tso_if) or ( sap_hana_preconfigure_ppcle_tso_if is none) or (sap_hana_preconfigure_ppcle_tso_if | trim == '') )
+  
 
 - name: add largesend parameter
   sysctl:
