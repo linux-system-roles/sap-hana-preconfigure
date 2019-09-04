@@ -97,7 +97,7 @@ sap_hana_preconfigure_packages:
     # SAP NOTE 2292690
     - tuned-profiles-sap-hana
     - compat-sap-c++-5
-    # SAP NOTE 22455582
+    # SAP NOTE 2455582
     - compat-sap-c++-6
     # Required for HANA 2.0 SPS 4
     - compat-sap-c++-7
