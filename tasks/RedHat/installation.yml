@@ -14,19 +14,21 @@
 #    verbosity: "{{ debuglevel }}"
 #
 # Minimum supported Supported Kernel versions and patches to use with certified Hardware for SAP HANA on RHEL 7
+#  TODO: use jinja function version (version_compare) -> ansible user guide
 
 - name: ensure minimal required packages are installed
   package:
     state: present
     name: "{{ sap_hana_preconfigure_min_pkgs }}"
   when: 
-    - sap_hana_preconfigure_min_package_check 
+    - sap_hana_preconfigure_min_package_check|bool
     - not( (sap_hana_preconfigure_min_pkgs is undefined) or (sap_hana_preconfigure_min_pkgs is none) or (sap_hana_preconfigure_min_pkgs | trim == '') ) 
 
 - name: ensure required packagegroups are installed
   package: 
     state: present 
     name: "{{ sap_hana_preconfigure_packagegroups }}"
+    update_only: true
   check_mode: "{{ sap_hana_preconfigure_installation_check_only }}"
 
 # temporary
@@ -41,7 +43,7 @@
   package:
     state: latest
     name: "*"
-  when: sap_hana_preconfigure_update
+  when: sap_hana_preconfigure_update|bool
   check_mode: "{{ sap_hana_preconfigure_installation_check_only }}"
   register: sap_hana_preconfigure_register_packageinstall
 

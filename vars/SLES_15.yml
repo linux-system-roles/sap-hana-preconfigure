@@ -1,0 +1,32 @@
+---
+
+# required SAP Notes for SLES 15
+
+sap_hana_preconfigure_sapnotes:
+#        - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
+        - "1944799"
+        - "2578899"
+        - "1275776"
+        - "2684254"
+
+# In SAP Note 2235581, certain minimal required packages for the different RHEL 8 minor releases might be listed
+# The following will assign them properly to sap_hana_preconfigure_min_packages. If you do not define a variable sap_hana_preconfigure_min_packages_VERSION, sap_hana_preconfigure_min_packages keeps undefined as well
+
+sap_hana_preconfigure_min_pkgs: 
+
+
+sap_hana_preconfigure_packages:
+    # SAP NOTE 2772999
+    # SAP NOTE 2292690
+    # SAP NOTE 22455582
+#
+#   libtool ltdl: https://answers.sap.com/questions/476177/hana-db-installation-ended-with-exit-code-127.html
+#   it is required since HANA 2 SPS 03, and as such installed in general
+
+#
+# Intel needs additional packages over x86_64
+#
+
+sap_hana_preconfigure_grub_file: /tmp/grub
+
+...

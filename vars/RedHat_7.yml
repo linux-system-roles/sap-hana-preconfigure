@@ -1,9 +1,7 @@
 ---
 
-# required SAP Notes for RHEL 7
-
+# required SAP Notes for RHEL 7:
 sap_hana_preconfigure_sapnotes:
-        - "2235581"
         - "2009879"
         - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
         - "2292690"
@@ -53,14 +51,18 @@ sap_hana_preconfigure_min_packages_7.4:
   - kernel-3.10.0-693.11.6.el7
   - tuned-profiles-sap-hana-2.8.0-5.el7_4.2
 
-## TODO: Double check with SAP NOTE 2235581
+## New requirement for TCPSACK fix SAPNOTE 2812427
 sap_hana_preconfigure_min_packages_7.5:
+  - kernel-3.10.0-862.41.1.el7
 
+## New requirement for TCPSACK fix SAPNOTE 2812427
 sap_hana_preconfigure_min_packages_7.6:
-  - kernel-3.10.0-957.1.3.el7
+  # kernel-3.10.0-957.1.3.el7
+  - kernel-3.10.0-957.27.4.el7
+
+sap_hana_preconfigure_min_packages_7.7:
 
 sap_hana_preconfigure_min_pkgs: "{{ lookup('vars','sap_hana_preconfigure_min_packages_' + ansible_distribution_version|string ) }}"
-
 
 sap_hana_preconfigure_packages:
     # SAP NOTE 2009879
@@ -100,13 +102,10 @@ sap_hana_preconfigure_packages:
     # Required for HANA 2.0 SPS 4
     - compat-sap-c++-7
     - libatomic
-#
+
 #   libtool ltdl: https://answers.sap.com/questions/476177/hana-db-installation-ended-with-exit-code-127.html
 #   it is required since HANA 2 SPS 03, and as such installed in general
 
-#
-# Intel needs additional packages over x86_64
-#
 sap_hana_preconfigure_packagegroups_x86_64:
     - "@base"
     - "@large-systems"
@@ -119,4 +118,30 @@ sap_hana_preconfigure_packagegroups_ppc64le:
     - "@compat-libraries"
 
 sap_hana_preconfigure_packagegroups: "{{ lookup('vars','sap_hana_preconfigure_packagegroups_' + ansible_architecture|string ) }}"
+
+# Network related kernel parameters as set in SAP Note 2382421:
+sap_hana_preconfigure_kernel_parameters_default:
+    # value needs to be higher than HANA parameter tcp_backlog 
+    - { name: net.core.somaxconn, value: 4096 }
+    - { name: net.ipv4.tcp_max_syn_backlog, value: 8192}
+    # next 2 are automatically set by SAP Host Agent
+    # { name: net.ipv4.ip_local_port_range, value: "40000 61000" }
+    # { name: net.ipv4.ip_local_reserved_ports, value: -> SAP NOTE 2477204 }
+    # The following 2 parameters do not work when communicating with hosts behind NAT firewall:
+    # { name: net.ipv4.tcp_tw_reuse, value: 1 }
+    # { name: net.ipv4.tcp_tw_recycle, value: 1 }
+    # Next paramter might not work on Azure (see SAP Note 2382421)
+    - { name: net.ipv4.tcp_timestamps, value: 1 }
+    - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
+    # Tune the next 4 for low latency system replication:
+    # { net.ipv4.tcp_wmem, value }
+    # { net.ipv4.tcp_rmem, value }
+    # { net.core.wmem_max, value }
+    # { net.core.rmem_max, value }
+    # Should be set, so won't touch, for more details see SAP Note 2382421
+    # { net.ipv4.tcp_window_scaling, 1 }
+    # The following only applies to HANA 1 <= 122.14 and HANA 2 SPS00
+    # so default is no change:
+    # { name: net.ipv4.tcp_syn_retries, value: 8 }
+
 ...

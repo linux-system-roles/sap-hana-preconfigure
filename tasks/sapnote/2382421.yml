@@ -5,12 +5,13 @@
 - name: setting kernel tunables as in SAP NOTE 2382421
   sysctl: 
       sysctl_file: "{{ sap_hana_preconfigure_etc_sysctl_saphana_conf }}"
-      name: "{{ item.name }}"
-      value: "{{ item.value }}" 
+      name: "{{ line_item.name }}"
+      value: "{{ line_item.value }}" 
       state: present
       sysctl_set: yes
       reload: yes
-
   with_items: "{{ sap_hana_preconfigure_kernel_parameters }}"
+  loop_control:
+      loop_var: line_item
 
 # See defaults file for details

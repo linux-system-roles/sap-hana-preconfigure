@@ -3,9 +3,9 @@
 ## Most of this is described in SAP Note 2009879
 
 ## TODO: Next task should be moved to sap-deploy, or sap-hostagent install !
-- name: ensure sapadm group and sapadm user is created 
+- name: ensure sapsys group and sapadm user are created 
   block:
-          - name: ensure sapsys user exists      
+          - name: ensure sapsys group exists      
             group: 
               name: sapsys 
               gid: "{{ sap_sapsys_gid }}"
