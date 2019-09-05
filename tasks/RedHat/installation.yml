@@ -106,14 +106,25 @@
       register: sap_hana_preconfigure_register_minpkglist
       changed_when: false
 
+    - name: Initialize an empty list for our strings
+      set_fact:
+        sap_hana_preconfigure_fact_minpkglist: []
+
+    - name: Create list of packages to be installed
+      set_fact:
+        sap_hana_preconfigure_fact_minpkglist: "{{ sap_hana_preconfigure_fact_minpkglist + [ pkg.stdout ] }}"
+      loop: "{{ sap_hana_preconfigure_register_minpkglist.results }}"
+      loop_control:
+               loop_var: pkg
+    - debug: var=sap_hana_preconfigure_fact_minpkglist
+
     - name: Install minimum packages if required
       yum:
-             name: "{{ item.stdout }}"
+             name: "{{  sap_hana_preconfigure_fact_minpkglist }}"
              state: present
-      with_items: "{{ sap_hana_preconfigure_register_minpkglist.results }}"
+      when: ( sap_hana_preconfigure_fact_minpkglist is none)  or ( sap_hana_preconfigure_fact_minpkglist | trim == '' )
   when: 
     - sap_hana_preconfigure_min_package_check|bool
     - not( (sap_hana_preconfigure_min_pkgs is undefined) or (sap_hana_preconfigure_min_pkgs is none) or (sap_hana_preconfigure_min_pkgs | trim == '') ) 
-
 
 ...
