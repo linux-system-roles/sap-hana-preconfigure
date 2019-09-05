@@ -112,7 +112,7 @@
 
     - name: Create list of packages to be installed
       set_fact:
-        sap_hana_preconfigure_fact_minpkglist: "{{ sap_hana_preconfigure_fact_minpkglist + [ pkg.stdout ] }}"
+        sap_hana_preconfigure_fact_minpkglist: "{{ sap_hana_preconfigure_fact_minpkglist | difference(['']) + [ pkg.stdout ] }}"
       loop: "{{ sap_hana_preconfigure_register_minpkglist.results }}"
       loop_control:
                loop_var: pkg
