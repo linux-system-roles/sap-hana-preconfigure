@@ -122,7 +122,8 @@
       yum:
              name: "{{  sap_hana_preconfigure_fact_minpkglist }}"
              state: present
-      when: ( sap_hana_preconfigure_fact_minpkglist is none)  or ( sap_hana_preconfigure_fact_minpkglist | trim == '' )
+      when: not ( sap_hana_preconfigure_fact_minpkglist == [ "" ] )
+
   when: 
     - sap_hana_preconfigure_min_package_check|bool
     - not( (sap_hana_preconfigure_min_pkgs is undefined) or (sap_hana_preconfigure_min_pkgs is none) or (sap_hana_preconfigure_min_pkgs | trim == '') ) 
