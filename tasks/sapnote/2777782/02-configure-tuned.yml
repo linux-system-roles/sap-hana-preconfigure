@@ -1,0 +1,23 @@
+---
+# tasks file for sap-preconfigure: configuration
+
+# 02-configure-tuned.yml
+- debug:
+    msg: "SAP note 2777782 Step 1: Disable SELinux"
+- name: enable tuned
+  service: name=tuned state=started enabled=yes
+
+- name: get current tuned profile
+  command: cat /etc/tuned/active_profile
+  register: current_profile
+  changed_when: false
+
+- name: apply tuned profile
+  shell: /usr/sbin/tuned-adm profile sap-hana
+  when: (ansible_virtualization_type|lower != 'vmware') and ( current_profile.stdout != 'sap-hana' )
+
+- name: apply tuned profile on VMware systems
+  shell: /usr/sbin/tuned-adm profile sap-hana-vmware
+  when: ansible_virtualization_type|lower == 'vmware' and ( current_profile.stdout != 'sap-hana-vmware' )
+
+...

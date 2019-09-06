@@ -1,0 +1,9 @@
+---
+# tasks file for sap-preconfigure: configuration
+
+# 07-configure-cpu-governor.yml
+- debug:
+    msg: "SAP note 2777782 Step 7: Configure CPU Governor for performance: performed by tuned-profile sap-hana"
+# configured by tuned profile "sap-hana"
+
+...

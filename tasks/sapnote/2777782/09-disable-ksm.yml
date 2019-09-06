@@ -1,0 +1,31 @@
+---
+# tasks file for sap-preconfigure: configuration
+
+# 09-disable-ksm.yml
+- debug:
+    msg: "SAP note 2777782 Step 9: Disable Kernel samepage merging (KSM)"
+- name: "Ensure file /etc/init.d/boot.local exists"
+  copy:
+    content: ""
+    dest: /etc/init.d/boot.local
+    force: no
+    group: root
+    owner: root
+    mode: 0755
+
+- name: "Disable KSM at boot time"
+  lineinfile:
+    dest: /etc/init.d/boot.local
+    line: echo 0 > /sys/kernel/mm/ksm/run
+
+- name: "Disable KSM on the running system"
+  command: echo 0 > /sys/kernel/mm/ksm/run
+
+- name: "Get status of KSM"
+  command: bash -lc "cat /sys/kernel/mm/ksm/run"
+  register: command_result
+  ignore_errors: True
+- debug:
+    var: command_result.stdout_lines, command_result.stderr_lines
+
+...
