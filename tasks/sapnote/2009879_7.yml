@@ -18,7 +18,7 @@
 ### 3.7 - Disable SE Linux -> SAP Note 2292690, SAP NOTE 2002167
 ### 3.8 - Disable Numa Balancing -> SAP Note 2292690 
 
-### 3.9 - Create the compatiility links for HANA 
+### 3.9 - Create the compatibility links for HANA 
 - name: 3.9 create compatibility links for RHEL 7.2
   file: src=/usr/lib64/{{ line_item.src }} dest=/usr/lib64/{{ line_item.dest }} state=link
   with_items:
@@ -115,11 +115,11 @@
 # Schema                     | Description
 # ---------------------------+------------------------------------
 # 3xx09                      | Administration port for SAP HANA
-# 1128 – 1129, 5xx13 - 5xx14 | SAP HANA Studio
-# 43xx,  80xx                | Company Network
+# 1128 - 1129, 5xx13 - 5xx14 | SAP HANA Studio
+# 43xx, 80xx                 | Company Network
 # 3xx15, 3xx17               | SAP HANA Studio + Replication
 #
-# NYI: Create this  service in case SID is defined
+# NYI: Create this service in case SID is defined
 #
 # example file for SID=99, but what to replace for destination ??
 # Maybe this could be moved to hana-deploy !

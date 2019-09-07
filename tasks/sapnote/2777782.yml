@@ -11,7 +11,7 @@
   tags: 
   - 'role::sap-hana-preconfigure'
   - 'role::sap-hana-preconfigure:config'
-  - 'role::sap-hana-preconfigure:config:2777782:02-configure-tuned.yml'
+  - 'role::sap-hana-preconfigure:config:2777782:02-configure-tuned'
 
 - import_tasks: 2777782/03-disable-abrt-coredumps-kdump.yml
   tags: 
