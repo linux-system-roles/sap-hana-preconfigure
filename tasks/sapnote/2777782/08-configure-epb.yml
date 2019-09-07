@@ -1,0 +1,9 @@
+---
+# tasks file for sap-preconfigure: configuration
+
+# 08-configure-epb.yml
+- debug:
+    msg: "SAP note 2777782 Step 8: Configure Energy Performance Bias (EBP): performed by tuned profile sap-hana"
+# configured by tuned profile "sap-hana"
+
+...

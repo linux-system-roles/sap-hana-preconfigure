@@ -1,0 +1,31 @@
+---
+# tasks file for sap-preconfigure: configuration
+
+# 02-turn-off-auto-numa-balancing.yml
+- debug:
+    msg: "SAP note 2777782 Step 4: Turn off auto-numa balancing"
+- name: "Check if numad is installed"
+  package:
+    name: numad
+    state: present
+  check_mode: true
+  register: numad_check
+  ignore_errors: yes
+- debug:
+    var: numad_check
+
+- name: "Disable numad if installed"
+  systemd:
+    name: numad
+    state: stopped
+    enabled: no
+  when: not numad_check.changed
+
+- name: "Get status of numad"
+  command: bash -lc "systemctl status numad"
+  register: command_result
+  ignore_errors: True
+- debug:
+    var: command_result.stdout_lines, command_result.stderr_lines
+
+...

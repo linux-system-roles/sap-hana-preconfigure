@@ -6,14 +6,12 @@ sap_hana_preconfigure_sapnotes:
         - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
         - "2777782"
         - "2382421"
-#        - "2382421" # not yet implamented for RHEL 8
 #        - "2235581" # no specific requirements for RHEL 8 yet
 
 # In SAP Note 2235581, certain minimal required packages for the different RHEL 8 minor releases might be listed
 # The following will assign them properly to sap_hana_preconfigure_min_packages. If you do not define a variable sap_hana_preconfigure_min_packages_VERSION, sap_hana_preconfigure_min_packages keeps undefined as well
 
-sap_hana_preconfigure_min_pkgs: 
-
+sap_hana_preconfigure_min_packages_8:
 
 sap_hana_preconfigure_packages:
     # SAP NOTE 2772999
@@ -57,24 +55,29 @@ sap_hana_preconfigure_packages:
 sap_hana_preconfigure_packagegroups: 
     - "@base"
 
-sap_hana_preconfigure_grub_file: /tmp/grub
-
 # Network related kernel parameters as set in SAP Note 2382421:
-# The following parameter does not work when communicating with hosts behind NAT firewall:
-#    - { name: net.ipv4.tcp_tw_reuse, value: 1 }
-# Tune these for low latency system replication:
-#    net.ipv4.tcp_wmem and net.ipv4.tcp_rmem
 sap_hana_preconfigure_kernel_parameters_default:
+    # value needs to be higher than HANA parameter tcp_backlog
     - { name: net.core.somaxconn, value: 4096 }
     - { name: net.ipv4.tcp_max_syn_backlog, value: 8192}
-    - { name: net.ipv4.ip_local_port_range, value: "40000 61000" }
+    # next 2 are automatically set by SAP Host Agent
+    # { name: net.ipv4.ip_local_port_range, value: "40000 61000" }
+    # { name: net.ipv4.ip_local_reserved_ports, value: -> SAP NOTE 2477204 }
+    # The following 2 parameters do not work when communicating with hosts behind NAT firewall:
+    # { name: net.ipv4.tcp_tw_reuse, value: 1 }
+    # { name: net.ipv4.tcp_tw_recycle, value: 1 }
+    # Next paramter might not work on Azure (see SAP Note 2382421)
     - { name: net.ipv4.tcp_timestamps, value: 1 }
-#    - { name: net.ipv4.tcp_tw_recycle, value: 1 } - no longer available in RHEL 8
     - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
-    - { name: net.ipv4.tcp_syn_retries, value: 8 }
-     # Not sure about these .... they were in the old script and not set in tuned
-#    - { name: kernel.shmmni, value: 65536 } - Invalid argument, the value not supported
-    - { name: kernel.msgmni, value: 32768 }
-    - { name: kernel.sysrq, value: 1 }
+    # Tune the next 4 for low latency system replication:
+    # { net.ipv4.tcp_wmem, value }
+    # { net.ipv4.tcp_rmem, value }
+    # { net.core.wmem_max, value }
+    # { net.core.rmem_max, value }
+    # Should be set, so won't touch, for more details see SAP Note 2382421
+    # { net.ipv4.tcp_window_scaling, 1 }
+    # The following only applies to HANA 1 <= 122.14 and HANA 2 SPS00
+    # so default is to not change:
+    # { name: net.ipv4.tcp_syn_retries, value: 8 }
 
 ...

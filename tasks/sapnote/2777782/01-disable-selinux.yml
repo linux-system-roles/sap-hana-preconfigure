@@ -1,0 +1,18 @@
+---
+# tasks file for sap-preconfigure: configuration
+
+# 01-disable-selinux.yml
+- debug:
+    msg: "SAP note 2777782 Step 1: Disable SELinux"
+- name: "Disable SELinux"
+  selinux:
+    state: disabled
+    policy: targeted
+
+- name: "Check for SELinux"
+  command: getenforce
+  register: getenforce_result
+- debug:
+    var: getenforce_result.stdout_lines
+
+...
