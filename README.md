@@ -58,6 +58,39 @@ If you want to use this system in production make sure time service is configure
 Role Variables
 --------------
 
+### SAP notes to apply
+The following variable contains a list of all SAP notes which are used for this role:
+```yaml
+sap_hana_preconfigure_sapnotes
+```
+
+### required package groups
+The following variables define the required package groups. Note that variable sap_hana_preconfigure_packagegroups is automatically filled from either sap_hana_preconfigure_packagegroups_x86_64 or sap_hana_preconfigure_packagegroups_ppc64le:
+```yaml
+sap_hana_preconfigure_packagegroups_x86_64
+sap_hana_preconfigure_packagegroups_ppc64le
+sap_hana_preconfigure_packagegroups
+```
+
+### required packages
+The following variables define the required packages:
+```yaml
+sap_hana_preconfigure_packages
+sap_hana_preconfigure_required_ppc64le
+```
+
+### Minimum required packages for certain RHEL releases:
+The following variables contains a list of packages and their minimum versions according to SAP note 2235581, if any:
+```yaml
+sap_hana_preconfigure_min_packages_8
+sap_hana_preconfigure_min_packages_7.7
+sap_hana_preconfigure_min_packages_7.6
+sap_hana_preconfigure_min_packages_7.5
+sap_hana_preconfigure_min_packages_7.4
+sap_hana_preconfigure_min_packages_7.3
+sap_hana_preconfigure_min_packages_7.2
+```
+
 ### HANA Major and minor version
 These variables are used in all sap-hana roles so that they are only prefixed with `sap-hana`. If you use `sap-hana-mediacheck` role these variables are read in automatically. The variable is used in the checks for [SAP Note 2235581](https://launchpad.support.sap.com/#/notes/2235581).
 

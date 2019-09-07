@@ -55,9 +55,6 @@ sap_hana_preconfigure_packages:
 sap_hana_preconfigure_packagegroups: 
     - "@base"
 
-# no longer needed after putting 2777782 into separate yml files:
-# sap_hana_preconfigure_grub_file: /tmp/grub
-
 # Network related kernel parameters as set in SAP Note 2382421:
 sap_hana_preconfigure_kernel_parameters_default:
     # value needs to be higher than HANA parameter tcp_backlog
