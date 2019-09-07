@@ -8,46 +8,55 @@
   - 'role::sap-hana-preconfigure:config:2777782:01-disable-selinux'
 
 - import_tasks: 2777782/02-configure-tuned.yml
+  tags: 
   - 'role::sap-hana-preconfigure'
   - 'role::sap-hana-preconfigure:config'
   - 'role::sap-hana-preconfigure:config:2777782:02-configure-tuned.yml'
 
 - import_tasks: 2777782/03-disable-abrt-coredumps-kdump.yml
+  tags: 
   - 'role::sap-hana-preconfigure'
   - 'role::sap-hana-preconfigure:config'
   - 'role::sap-hana-preconfigure:config:2777782:03-disable-abrt-coredumps-kdump'
 
 - import_tasks: 2777782/04-turn-off-auto-numa-balancing.yml
+  tags: 
   - 'role::sap-hana-preconfigure'
   - 'role::sap-hana-preconfigure:config'
   - 'role::sap-hana-preconfigure:config:2777782:04-turn-off-auto-numa-balancing'
 
 - import_tasks: 2777782/05-disable-thp.yml
+  tags: 
   - 'role::sap-hana-preconfigure'
   - 'role::sap-hana-preconfigure:config'
   - 'role::sap-hana-preconfigure:config:2777782:05-disable-thp'
 
 - import_tasks: 2777782/06-configure-c-states-for-lower-latency.yml
+  tags: 
   - 'role::sap-hana-preconfigure'
   - 'role::sap-hana-preconfigure:config'
   - 'role::sap-hana-preconfigure:config:2777782:06-configure-c-states-for-lower-latency'
 
 - import_tasks: 2777782/07-configure-cpu-governor.yml
+  tags: 
   - 'role::sap-hana-preconfigure'
   - 'role::sap-hana-preconfigure:config'
   - 'role::sap-hana-preconfigure:config:2777782:07-configure-cpu-governor'
 
 - import_tasks: 2777782/08-configure-epb.yml
+  tags: 
   - 'role::sap-hana-preconfigure'
   - 'role::sap-hana-preconfigure:config'
   - 'role::sap-hana-preconfigure:config:2777782:08-configure-epb'
 
 - import_tasks: 2777782/09-disable-ksm.yml
+  tags: 
   - 'role::sap-hana-preconfigure'
   - 'role::sap-hana-preconfigure:config'
   - 'role::sap-hana-preconfigure:config:2777782:09-disable-ksm'
 
 - import_tasks: 2777782/10-increase-pidmax.yml
+  tags: 
   - 'role::sap-hana-preconfigure'
   - 'role::sap-hana-preconfigure:config'
   - 'role::sap-hana-preconfigure:config:2777782:10-increase-pidmax'
