@@ -180,7 +180,7 @@
 # Flexible Service Processor Advanced System Management (FSP ASM) page or the IBM Hardware Management Console (HMC) 
 # and not from within a PowerVM guest partition. 
 # The package pseries-energy must not be installed.  (<== TODO)
-# Kindly refer to IBM’s EnergyScale documentation for this feature at http://www-01.ibm.com/common/ssi/cgi-bin/ssialias?htmlfid=POW03125USEN.
+# Kindly refer to IBM's EnergyScale documentation for this feature at http://www-01.ibm.com/common/ssi/cgi-bin/ssialias?htmlfid=POW03125USEN.
 #
 - name: ensure pseries-energy package is not installed
   yum:
@@ -189,7 +189,5 @@
   when: ansible_architecture == "ppc64le"
 
 #### Network Settings are implemented by SAP Note 2382421
-# These settings are not done by tuned :-(
-# 
 
 ...
