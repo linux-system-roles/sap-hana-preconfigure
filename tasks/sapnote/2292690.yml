@@ -26,11 +26,11 @@
 
 - name: apply tuned profile
   shell: /usr/sbin/tuned-adm profile sap-hana
-  when: (ansible_virtualization_type|lower != 'vmware') and ( current_profile.stdout != 'sap-hana' )
+  when:
+    - current_profile.stdout != 'sap-hana'
 
-- name: apply tuned profile on VMware systems
-  shell: /usr/sbin/tuned-adm profile sap-hana-vmware
-  when: ansible_virtualization_type|lower == 'vmware' and ( current_profile.stdout != 'sap-hana-vmware' )
+# no longer needed, see bug 1672213 - tuned profile sap-hana-vmware retirement
+# - name: apply tuned profile on VMware systems
 
 
 # Turn off auto-numa balancing

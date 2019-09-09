@@ -11,7 +11,6 @@
     - 'role::sap-hana-preconfigure:install'
     - 'role::sap-hana-preconfigure:config'
 
-      # had to be changed
 - include_tasks: '{{ ansible_distribution }}/installation.yml'
   tags:
     - 'role::sap-hana-preconfigure'

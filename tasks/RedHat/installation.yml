@@ -28,6 +28,15 @@
   check_mode: "{{ sap_hana_preconfigure_installation_check_only }}"
   register: sap_hana_preconfigure_register_groupinstall
 
+- name: Get status of installed packages
+  yum:
+    name: "{{ sap_hana_preconfigure_packages }}"
+  register: result
+  ignore_errors: True
+  changed_when: false
+- debug:
+    var: result.results
+
 - name: ensure system is updated to the latest patchlevel
   package:
     state: latest
