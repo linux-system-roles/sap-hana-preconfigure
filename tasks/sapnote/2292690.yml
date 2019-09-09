@@ -17,7 +17,10 @@
 #    name: tuned-profiles-sap-hana
 
 - name: enable tuned
-  service: name=tuned state=started enabled=yes
+  service:
+    name: tuned
+    state: started
+    enabled: yes
 
 - name: get current tuned profile
   command: cat /etc/tuned/active_profile

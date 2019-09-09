@@ -6,9 +6,9 @@
     msg: "SAP note 2777782 Step 2: Configure tuned to use profile sap-hana"
 - name: Enable and start tuned
   service:
-    name=tuned
-    state=started
-    enabled=yes
+    name: tuned
+    state: started
+    enabled: yes
 
 - name: Show active tuned profile
   command: bash -lc "/usr/sbin/tuned-adm active | awk '/:/{print $NF}'"
