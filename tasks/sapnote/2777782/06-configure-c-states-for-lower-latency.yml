@@ -6,23 +6,27 @@
 # but this makes sure it is done already at boottime
 - debug:
     msg: "SAP note 2777782 Step 6: Configure C-States for lower latency (x86_64 platform only)"
-- name: "Configure C-States for lower latency"
-  lineinfile:
-    path: /etc/default/grub
-    backup: yes
-    backrefs: yes
-    state: present
-    regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT=(?!.* {{ line_item }}).*). *$'
-    line: "\\1 {{ line_item }}\""
-  with_items:
-     - "processor.max_cstate=1"
-     - "intel_idle.max_cstate=1"
-  notify: regenerate grub2 conf
-  when: ansible_architecture == "x86_64" and
-        ansible_os_family == 'RedHat' and
-        ansible_distribution_major_version == '8'
-  tags: grubconfig
-  loop_control:
-    loop_var: line_item
+- block:
+    - name: "Configure C-States for lower latency"
+      lineinfile:
+        path: /etc/default/grub
+        backup: yes
+        backrefs: yes
+        state: present
+        regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT=(?!.* {{ line_item }}).*). *$'
+        line: "\\1 {{ line_item }}\""
+      with_items:
+         - "processor.max_cstate=1"
+         - "intel_idle.max_cstate=1"
+      notify: regenerate grub2 conf
+      when: ansible_architecture == "x86_64" and
+            ansible_os_family == 'RedHat' and
+            ansible_distribution_major_version == '8'
+      tags: grubconfig
+      loop_control:
+        loop_var: line_item
+
+  when:
+    - not sap_hana_preconfigure_use_tuned_where_possible
 
 ...

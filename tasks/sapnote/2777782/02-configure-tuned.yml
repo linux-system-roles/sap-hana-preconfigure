@@ -4,31 +4,35 @@
 # 02-configure-tuned.yml
 - debug:
     msg: "SAP note 2777782 Step 2: Configure tuned to use profile sap-hana"
-- name: Enable and start tuned
-  service:
-    name: tuned
-    state: started
-    enabled: yes
+- block:
+    - name: Enable and start tuned
+      service:
+        name: tuned
+        state: started
+        enabled: yes
 
-- name: Show active tuned profile
-  command: bash -lc "/usr/sbin/tuned-adm active | awk '/:/{print $NF}'"
-  register: current_profile
-  changed_when: false
-- debug:
-    var: current_profile.stdout_lines, current_profile.stderr_lines
-
-- name: Switch to tuned profile sap-hana if not currently active
-  block:
-    - name: Switch to tuned profile sap-hana
-      shell: /usr/sbin/tuned-adm profile sap-hana
-    
     - name: Show active tuned profile
-      command: bash -lc "/usr/sbin/tuned-adm active | awk '{print $NF}'"
-      register: new_profile
+      command: bash -lc "/usr/sbin/tuned-adm active | awk '/:/{print $NF}'"
+      register: current_profile
       changed_when: false
     - debug:
-        var: new_profile.stdout_lines, new_profile.stderr_lines
+        var: current_profile.stdout_lines, current_profile.stderr_lines
+
+    - name: Switch to tuned profile sap-hana if not currently active
+      block:
+        - name: Switch to tuned profile sap-hana is not currently active
+          shell: /usr/sbin/tuned-adm profile sap-hana
+        
+        - name: Show active tuned profile
+          command: bash -lc "/usr/sbin/tuned-adm active | awk '{print $NF}'"
+          register: new_profile
+          changed_when: false
+        - debug:
+            var: new_profile.stdout_lines, new_profile.stderr_lines
+      when:
+        - current_profile.stdout != 'sap-hana'
+
   when:
-    - current_profile.stdout != 'sap-hana'
+    - sap_hana_preconfigure_switch_to_tuned_profile_sap_hana
 
 ...

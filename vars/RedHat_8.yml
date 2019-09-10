@@ -11,7 +11,9 @@ sap_hana_preconfigure_sapnotes:
 # In SAP Note 2235581, certain minimal required packages for the different RHEL 8 minor releases might be listed
 # The following will assign them properly to sap_hana_preconfigure_min_packages. If you do not define a variable sap_hana_preconfigure_min_packages_VERSION, sap_hana_preconfigure_min_packages keeps undefined as well
 
-sap_hana_preconfigure_use_tuned_where_possible: True
+sap_hana_preconfigure_switch_to_tuned_profile_sap_hana: True
+
+sap_hana_preconfigure_use_tuned_where_possible: False
 
 sap_hana_preconfigure_min_packages_8:
 
