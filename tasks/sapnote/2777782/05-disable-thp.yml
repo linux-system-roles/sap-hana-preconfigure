@@ -2,7 +2,7 @@
 # tasks file for sap-preconfigure: configuration
 
 # 05-disable-thp.yml
-# The following steps are also done by the tuned-adm profile
+# configured by tuned profile sap-hana, entry "transparent_hugepages=never"
 # but this makes sure it is done already at boottime
 - debug:
     msg: "SAP note 2777782 Step 5: Disable Transparent Hugepages (THP)"

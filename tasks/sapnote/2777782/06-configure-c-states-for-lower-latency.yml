@@ -2,8 +2,10 @@
 # tasks file for sap-preconfigure: configuration
 
 # 06-configure-c-states-for-lower-latency.yml
+# configured by tuned profile sap-hana, entry "force_latency=70"
+# but this makes sure it is done already at boottime
 - debug:
-    msg: "SAP note 2777782 Step 6: Configure C-States for lower latency"
+    msg: "SAP note 2777782 Step 6: Configure C-States for lower latency (x86_64 platform only)"
 - name: "Configure C-States for lower latency"
   lineinfile:
     path: /etc/default/grub

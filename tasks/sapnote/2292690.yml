@@ -35,7 +35,6 @@
 # no longer needed, see bug 1672213 - tuned profile sap-hana-vmware retirement
 # - name: apply tuned profile on VMware systems
 
-
 # Turn off auto-numa balancing
 
 #- name: ensure file /etc/sysctl.d/sap_hana.conf exists
@@ -47,22 +46,25 @@
 #    owner: root
 #    mode: 0555
 #
-# The following is done by tuned-profile
+# configured by tuned profile sap-hana, entry "kernel.numa_balancing = 0"
 # This is just to make sure
 - name: Turn off auto-numa balancing
   sysctl:
-          sysctl_file: /etc/sysctl.d/sap_hana.conf
-          name: kernel.numa_balancing
-          value: 0
-          state: present
-          reload: yes
+    sysctl_file: /etc/sysctl.d/sap_hana.conf
+    name: kernel.numa_balancing
+    value: 0
+    state: present
+    reload: yes
 
 - name: disable numad
-  service: name=numad state=stopped enabled=no
+  service:
+    name: numad
+    state: stopped
+    enabled: no
   ignore_errors: True
 
 # Disable transparent hugepages
-# The following steps are  also done by the tuned-adm profile
+# configured by tuned profile sap-hana, entry "transparent_hugepages=never"
 # but this makes sure it is done already at boottime
 - name: disable transparent hugepages at boot
   lineinfile:
@@ -82,19 +84,9 @@
   loop_control:
     loop_var: line_item
 
-# configured by tuned package
-# see sap note 
-
-#Configure C-States for lower latency in Linux (applies to Intel-based systems only)
-# TODO: This is not generally TRUE, because it should only add the parameter to others in the variable ....
-#- name: disable intel c states in grub config (RHEL 7)
-#  lineinfile: dest=/etc/default/grub line=GRUB_CMDLINE_LINUX_DEFAULT="processor.max_cstate=1 intel_idle.max_cstate=1"
-#  notify: regenerate grub2 conf
-#  when: ansible_architecture == "x86_64" and
-#        ansible_os_family == 'RedHat' and 
-#        ansible_distribution_major_version == '7'
-#
-
+# Configure C-States for lower latency in Linux (x86_64 only)
+# configured by tuned profile sap-hana, entry "force_latency=70"
+# but this makes sure it is done already at boottime
 - name: disable intel c states in grub config (RHEL 7)
   lineinfile:
     path: /etc/default/grub
@@ -114,14 +106,15 @@
   loop_control:
     loop_var: line_item
 
-
-# CPU Frequency/Voltage scaling (applies to Intel-based systems only)
-# configured by tuned package
-# see sap note
+# CPU Frequency/Voltage scaling/Configure CPU Governor for performance (applies to Intel-based systems only)
+# configured by tuned profile sap-hana, entry "governor=performance"
+#   in included tuned profile throughput-performance
+# see SAP note 2292690
 
 # Energy Performance Bias (EPB, applies to Intel-based systems only)
-# configured by tuned package
-# see sap note
+# configured by tuned profile sap-hana, entry "energy_perf_bias=performance"
+#   in included tuned profile throughput-performance
+# see SAP note 2292690
 
 # Kernel samepage merging (KSM)
 
@@ -145,7 +138,8 @@
 # SELinux 
 # duplicate from SAP Note 2002167
 - name: disable selinux
-  selinux: state=disabled
+  selinux:
+    state: disabled
 
 # ADDED to the minimum required packages in Variables
 # Update systemd to avoid HANA crashes due to unintended deletion of IPC segments (semaphores, shared memory, message queues)

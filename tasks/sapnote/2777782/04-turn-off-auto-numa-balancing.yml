@@ -2,6 +2,7 @@
 # tasks file for sap-preconfigure: configuration
 
 # 02-turn-off-auto-numa-balancing.yml
+# configured by tuned profile sap-hana, entry "kernel.numa_balancing = 0"
 - debug:
     msg: "SAP note 2777782 Step 4: Turn off auto-numa balancing"
 - name: "Check if numad is installed"

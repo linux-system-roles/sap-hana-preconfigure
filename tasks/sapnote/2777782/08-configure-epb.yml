@@ -2,8 +2,12 @@
 # tasks file for sap-preconfigure: configuration
 
 # 08-configure-epb.yml
+# configured by tuned profile sap-hana, entry "energy_perf_bias=performance"
+#   in included tuned profile throughput-performance
 - debug:
-    msg: "SAP note 2777782 Step 8: Configure Energy Performance Bias (EBP): performed by tuned profile sap-hana"
-# configured by tuned profile "sap-hana"
+    msg: "SAP note 2777782 Step 8: Configure Energy Performance Bias (EBP, x86_64 platform only): performed by tuned profile sap-hana"
+  when: ansible_architecture == "x86_64" and
+        ansible_os_family == 'RedHat' and
+        ansible_distribution_major_version == '8'
 
 ...
