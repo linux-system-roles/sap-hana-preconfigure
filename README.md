@@ -81,6 +81,7 @@ The following variables define the required package groups. Note that variable s
 ```yaml
 sap_hana_preconfigure_packagegroups_x86_64
 sap_hana_preconfigure_packagegroups_ppc64le
+sap_hana_preconfigure_packagegroups_s390x
 sap_hana_preconfigure_packagegroups
 ```
 
