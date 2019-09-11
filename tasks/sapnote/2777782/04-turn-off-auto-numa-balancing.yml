@@ -1,5 +1,5 @@
 ---
-# tasks file for sap-preconfigure: configuration
+# tasks file for sap-hana-preconfigure: configuration
 
 # 02-turn-off-auto-numa-balancing.yml
 # configured by tuned profile sap-hana, entry "kernel.numa_balancing = 0"

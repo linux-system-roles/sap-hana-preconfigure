@@ -1,5 +1,5 @@
 ---
-# tasks file for sap-preconfigure: configuration
+# tasks file for sap-hana-preconfigure: configuration
 
 # 08-configure-epb.yml
 # configured by tuned profile sap-hana, entry "energy_perf_bias=performance"

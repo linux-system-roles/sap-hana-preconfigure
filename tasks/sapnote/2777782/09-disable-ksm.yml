@@ -1,5 +1,5 @@
 ---
-# tasks file for sap-preconfigure: configuration
+# tasks file for sap-hana-preconfigure: configuration
 
 # 09-disable-ksm.yml
 - debug:

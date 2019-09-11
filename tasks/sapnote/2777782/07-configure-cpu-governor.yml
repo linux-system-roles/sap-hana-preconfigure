@@ -1,5 +1,5 @@
 ---
-# tasks file for sap-preconfigure: configuration
+# tasks file for sap-hana-preconfigure: configuration
 
 # 07-configure-cpu-governor.yml
 # configured by tuned profile sap-hana, entry "governor=performance"
