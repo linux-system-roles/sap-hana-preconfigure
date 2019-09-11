@@ -64,7 +64,7 @@ The following variable contains a list of all SAP notes which are used for this 
 sap_hana_preconfigure_sapnotes
 ```
 
-### required package groups
+### Required package groups
 The following variables define the required package groups. Note that variable sap_hana_preconfigure_packagegroups is automatically filled from either sap_hana_preconfigure_packagegroups_x86_64 or sap_hana_preconfigure_packagegroups_ppc64le:
 ```yaml
 sap_hana_preconfigure_packagegroups_x86_64
@@ -72,7 +72,7 @@ sap_hana_preconfigure_packagegroups_ppc64le
 sap_hana_preconfigure_packagegroups
 ```
 
-### required packages
+### Required packages
 The following variables define the required packages:
 ```yaml
 sap_hana_preconfigure_packages
