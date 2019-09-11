@@ -4,25 +4,25 @@
 # 03-disable-abrt-coredumps-kdump.yml
   - debug:
       msg: "SAP note 2777782 Step 3: Disable ABRT, core dumps, and kdump"
-  - name: "Stop and disable service kdump"
+  - name: Stop and disable service kdump
     systemd:
       name: kdump
       state: stopped
       enabled: no
 
-  - name: "Create file /etc/security/limits.d/99-sap.conf if it does not exist"
+  - name: Create file /etc/security/limits.d/99-sap.conf if it does not exist
     file:
       path: /etc/security/limits.d/99-sap.conf
       state: touch
       mode: 0644
 
-  - name: "Disable core file creation for all users, hard limit"
+  - name: Disable core file creation for all users, hard limit
     lineinfile:
       path: /etc/security/limits.d/99-sap.conf
       line: "hard core 0"
       state: present
 
-  - name: "Disable core file creation for all users, soft limit"
+  - name: Disable core file creation for all users, soft limit
     lineinfile:
       path: /etc/security/limits.d/99-sap.conf
       line: "soft core 0"

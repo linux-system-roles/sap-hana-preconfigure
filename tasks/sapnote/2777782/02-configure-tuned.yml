@@ -29,6 +29,7 @@
           changed_when: false
         - debug:
             var: new_profile.stdout_lines, new_profile.stderr_lines
+
       when:
         - current_profile.stdout != 'sap-hana'
 

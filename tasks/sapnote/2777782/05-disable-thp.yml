@@ -7,7 +7,7 @@
 - debug:
     msg: "SAP note 2777782 Step 5: Disable Transparent Hugepages (THP)"
 - block:
-    - name: "Disable transparent hugepages at boot time"
+    - name: Disable transparent hugepages at boot time
       lineinfile:
         path: /etc/default/grub
         backup: yes
