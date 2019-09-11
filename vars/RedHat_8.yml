@@ -28,7 +28,6 @@ sap_hana_preconfigure_packages:
     - libibverbs
     - libicu
     - libpng12
-    - libssh2
     - lm_sensors
     - nfs-utils
     - numactl
