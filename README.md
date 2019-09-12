@@ -64,15 +64,28 @@ The following variable contains a list of all SAP notes which are used for this 
 sap_hana_preconfigure_sapnotes
 ```
 
-### required package groups
+### Switch to tuned profile sap-hana
+If you want to switch on tuned profile sap-hana, set the following variable to true (this is the default):
+```yaml
+sap_hana_preconfigure_switch_to_tuned_profile_sap_hana
+```
+
+### Use tuned profile sap-hana where possible
+If you want to use the tuned profile sap-hana for configuring kernel parameters where possible and not have the role configure them, set the following variable to true (this is the default):
+```yaml
+sap_hana_preconfigure_use_tuned_where_possible
+```
+
+### Required package groups
 The following variables define the required package groups. Note that variable sap_hana_preconfigure_packagegroups is automatically filled from either sap_hana_preconfigure_packagegroups_x86_64 or sap_hana_preconfigure_packagegroups_ppc64le:
 ```yaml
 sap_hana_preconfigure_packagegroups_x86_64
 sap_hana_preconfigure_packagegroups_ppc64le
+sap_hana_preconfigure_packagegroups_s390x
 sap_hana_preconfigure_packagegroups
 ```
 
-### required packages
+### Required packages
 The following variables define the required packages:
 ```yaml
 sap_hana_preconfigure_packages
