@@ -20,7 +20,6 @@
     update_only: true
   check_mode: "{{ sap_hana_preconfigure_installation_check_only }}"
 
-# temporary
 - name: ensure required packages are installed
   package:
     state: present
