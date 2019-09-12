@@ -19,7 +19,7 @@ sap_hana_preconfigure_no_strict_version_check: "yes"
 
 # SAP HANA requires minimum packages installed to be supported. These min levels are listed in SAP Note 2235581
 # Set to no if you want to ignore these requirements
-sap_hana_preconfigure_min_package_check: True
+sap_hana_preconfigure_min_package_check: true
 
 # The installation part of this script will install missing packages and package groups
 # If the system is disconnected, not properly subscribed or repositories missing group
