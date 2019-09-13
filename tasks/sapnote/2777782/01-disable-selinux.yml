@@ -11,6 +11,7 @@
 
 - name: Check for SELinux
   command: getenforce
+  changed_when: false
   register: getenforce_result
 - debug:
     var: getenforce_result.stdout_lines

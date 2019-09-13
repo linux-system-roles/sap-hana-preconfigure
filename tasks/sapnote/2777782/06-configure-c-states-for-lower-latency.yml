@@ -13,7 +13,7 @@
         backup: yes
         backrefs: yes
         state: present
-        regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT=(?!.* {{ line_item }}).*). *$'
+        regexp: '^(GRUB_CMDLINE_LINUX=(?!.* {{ line_item }}).*). *$'
         line: "\\1 {{ line_item }}\""
       with_items:
          - "processor.max_cstate=1"
