@@ -59,7 +59,9 @@ sap_hana_preconfigure_min_packages_7.5:
 sap_hana_preconfigure_min_packages_7.6:
         - [ 'kernel' , '3.10.0-957.27.4.el7' ]
 
+## New requirement for TCPSACK fix SAPNOTE 2812427
 sap_hana_preconfigure_min_packages_7.7:
+        - [ 'kernel' , '3.10.0-1062.1.1.el7' ]
 
 sap_hana_preconfigure_min_pkgs: "{{ lookup('vars','sap_hana_preconfigure_min_packages_' + ansible_distribution_version|string ) }}"
 

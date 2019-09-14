@@ -13,13 +13,12 @@
         backup: yes
         backrefs: yes
         state: present
-        regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT=(?!.* {{ line_item }}).*). *$'
+        regexp: '^(GRUB_CMDLINE_LINUX=(?!.* {{ line_item }}).*). *$'
         line: "\\1 {{ line_item }}\""
       with_items:
          - "transparent_hugepage=never"
       notify: regenerate grub2 conf
-      when: ansible_architecture == "x86_64" and
-            ansible_os_family == 'RedHat' and
+      when: ansible_os_family == 'RedHat' and
             ansible_distribution_major_version == '8'
       tags: grubconfig
       loop_control:
