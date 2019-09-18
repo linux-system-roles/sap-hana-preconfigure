@@ -1,190 +1,64 @@
 ---
-# OS RELEASE: RHEL 7
-# SAP Note: 2292690
-#
-# This is the configuration part of the OS
-# See ../../vars/RedHat_7.yml for all packages that need to be installed
-# The packages are also sorted by SAP Note
+# tasks file for sap-hana-preconfigure configuration
 
-# Configure tuned to use profile "sap-hana"
-# force_latency=70 for older tuned versions, hence the script requires appropriate min releases
-# see sap note 2292690
+- import_tasks: 2292690/01-configure-tuned.yml
+  tags: 
+  - 'role::sap-hana-preconfigure'
+  - 'role::sap-hana-preconfigure:config'
+  - 'role::sap-hana-preconfigure:config:2292690:01-configure-tuned'
 
-# Package added to vars/RedHat_7.yml
-#- name: install tuned packages
-#  yum:
-#    state: latest
-#    name: tuned-profiles-sap-hana
+- import_tasks: 2292690/02-turn-off-auto-numa-balancing.yml
+  tags: 
+  - 'role::sap-hana-preconfigure'
+  - 'role::sap-hana-preconfigure:config'
+  - 'role::sap-hana-preconfigure:config:2292690:02-turn-off-auto-numa-balancing'
 
-- name: enable tuned
-  service:
-    name: tuned
-    state: started
-    enabled: yes
+- import_tasks: 2292690/03-disable-thp.yml
+  tags: 
+  - 'role::sap-hana-preconfigure'
+  - 'role::sap-hana-preconfigure:config'
+  - 'role::sap-hana-preconfigure:config:2292690:03-disable-thp'
 
-- name: get current tuned profile
-  command: cat /etc/tuned/active_profile
-  register: current_profile
-  changed_when: false
+- import_tasks: 2292690/04-configure-c-states-for-lower-latency.yml
+  tags: 
+  - 'role::sap-hana-preconfigure'
+  - 'role::sap-hana-preconfigure:config'
+  - 'role::sap-hana-preconfigure:config:2292690:04-configure-c-states-for-lower-latency'
 
-- name: apply tuned profile
-  shell: /usr/sbin/tuned-adm profile sap-hana
-  when:
-    - current_profile.stdout != 'sap-hana'
+- import_tasks: 2292690/05-configure-cpu-governor.yml
+  tags: 
+  - 'role::sap-hana-preconfigure'
+  - 'role::sap-hana-preconfigure:config'
+  - 'role::sap-hana-preconfigure:config:2292690:05-configure-cpu-governor'
 
-# no longer needed, see bug 1672213 - tuned profile sap-hana-vmware retirement
-# - name: apply tuned profile on VMware systems
+- import_tasks: 2292690/06-configure-epb.yml
+  tags: 
+  - 'role::sap-hana-preconfigure'
+  - 'role::sap-hana-preconfigure:config'
+  - 'role::sap-hana-preconfigure:config:2292690:06-configure-epb'
 
-# Turn off auto-numa balancing
+- import_tasks: 2292690/07-disable-ksm.yml
+  tags: 
+  - 'role::sap-hana-preconfigure'
+  - 'role::sap-hana-preconfigure:config'
+  - 'role::sap-hana-preconfigure:config:2292690:07-disable-ksm'
 
-#- name: ensure file /etc/sysctl.d/sap_hana.conf exists
-#  copy:
-#    content: ""
-#    dest: /etc/sysctl.d/sap_hana.conf
-#    force: no
-#    group: root 
-#    owner: root
-#    mode: 0555
-#
-# configured by tuned profile sap-hana, entry "kernel.numa_balancing = 0"
-# This is just to make sure
-- name: Turn off auto-numa balancing
-  sysctl:
-    sysctl_file: /etc/sysctl.d/sap_hana.conf
-    name: kernel.numa_balancing
-    value: 0
-    state: present
-    reload: yes
+- import_tasks: 2292690/08-disable-selinux.yml
+  tags: 
+  - 'role::sap-hana-preconfigure'
+  - 'role::sap-hana-preconfigure:config'
+  - 'role::sap-hana-preconfigure:config:2292690:08-disable-selinux'
 
-- name: disable numad
-  service:
-    name: numad
-    state: stopped
-    enabled: no
-  ignore_errors: True
+- import_tasks: 2292690/09-check-etc-sudoers.yml
+  tags: 
+  - 'role::sap-hana-preconfigure'
+  - 'role::sap-hana-preconfigure:config'
+  - 'role::sap-hana-preconfigure:config:2292690:09-check-etc-sudoers'
 
-# Disable transparent hugepages
-# configured by tuned profile sap-hana, entry "transparent_hugepages=never"
-# but this makes sure it is done already at boottime
-- name: disable transparent hugepages at boot
-  lineinfile:
-    path: /etc/default/grub
-    backup: yes
-    backrefs: yes
-    state: present
-    regexp: '^(GRUB_CMDLINE_LINUX=(?!.* {{ line_item }}).*). *$'
-    line: "\\1 {{ line_item }}\""
-  with_items:
-     - "transparent_hugepage=never"
-  notify: regenerate grub2 conf
-  when: ansible_architecture == "x86_64" and
-        ansible_os_family == 'RedHat' and
-        ansible_distribution_major_version == '7'
-  tags: grubconfig
-  loop_control:
-    loop_var: line_item
-
-# Configure C-States for lower latency in Linux (x86_64 only)
-# configured by tuned profile sap-hana, entry "force_latency=70"
-# but this makes sure it is done already at boottime
-- name: disable intel c states in grub config (RHEL 7)
-  lineinfile:
-    path: /etc/default/grub
-    backup: yes
-    backrefs: yes
-    state: present
-    regexp: '^(GRUB_CMDLINE_LINUX=(?!.* {{ line_item }}).*). *$'
-    line: "\\1 {{ line_item }}\""
-  with_items:
-     - "processor.max_cstate=1"
-     - "intel_idle.max_cstate=1"
-  notify: regenerate grub2 conf
-  when: ansible_architecture == "x86_64" and
-        ansible_os_family == 'RedHat' and 
-        ansible_distribution_major_version == '7'
-  tags: grubconfig
-  loop_control:
-    loop_var: line_item
-
-# CPU Frequency/Voltage scaling/Configure CPU Governor for performance (applies to Intel-based systems only)
-# configured by tuned profile sap-hana, entry "governor=performance"
-#   in included tuned profile throughput-performance
-# see SAP note 2292690
-
-# Energy Performance Bias (EPB, applies to Intel-based systems only)
-# configured by tuned profile sap-hana, entry "energy_perf_bias=performance"
-#   in included tuned profile throughput-performance
-# see SAP note 2292690
-
-# Kernel samepage merging (KSM)
-
-- name: ensure file /etc/init.d/boot.local exists
-  copy:
-    content: ""
-    dest: /etc/init.d/boot.local
-    force: no
-    group: root 
-    owner: root
-    mode: 0755
-
-- name: Kernel samepage merging (KSM) 
-  lineinfile: 
-    dest: /etc/init.d/boot.local 
-    line: echo 0 > /sys/kernel/mm/ksm/run
-
-- name: make sure Kernel samepage merging is off in the running system
-  command: echo 0 > /sys/kernel/mm/ksm/run
-
-# SELinux 
-# duplicate from SAP Note 2002167
-- name: disable selinux
-  selinux:
-    state: disabled
-
-# ADDED to the minimum required packages in Variables
-# Update systemd to avoid HANA crashes due to unintended deletion of IPC segments (semaphores, shared memory, message queues)
-# see: https://access.redhat.com/solutions/2062273
-#- name: install systemd packages
-#  yum:
-#    state: latest
-#    name: systemd-219-19.el7_2.4 
-#
-
-# database startup fails with an error message "/etc/sudoers mismatch for required permissions of Storage Connector" when using hdb_ha.fcClientLVM
-- name: ensure "Defaults requiretty" is not set in /etc/sudoers
-  lineinfile:
-    path: /etc/sudoers
-    state: absent
-    regexp: '^Defaults[ \s]*requiretty'
-    validate: '/usr/sbin/visudo -cf %s'
-
-
-#Message "ERROR: ld.so: object '/opt/rh/SAP/lib64/compat-sap-c++.so' from LD_PRELOAD cannot be preloaded: ignored." when running commands as <SID>adm user on commandline
-# not a operating system problem
-# See also SAP NOTE 2338763 -> minimum required compat-sap-c++-5-5.3.1-10 (for HANA 2 only)
-# Can only occur with HANA 1.0 on RHEL 7.2, because compat-sap-c++ is not required, because it is default
-# If this happens setenv LD_PRELOAD has to be removed from hdbenv.[c]sh in ~sidadm
-# Message "Cannot access required library '/opt/rh/SAP/lib64/compat-sap-c++-5.so': No such file or directory" when installing SAP HANA 2
-
-### moved to vars/RedHat_7.yml
-#- name: install compat-sap-c++-5 packages
-#  yum:
-#    state: latest
-#    name: compat-sap-c++-5 
-
-#### Special recommendations for Power 8
-# The On Chip Controller (OCC) controls core frequency. Any tunings for turbo frequency should be done using the 
-# Flexible Service Processor Advanced System Management (FSP ASM) page or the IBM Hardware Management Console (HMC) 
-# and not from within a PowerVM guest partition. 
-# The package pseries-energy must not be installed.  (<== TODO)
-# Kindly refer to IBM's EnergyScale documentation for this feature at http://www-01.ibm.com/common/ssi/cgi-bin/ssialias?htmlfid=POW03125USEN.
-#
-- name: ensure pseries-energy package is not installed
-  yum:
-    name: pseries-energy
-    state: absent
-  when: ansible_architecture == "ppc64le"
-
-#### Network Settings are implemented by SAP Note 2382421
+- import_tasks: 2292690/10-ibm-energyscale.yml
+  tags: 
+  - 'role::sap-hana-preconfigure'
+  - 'role::sap-hana-preconfigure:config'
+  - 'role::sap-hana-preconfigure:config:2292690:10-ibm-energyscale'
 
 ...
