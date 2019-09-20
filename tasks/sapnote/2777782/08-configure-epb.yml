@@ -4,6 +4,6 @@
 #   in included tuned profile throughput-performance
 - debug:
     msg: "SAP note 2777782 Step 8: Configure Energy Performance Bias (EBP, x86_64 platform only)"
-- import_tasks: ../../RedHat/generic/configure-ebp.yml
+- import_tasks: ../../RedHat/generic/configure-epb.yml
 
 ...

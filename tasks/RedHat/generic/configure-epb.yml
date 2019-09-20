@@ -1,7 +1,7 @@
 ---
 
 - debug:
-    msg: "imported RedHat/generic/configure-ebp.yml"
+    msg: "imported RedHat/generic/configure-epb.yml"
 
 # can be configured by tuned profile sap-hana, entry "energy_perf_bias=performance"
 #   in included tuned profile throughput-performance
@@ -14,7 +14,7 @@
     - debug:
         var: command_check_result.stdout_lines, command_check_result.stderr_lines
 
-    - name: Change EBP if possible
+    - name: Change EPB if possible
       block:
         - name: Create file /etc/init.d/boot.local if it does not exist
           file:
@@ -22,18 +22,18 @@
             state: touch
             mode: 0644
 
-        - name: Configure EBP at boot time
+        - name: Configure EPB at boot time
           lineinfile:
             dest: /etc/init.d/boot.local
             line: "cpupower set -b 0"
 
-        - name: Configure EBP on the running system
+        - name: Configure EPB on the running system
           command: bash -lc "cpupower set -b 0"
           register: command_result
         - debug:
             var: command_result.stdout_lines, command_result.stderr_lines
 
-        - name: Get status of EBP
+        - name: Get status of EPB
           command: bash -lc "cpupower info -b"
           register: command_result
           ignore_errors: true
