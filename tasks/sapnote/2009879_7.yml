@@ -72,11 +72,11 @@
     loop_var: line_item
 
 ### 3.14 - Disable ABRT
-- import_tasks: ../RedHat/generic/disable-abrt.yml
-- import_tasks: ../RedHat/generic/disable-abrt-ccpp.yml
+- include_tasks: ../RedHat/generic/disable-abrt.yml
+- include_tasks: ../RedHat/generic/disable-abrt-ccpp.yml
 
 ### 3.14 - Disable core Dumps
-- import_tasks: ../RedHat/generic/disable-coredumps.yml
+- include_tasks: ../RedHat/generic/disable-coredumps.yml
 # - name: 3.14 disable core dumps
 #   pam_limits: 
 #     domain: "*" 
@@ -90,14 +90,14 @@
 #     loop_var: line_item
 
 ### 3.14 - Disable Kdump
-- import_tasks: ../RedHat/generic/disable-kdump.yml
+- include_tasks: ../RedHat/generic/disable-kdump.yml
 
 ### 3.15 - Disable Firewalld
 ### Firewall Settings can only be done if SAP instance ID is known,
 ### otherwise disable firewall
 ### NYI: Set proper firewall rules if SID/instance number is known
 ###
-- import_tasks: ../RedHat/generic/disable-firewall.yml
+- include_tasks: ../RedHat/generic/disable-firewall.yml
 # - name: 3.15 Ensure firewall is disabled when instance ID unknown
 #   service: name=firewalld state=stopped enabled=no
 #   ignore_errors: True
