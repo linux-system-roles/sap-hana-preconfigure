@@ -8,9 +8,9 @@ sap_hana_preconfigure_sapnotes:
         - "2382421"
 #        - "2235581" # no specific requirements for RHEL 8 yet
 
-sap_hana_preconfigure_switch_to_tuned_profile_sap_hana: true
+sap_hana_preconfigure_switch_to_tuned_profile_sap_hana: yes
 
-sap_hana_preconfigure_use_tuned_where_possible: true
+sap_hana_preconfigure_use_tuned_where_possible: no
 
 # https://www14.software.ibm.com/support/customercare/sas/f/lopdiags/home.html
 sap_hana_preconfigure_required_ppc64le:
