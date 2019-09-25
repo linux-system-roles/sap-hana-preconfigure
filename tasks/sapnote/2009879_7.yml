@@ -58,18 +58,17 @@
 #    loop_var: line_item
 
 ### 3.13 - set number of process to unlimited for sapsys group
-- name: 3.13 set number of process to unlimited for sapsys group
-  pam_limits: 
-    dest: /etc/security/limits.d/99-sapsys.conf  
-    domain: "@sapsys" 
-    limit_item: nproc 
-    limit_type: "{{ line_item }}"
-    value: unlimited
-  with_items:
-    - soft
-    - hard
-  loop_control:
-    loop_var: line_item
+- name: 3.13 Set the soft limit for the max number of processes per user (nproc) to unlimited for group sapsys
+  lineinfile:
+    path: /etc/security/limits.d/99-sap.conf
+    line: "@sapsys    soft    nproc    unlimited"
+    state: present
+
+- name: 3.13 Set the hard limit for the max number of processes per user (nproc) to unlimited for group sapsys
+  lineinfile:
+    path: /etc/security/limits.d/99-sap.conf
+    line: "@sapsys    hard    nproc    unlimited"
+    state: present
 
 ### 3.14 - Disable ABRT
 - include_tasks: ../RedHat/generic/disable-abrt.yml
