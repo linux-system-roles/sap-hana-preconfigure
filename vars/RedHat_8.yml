@@ -3,6 +3,7 @@
 # required SAP Notes for RHEL 8
 
 sap_hana_preconfigure_sapnotes:
+        - "2772999"
         - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
         - "2777782"
         - "2382421"
