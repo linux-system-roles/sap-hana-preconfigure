@@ -58,16 +58,16 @@
 #    loop_var: line_item
 
 ### 3.13 - set number of process to unlimited for sapsys group
-- name: 3.13 Set the soft limit for the max number of processes per user (nproc) to unlimited for group sapsys
-  lineinfile:
-    path: /etc/security/limits.d/99-sap.conf
-    line: "@sapsys    soft    nproc    unlimited"
-    state: present
-
 - name: 3.13 Set the hard limit for the max number of processes per user (nproc) to unlimited for group sapsys
   lineinfile:
     path: /etc/security/limits.d/99-sap.conf
     line: "@sapsys    hard    nproc    unlimited"
+    state: present
+
+- name: 3.13 Set the soft limit for the max number of processes per user (nproc) to unlimited for group sapsys
+  lineinfile:
+    path: /etc/security/limits.d/99-sap.conf
+    line: "@sapsys    soft    nproc    unlimited"
     state: present
 
 ### 3.14 - Disable ABRT
