@@ -19,7 +19,7 @@
 
     - name: Switch to tuned profile sap-hana if not currently active
       block:
-        - name: Switch to tuned profile sap-hana is not currently active
+        - name: Switch to tuned profile sap-hana if not currently active
           shell: /usr/sbin/tuned-adm profile sap-hana
         
         - name: Show active tuned profile
