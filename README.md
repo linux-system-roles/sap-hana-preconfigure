@@ -76,6 +76,18 @@ If you want to use the tuned profile sap-hana for configuring kernel parameters 
 sap_hana_preconfigure_use_tuned_where_possible
 ```
 
+### Modify grub2 line GRUB_CMDLINE_LINUX
+If you do not want to modify the grub2 line GRUB_CMDLINE_LINUX in /etc/default/grub, set the following variable to no (this is the default):
+```yaml
+sap_hana_preconfigure_modify_grub_cmdline_linux
+```
+
+### Run grub2-mkconfig
+If you do not want to run grub2-mkconfig to regenerate the grub2 config file, set the following variable to no (this is the default). Before setting this variable to yes, make sure you also have set sap_hana_preconfigure_modify_grub_cmdline_linux (see above) to yes.
+```yaml
+sap_hana_preconfigure_run_grub2_mkconfig
+```
+
 ### Required package groups
 The following variables define the required package groups. Note that variable sap_hana_preconfigure_packagegroups is automatically filled from either sap_hana_preconfigure_packagegroups_x86_64 or sap_hana_preconfigure_packagegroups_ppc64le:
 ```yaml
