@@ -20,6 +20,7 @@
       when:
         - ansible_architecture == 'x86_64'
         - ansible_os_family == 'RedHat'
+        - sap_hana_preconfigure_modify_grub_cmdline_linux
       tags: grubconfig
       loop_control:
         loop_var: line_item

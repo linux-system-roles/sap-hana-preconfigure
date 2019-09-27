@@ -3,6 +3,7 @@
 # required SAP Notes for RHEL 8
 
 sap_hana_preconfigure_sapnotes:
+        - "2772999"
         - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
         - "2777782"
         - "2382421"
@@ -11,6 +12,10 @@ sap_hana_preconfigure_sapnotes:
 sap_hana_preconfigure_switch_to_tuned_profile_sap_hana: yes
 
 sap_hana_preconfigure_use_tuned_where_possible: no
+
+sap_hana_preconfigure_modify_grub_cmdline_linux: no
+
+sap_hana_preconfigure_run_grub2_mkconfig: no
 
 # https://www14.software.ibm.com/support/customercare/sas/f/lopdiags/home.html
 sap_hana_preconfigure_required_ppc64le:
@@ -78,6 +83,11 @@ sap_hana_preconfigure_packages:
 
 sap_hana_preconfigure_packagegroups: 
     - "@base"
+
+# use the following variable to specify the name of the RHEL group which is used for the database processes
+# (if it exists, it will be used to configure process limits as per step
+#  "Configuring Process Resource Limits" of SAP note 2772999):
+#    sap_hana_preconfigure_db_group_name: dba
 
 # Network related kernel parameters as set in SAP Note 2382421:
 sap_hana_preconfigure_kernel_parameters_default:

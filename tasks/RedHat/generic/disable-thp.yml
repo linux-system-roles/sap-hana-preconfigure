@@ -18,6 +18,7 @@
       notify: regenerate grub2 conf
       when:
         - ansible_os_family == 'RedHat'
+        - sap_hana_preconfigure_modify_grub_cmdline_linux
       tags: grubconfig
       loop_control:
         loop_var: line_item

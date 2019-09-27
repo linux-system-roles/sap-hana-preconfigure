@@ -16,14 +16,18 @@
   - name: "Run grub-mkconfig (BIOS mode)"
     command: bash -lc "grub2-mkconfig -o /boot/grub2/grub.cfg"
     register: command_result
-    when: not efi_exists.stat.exists
+    when:
+      - not efi_exists.stat.exists
+      - sap_hana_preconfigure_run_grub2_mkconfig
   - debug:
       var: command_result.stdout_lines, command_result.stderr_lines
 
   - name: "Run grub-mkconfig (UEFI mode)"
     command: bash -lc "grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg"
     register: command_result
-    when: efi_exists.stat.exists
+    when:
+      - efi_exists.stat.exists
+      - sap_hana_preconfigure_run_grub2_mkconfig
   - debug:
       var: command_result.stdout_lines, command_result.stderr_lines
 
