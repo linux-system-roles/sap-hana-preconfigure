@@ -18,6 +18,8 @@ sap_hana_preconfigure_modify_grub_cmdline_linux: no
 sap_hana_preconfigure_run_grub2_mkconfig: no
 
 # https://www14.software.ibm.com/support/customercare/sas/f/lopdiags/home.html
+# no list available yet for RHEL 8, so let's just use those from the RHEL 7 list
+#   which are avaiable for RHEL 8:
 sap_hana_preconfigure_required_ppc64le:
         - librtas
 #        - src
