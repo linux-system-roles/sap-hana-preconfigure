@@ -8,6 +8,7 @@
 - block:
     - name: Check if system is able to set CPU Governor for performance
       command: bash -lc "cpupower frequency-info -g | awk '/available cpufreq governors/{print $(NF-1), $NF}'"
+      check_mode: no
       register: command_check_result
       ignore_errors: true
       changed_when: false

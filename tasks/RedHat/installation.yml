@@ -111,6 +111,7 @@
       loop: "{{ sap_hana_preconfigure_min_pkgs }}"
       loop_control:
                loop_var: pkg
+      check_mode: no
       register: sap_hana_preconfigure_register_minpkglist
       changed_when: false
 

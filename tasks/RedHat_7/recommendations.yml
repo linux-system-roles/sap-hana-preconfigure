@@ -21,8 +21,9 @@
     - sap_sapadm_pw_clear is defined
     
 ### Disable tempfile handling, otherwise things are gone after reboot
-- name: disable temp file handling for SAP applications
-  copy: src=etc/tmpfiles.d/sap.conf dest=/etc/tmpfiles.d/sap.conf
+#     already in sap-preconfigure, sapnote/2002167/06-additional-notes-for-installing-sap-systems.yml
+# - name: disable temp file handling for SAP applications
+#   copy: src=etc/tmpfiles.d/sap.conf dest=/etc/tmpfiles.d/sap.conf
 
 - name: increase file handles to at least 32800 for sapsys group
   pam_limits: 
