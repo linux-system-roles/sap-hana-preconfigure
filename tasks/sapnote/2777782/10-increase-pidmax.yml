@@ -2,22 +2,14 @@
 
 - debug:
     msg: "SAP note 2777782 Step 10: Increase kernel.pid_max"
-- name: Create file /etc/sysctl.d/99-sap.conf if it does not exist
-  file:
-    path: /etc/sysctl.d/99-sap.conf 
-    state: touch
-    mode: 0644
 
-- name: Set kernel.pid_max to 4194304 at boot time
-  lineinfile:
-    dest: /etc/sysctl.d/99-sap.conf
-    line: "kernel.pid_max = 4194304"
-
-- name: Set kernel.pid_max to 4194304 on the running system
-  command: bash -lc "sysctl -w kernel.pid_max=4194304"
-  register: command_result
-  ignore_errors: true
-- debug:
-    var: command_result.stdout_lines, command_result.stderr_lines
+- name: Set kernel parameter kernel.pid_max to 4194304
+  sysctl:
+    sysctl_file: /etc/sysctl.d/sap.conf
+    name: kernel.pid_max
+    value: 4194304
+    state: present
+    sysctl_set: yes
+    reload: yes
 
 ...
