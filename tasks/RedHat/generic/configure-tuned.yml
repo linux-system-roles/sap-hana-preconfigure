@@ -12,6 +12,7 @@
 
     - name: Show active tuned profile
       command: bash -lc "/usr/sbin/tuned-adm active | awk '/:/{print $NF}'"
+      check_mode: no
       register: current_profile
       changed_when: false
     - debug:
