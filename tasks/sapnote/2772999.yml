@@ -4,31 +4,31 @@
 - debug:
     msg: "SAP note 2772999 Step 9: Configure Process Resource Limits"
 
-- name: Set the hard limit for the max number of processes per user (nproc) to unlimited for group sapsys
-  lineinfile:
-    path: /etc/security/limits.d/99-sap.conf
-    line: "@sapsys    hard    nproc    unlimited"
-    state: present
+- name: Set the hard and soft limit for the max number of processes per user (nproc) to unlimited for group sapsys
+  pam_limits:
+    dest: /etc/security/limits.d/99-sap.conf
+    domain: "@sapsys"
+    limit_item: nproc
+    limit_type: "{{ line_item }}"
+    value: unlimited
+  with_items:
+    - hard
+    - soft
+  loop_control:
+    loop_var: line_item
 
-- name: Set the soft limit for the max number of processes per user (nproc) to unlimited for group sapsys
-  lineinfile:
-    path: /etc/security/limits.d/99-sap.conf
-    line: "@sapsys    soft    nproc    unlimited"
-    state: present
-
-- name: Set hard and soft limit for the max number of processes per user (nproc) to unlimited for the database group
-  block:
-    - name: Set hard limit for the max number of processes per user (nproc) to unlimited for the database group
-      lineinfile:
-        path: /etc/security/limits.d/99-sap.conf
-        line: "@{{ sap_hana_preconfigure_db_group_name }}    hard    nproc    unlimited"
-        state: present
-
-    - name: Set soft limit for the max number of processes per user (nproc) to unlimited for the database group
-      lineinfile:
-        path: /etc/security/limits.d/99-sap.conf
-        line: "@{{ sap_hana_preconfigure_db_group_name }}    soft    nproc    unlimited"
-        state: present
+- name: Set the hard and soft limit for the max number of open files per process (nproc) to unlimited for the database group
+  pam_limits:
+    dest: /etc/security/limits.d/99-sap.conf
+    domain: "{{ sap_hana_preconfigure_db_group_name }} "
+    limit_item: nproc
+    limit_type: "{{ line_item }}"
+    value: unlimited
+  with_items:
+    - hard
+    - soft
+  loop_control:
+    loop_var: line_item
   when:
     - sap_hana_preconfigure_db_group_name is defined
 
