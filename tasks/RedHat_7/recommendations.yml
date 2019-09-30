@@ -25,18 +25,19 @@
 # - name: disable temp file handling for SAP applications
 #   copy: src=etc/tmpfiles.d/sap.conf dest=/etc/tmpfiles.d/sap.conf
 
-- name: increase file handles to at least 32800 for sapsys group
-  pam_limits: 
-    dest: /etc/security/limits.d/99-sapsys.conf
-    domain: "@sapsys" 
-    limit_item: nofile 
-    limit_type: "{{ line_item }}" 
-    value: 32800
-    use_max: yes
-  with_items:
-    - soft
-    - hard
-  loop_control:
-    loop_var: line_item
+### Set by HANA installer
+# - name: increase file handles to at least 32800 for sapsys group
+#   pam_limits: 
+#     dest: /etc/security/limits.d/99-sapsys.conf
+#     domain: "@sapsys" 
+#     limit_item: nofile 
+#     limit_type: "{{ line_item }}" 
+#     value: 32800
+#     use_max: yes
+#   with_items:
+#     - soft
+#     - hard
+#   loop_control:
+#     loop_var: line_item
 
 ...
