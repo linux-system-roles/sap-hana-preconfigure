@@ -7,7 +7,7 @@
 #   in included tuned profile throughput-performance
 - block:
     - name: Check if system supports Intel's performance bias setting
-      command: bash -lc "cpupower info | head -1 | awk '{print $2, $3, $4}'"
+      command: bash -lc "LC_ALL=C cpupower info | head -1 | awk '{print $2, $3, $4}'"
       check_mode: no
       register: command_check_result
       ignore_errors: true
