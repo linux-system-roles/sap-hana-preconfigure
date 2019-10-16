@@ -4,13 +4,13 @@
 #  shell: sysctl -p /etc/sysctl.d/sap_hana.conf
 
 - name: regenerate grub2 conf
-  import_tasks: tasks/RedHat/generic/regenerate-grub2-conf.yml
+  include_tasks: tasks/RedHat/generic/regenerate-grub2-conf.yml
 
 # Required for IBM SAP Note 
 - name: restart multipathd
   service:
-           name: multipathd
-           state: restarted
+    name: multipathd
+    state: restarted
 
 - name: activate MTU size
   command: "ip link set mtu 9000 dev eth0"
