@@ -68,4 +68,12 @@ sap_hana_preconfigure_ppcle_mtu9000_if: ''
 ## defaults to all interfaces
 sap_hana_preconfigure_ppcle_tso_if: "{{ ansible_interfaces| difference(['lo']) }}"
 
+sap_hana_preconfigure_switch_to_tuned_profile_sap_hana: true
+
+sap_hana_preconfigure_use_tuned_where_possible: false
+
+sap_hana_preconfigure_modify_grub_cmdline_linux: false
+
+sap_hana_preconfigure_run_grub2_mkconfig: false
+
 ...
