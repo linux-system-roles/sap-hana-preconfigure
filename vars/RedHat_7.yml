@@ -63,6 +63,10 @@ sap_hana_preconfigure_min_packages_7.6:
 sap_hana_preconfigure_min_packages_7.7:
         - [ 'kernel' , '3.10.0-1062.1.1.el7' ]
 
+# Add empty definitions for upcoming latest releases
+sap_hana_preconfigure_min_packages_7.8:
+sap_hana_preconfigure_min_packages_7.9:
+
 sap_hana_preconfigure_min_pkgs: "{{ lookup('vars','sap_hana_preconfigure_min_packages_' + ansible_distribution_version|string ) }}"
 
 sap_hana_preconfigure_packages:
