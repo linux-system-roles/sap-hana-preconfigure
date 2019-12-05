@@ -25,7 +25,7 @@ for RHEL 8.x:
 
 
 For details, see the Red Hat knowledge base article: [How to subscribe SAP HANA systems to the Update Services for SAP Solutions](https://access.redhat.com/solutions/3075991))
-You can use the [subscribe-rhn](https://galaxy.ansible.com/mk-ansible-roles/subscribe-rhn/) role to automate this process
+You can use the [sap-rhsm](https://galaxy.ansible.com/redhat_sap/sap_rhsm) role to automate this process
 
 To install HANA on Red Hat Enterprise Linux 6, 7, or 8, you need some additional packages
 which come in a special repository. To get this repository you need to have one
@@ -181,7 +181,7 @@ Here is an example playbook that prepares a server for hana installation.
           # rhel-system-roles.timesync variables
 
   roles:
-        - { role: mk-ansible-roles.subscribe-rhn }
+        - { role: redhat_sap.sap_rhsm }
         - { role: linux-system-roles.sap-base-settings }
         - { role: linux-system-roles.sap-hana-preconfigure }
 ```
