@@ -51,7 +51,7 @@ To get a personal developer edition of RHEL for SAP solutions, please register a
 For supported RHEL releases [click here](https://access.redhat.com/solutions/2479121)
 
 It is also important that your disks are setup according to the [SAP storage requirements for SAP HANA](https://www.sap.com/documents/2015/03/74cdb554-5a7c-0010-8F2c7-eda71af511fa.html). This [BLOG](https://blogs.sap.com/2017/03/07/the-ultimate-guide-to-effective-sizing-of-sap-hana/) is also quite helpful when sizing HANA systems.
-You can use the [disk-init](https://galaxy.ansible.com/mk-ansible-roles/disk-init/) role to automate this process
+You can use the [storage](https://galaxy.ansible.com/linux-system-roles/storage) role to automate this process
 
 If you want to use this system in production make sure time service is configured correctly. You can use [rhel-system-roles](https://access.redhat.com/articles/3050101) to automate this
 
