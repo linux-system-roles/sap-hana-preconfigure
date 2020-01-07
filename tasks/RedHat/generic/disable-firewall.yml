@@ -5,6 +5,7 @@
     name: firewalld
     state: stopped
     enabled: no
+  ignore_errors: True
 
 - name: Get status of firewalld
   command: bash -lc "systemctl status firewalld"
