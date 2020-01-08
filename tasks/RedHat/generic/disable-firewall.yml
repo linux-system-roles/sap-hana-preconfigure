@@ -1,11 +1,16 @@
 ---
+- name: Gathering service facts
+  service_facts:
+  register: services_state
 
 - name: Stop and disable service firewalld
   systemd:
     name: firewalld
     state: stopped
     enabled: no
-  ignore_errors: True
+  when: services_state.ansible_facts.services["firewalld.service"].state is defined
+
+- debug: var=services_state.ansible_facts.services["firewalld.service"].state
 
 - name: Get status of firewalld
   command: bash -lc "systemctl status firewalld"
