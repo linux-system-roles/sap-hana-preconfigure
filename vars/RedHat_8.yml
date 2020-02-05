@@ -72,6 +72,9 @@ sap_hana_preconfigure_packages:
     - libtool-ltdl
     # SAP NOTE 2292690
     - tuned-profiles-sap-hana
+    # required package for checking, if reboot is needed after package installation
+    # It is not installed by default group
+    - yum-utils
     # SAP NOTE 22455582
 #
 #   libtool ltdl: https://answers.sap.com/questions/476177/hana-db-installation-ended-with-exit-code-127.html
