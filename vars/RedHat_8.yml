@@ -9,18 +9,20 @@ sap_hana_preconfigure_sapnotes:
         - "2382421"
 #        - "2235581" # no specific requirements for RHEL 8 yet
 
-# https://www14.software.ibm.com/support/customercare/sas/f/lopdiags/home.html
-# no list available yet for RHEL 8, so let's just use those from the RHEL 7 list
-#   which are avaiable for RHEL 8:
+# The packages for RHEL8 are almost the same as for RHEL7
+# IBM publishes the packages as a repository here:
+# https://public.dhe.ibm.com/software/server/POWER/Linux/yum/OSS/RHEL/8/ppc64le/
+# To install the packages you need to create an appropriate repofile 
+# or clone this repository (e.g. with Satellite product)
 sap_hana_preconfigure_required_ppc64le:
         - librtas
-#        - src
-#        - rsct.core.utils
-#        - rsct.core
-#        - rsct.basic
-#        - rsct.opt.storagerm
-#        - devices.chrp.base.ServiceRM
-#        - DynamicRM
+        - src
+        - rsct.core.utils
+        - rsct.core
+        - rsct.basic
+        - rsct.opt.storagerm
+        - devices.chrp.base.ServiceRM
+        - DynamicRM
         - ncurses-libs
         - readline
         - sqlite
@@ -33,10 +35,10 @@ sap_hana_preconfigure_required_ppc64le:
         - libvpd
         - libservicelog
         - servicelog
-#        - powerpc-utils
-#        - powerpc-utils-python
+        - powerpc-utils
+#        - powerpc-utils-python # this package is no longer available for RHEL8
         - ppc64-diag
-#        - IBMinvscout
+        - IBMinvscout
 
 # Minimum required package levels for RHEL 8:
 sap_hana_preconfigure_min_packages_8:
