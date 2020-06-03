@@ -1,49 +1,11 @@
 ---
 
 - name: "Regenerate grub2 conf handler"
-  block:
-  - debug:
-      msg: "Regerate grub2 config"
-
-  - name: "Check if server is booted in BIOS or UEFI mode"
-    stat:
-      path: /sys/firmware/efi
-      get_checksum: no
-    register: efi_exists
-  - debug:
-      var: efi_exists.stat.exists
-
-  - name: "Run grub-mkconfig (BIOS mode)"
-    command: bash -lc "grub2-mkconfig -o /boot/grub2/grub.cfg"
-    register: command_result
-    when:
-      - not efi_exists.stat.exists
-      - sap_hana_preconfigure_run_grub2_mkconfig
-  - debug:
-      var: command_result.stdout_lines, command_result.stderr_lines
-
-  - name: "Run grub-mkconfig (UEFI mode)"
-    command: bash -lc "grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg"
-    register: command_result
-    when:
-      - efi_exists.stat.exists
-      - sap_hana_preconfigure_run_grub2_mkconfig
-  - debug:
-      var: command_result.stdout_lines, command_result.stderr_lines
+  import_tasks: tasks/RedHat/generic/regenerate-grub2-conf.yml
+  when: sap_hana_preconfigure_run_grub2_mkconfig|d(true)
 
 - name: "Reboot handler"
   fail:
     msg: Reboot is required!
   when: sap_hana_preconfigure_fail_if_reboot_required|d(true)
-
-# Not referenced in this role:
-# Required for IBM SAP Note 
-#- name: restart multipathd
-#  service:
-#    name: multipathd
-#    state: restarted
-
-# Not referenced in this role:
-#- name: activate MTU size
-#  command: "ip link set mtu 9000 dev eth0"
 
