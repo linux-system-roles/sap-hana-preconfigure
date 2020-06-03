@@ -6,19 +6,11 @@
     - '{{ ansible_distribution }}_{{ ansible_distribution_version }}.yml'
     - '{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml'
     - '{{ ansible_os_family }}.yml'
-  tags:
-    - 'role::sap-hana-preconfigure'
-    - 'role::sap-hana-preconfigure:install'
-    - 'role::sap-hana-preconfigure:config'
 
 - include_tasks: '{{ ansible_distribution }}/installation.yml'
-  tags:
-    - 'role::sap-hana-preconfigure'
-    - 'role::sap-hana-preconfigure:install'
+  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_installation|d(false)
 
 - include_tasks: '{{ ansible_distribution }}/configuration.yml'
-  tags:
-    - 'role::sap-hana-preconfigure'
-    - 'role::sap-hana-preconfigure:config'
+  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_configuration|d(false)
 
 ...

@@ -1,116 +1,115 @@
 ---
 
-# required SAP Notes for RHEL 8
+# required repos for RHEL 8:
+__sap_hana_preconfigure_req_repos_RedHat_8_x86_64:
+  - "rhel-8-for-x86_64-baseos-e4s-rpms"
+  - "rhel-8-for-x86_64-appstream-e4s-rpms"
+  - "rhel-8-for-x86_64-sap-solutions-e4s-rpms"
 
-sap_hana_preconfigure_sapnotes:
-        - "2772999"
-        - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
-        - "2777782"
-        - "2382421"
-#        - "2235581" # no specific requirements for RHEL 8 yet
+__sap_hana_preconfigure_req_repos_RedHat_8_ppc64le:
+  - "rhel-8-for-ppc64le-baseos-e4s-rpms"
+  - "rhel-8-for-ppc64le-appstream-e4s-rpms"
+  - "rhel-8-for-ppc64le-sap-solutions-e4s-rpms"
 
-# The packages for RHEL8 are almost the same as for RHEL7
+# required SAP notes for RHEL 8:
+__sap_hana_preconfigure_sapnotes:
+  - "2772999"
+  - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
+  - "2777782"
+  - "2382421"
+#  - "2235581" # no specific requirements for RHEL 8 yet
+
+# The packages for RHEL8 are almost the same as for RHEL7.
 # IBM publishes the packages as a repository here:
 # https://public.dhe.ibm.com/software/server/POWER/Linux/yum/OSS/RHEL/8/ppc64le/
-# To install the packages you need to create an appropriate repofile 
+# To install the packages, you need to create an appropriate repofile 
 # or clone this repository (e.g. with Satellite product)
-sap_hana_preconfigure_required_ppc64le:
-        - librtas
-        - src
-        - rsct.core.utils
-        - rsct.core
-        - rsct.basic
-        - rsct.opt.storagerm
-        - devices.chrp.base.ServiceRM
-        - DynamicRM
-        - ncurses-libs
-        - readline
-        - sqlite
-        - sg3_utils
-        - libgcc
-        - libstdc++
-        - zlib
-        - iprutils
-        - lsvpd
-        - libvpd
-        - libservicelog
-        - servicelog
-        - powerpc-utils
-#        - powerpc-utils-python # this package is no longer available for RHEL8
-        - ppc64-diag
-        - IBMinvscout
+__sap_hana_preconfigure_required_ppc64le:
+  - librtas
+  - src
+  - rsct.core.utils
+  - rsct.core
+  - rsct.basic
+  - rsct.opt.storagerm
+  - devices.chrp.base.ServiceRM
+  - DynamicRM
+  - ncurses-libs
+  - readline
+  - sqlite
+  - sg3_utils
+  - libgcc
+  - libstdc++
+  - zlib
+  - iprutils
+  - lsvpd
+  - libvpd
+  - libservicelog
+  - servicelog
+  - powerpc-utils
+#  - powerpc-utils-python # this package is no longer available for RHEL8
+  - ppc64-diag
+  - IBMinvscout
 
 # Minimum required package levels for RHEL 8:
-sap_hana_preconfigure_min_packages_8:
+__sap_hana_preconfigure_min_packages_8:
 
-sap_hana_preconfigure_packages:
-    # SAP NOTE 2772999
-    - expect
-    - graphviz
-    - iptraf-ng
-    - krb5-workstation
-    - libatomic
-    - libcanberra-gtk2
-    - libibverbs
-    - libicu
-    - libpng12
-    - lm_sensors
-    - nfs-utils
-    - numactl
-    - PackageKit-gtk3-module
-    - xorg-x11-xauth
-    - bind-utils
-    - cairo
-    - libaio
-    - krb5-libs
-    - net-tools
-    - openssl
-    - rsyslog
-    - sudo
-    - xfsprogs
-    - gtk2
-    - libtool-ltdl
-    # SAP NOTE 2292690
-    - tuned-profiles-sap-hana
-    # required package for checking, if reboot is needed after package installation
-    # It is not installed by default group
-    - yum-utils
-    # SAP NOTE 22455582
-#
-#   libtool ltdl: https://answers.sap.com/questions/476177/hana-db-installation-ended-with-exit-code-127.html
-#   it is required since HANA 2 SPS 03, and as such installed in general
+__sap_hana_preconfigure_packages:
+# SAP NOTE 2772999:
+  - expect
+  - graphviz
+  - iptraf-ng
+  - krb5-workstation
+  - libatomic
+  - libcanberra-gtk2
+  - libibverbs
+  - libicu
+  - libpng12
+  - lm_sensors
+  - nfs-utils
+  - numactl
+  - PackageKit-gtk3-module
+  - xorg-x11-xauth
+  - bind-utils
+  - cairo
+  - libaio
+  - krb5-libs
+  - net-tools
+  - openssl
+  - rsyslog
+  - sudo
+  - xfsprogs
+  - gtk2
+  - libtool-ltdl
+# SAP NOTE 2777782:
+  - tuned-profiles-sap-hana
 
-sap_hana_preconfigure_packagegroups: 
-    - "@base"
-
-# use the following variable to specify the name of the RHEL group which is used for the database processes
-# (if it exists, it will be used to configure process limits as per step
-#  "Configuring Process Resource Limits" of SAP note 2772999):
-# sap_hana_preconfigure_db_group_name: dba
+__sap_hana_preconfigure_packagegroups: 
+  - "@base"
 
 # Network related kernel parameters as set in SAP Note 2382421:
-sap_hana_preconfigure_kernel_parameters_default:
-    # value needs to be higher than HANA parameter tcp_backlog
-    - { name: net.core.somaxconn, value: 4096 }
-    - { name: net.ipv4.tcp_max_syn_backlog, value: 8192}
-    # next 2 are automatically set by SAP Host Agent
-    # { name: net.ipv4.ip_local_port_range, value: "40000 61000" }
-    # { name: net.ipv4.ip_local_reserved_ports, value: -> SAP NOTE 2477204 }
-    # The following 2 parameters do not work when communicating with hosts behind NAT firewall:
-    # { name: net.ipv4.tcp_tw_reuse, value: 1 }
-    # { name: net.ipv4.tcp_tw_recycle, value: 1 }
-    # Next paramter might not work on Azure (see SAP Note 2382421)
-    - { name: net.ipv4.tcp_timestamps, value: 1 }
-    - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
-    # Tune the next 4 for low latency system replication:
-    # { net.ipv4.tcp_wmem, value }
-    # { net.ipv4.tcp_rmem, value }
-    # { net.core.wmem_max, value }
-    # { net.core.rmem_max, value }
-    # Should be set, so won't touch, for more details see SAP Note 2382421
-    # { net.ipv4.tcp_window_scaling, 1 }
-    # The following only applies to HANA 1 <= 122.14 and HANA 2 SPS00
-    # so default is to not change:
-    # { name: net.ipv4.tcp_syn_retries, value: 8 }
+__sap_hana_preconfigure_kernel_parameters_default:
+# The following two parameter should always be set:
+  - { name: net.core.somaxconn, value: 4096 }
+  - { name: net.ipv4.tcp_max_syn_backlog, value: 8192 }
+# The following two parameters are automatically set by SAP Host Agent
+#  - { name: net.ipv4.ip_local_port_range, value: "40000 61000" }
+#  - { name: net.ipv4.ip_local_reserved_ports, value: -> SAP NOTE 2477204 }
+# The following two parameters do not work when communicating with hosts behind NAT firewall:
+#  - { name: net.ipv4.tcp_tw_reuse, value: 1 }
+#  - { name: net.ipv4.tcp_tw_recycle, value: 1 }
+# The following parameter should always be set but might not work on Azure (see SAP Note 2382421):
+  - { name: net.ipv4.tcp_timestamps, value: 1 }
+# The following parameter should always be set:
+  - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
+# Tune the next four parameters for low latency system replication:
+#  - { net.ipv4.tcp_wmem, value }
+#  - { net.ipv4.tcp_rmem, value }
+#  - { net.core.wmem_max, value }
+#  - { net.core.rmem_max, value }
+# Should be set correctly already on most systems, according to SAP Note 2382421:
+#  - { net.ipv4.tcp_window_scaling, 1 }
+# The following only applies to HANA 1 <= 122.14 and HANA 2 SPS00.
+# So we do not change the default.
+#  - { name: net.ipv4.tcp_syn_retries, value: 8 }
 
 ...

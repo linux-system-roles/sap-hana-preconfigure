@@ -19,25 +19,28 @@
 ### 3.8 - Disable Numa Balancing -> SAP Note 2292690 
 
 ### 3.9 - Create the compatibility links for HANA 
-- name: 3.9 create compatibility links for RHEL 7.2
-  file: src=/usr/lib64/{{ line_item.src }} dest=/usr/lib64/{{ line_item.dest }} state=link
-  with_items:
-    - { src: 'libssl.so.1.0.1e', dest: 'libssl.so.1.0.1' }
-    - { src: 'libcrypto.so.1.0.1e', dest: 'libcrypto.so.1.0.1' }
-  when: 
-     ( ansible_distribution_version  == '7.2' )
-  loop_control:
-    loop_var: line_item
+- block:
+  - name: 3.9 create compatibility links for RHEL 7.2
+    file: src=/usr/lib64/{{ line_item.src }} dest=/usr/lib64/{{ line_item.dest }} state=link
+    with_items:
+      - { src: 'libssl.so.1.0.1e', dest: 'libssl.so.1.0.1' }
+      - { src: 'libcrypto.so.1.0.1e', dest: 'libcrypto.so.1.0.1' }
+    when: 
+       ( ansible_distribution_version  == '7.2' )
+    loop_control:
+      loop_var: line_item
 
-- name: 3.9 create compatibility links for RHEL 7.3+
-  file: src=/usr/lib64/{{ line_item.src }} dest=/usr/lib64/{{ line_item.dest }} state=link
-  with_items:
-    - { src: 'libssl.so.10', dest: 'libssl.so.1.0.1' }
-    - { src: 'libcrypto.so.10', dest: 'libcrypto.so.1.0.1' }
-  when: 
-     ( ansible_distribution_version  != '7.2' )
-  loop_control:
-    loop_var: line_item
+  - name: 3.9 create compatibility links for RHEL 7.3+
+    file: src=/usr/lib64/{{ line_item.src }} dest=/usr/lib64/{{ line_item.dest }} state=link
+    with_items:
+      - { src: 'libssl.so.10', dest: 'libssl.so.1.0.1' }
+      - { src: 'libcrypto.so.10', dest: 'libcrypto.so.1.0.1' }
+    when: 
+       ( ansible_distribution_version  != '7.2' )
+    loop_control:
+      loop_var: line_item
+
+  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2009879_3_9|d(false)
 
 ### 3.10 - THP -> SAP Note 2292690 
 ### 3.11 - CPU Governor for performance -> TunedProfile -> SAP Note 2292690
@@ -70,27 +73,22 @@
     - soft
   loop_control:
     loop_var: line_item
+  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2009879_3_13|d(false)
 
 ### 3.14 - Disable ABRT
 - include_tasks: ../RedHat/generic/disable-abrt.yml
+  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2009879_3_14_1|d(false)
+
 - include_tasks: ../RedHat/generic/disable-abrt-ccpp.yml
+  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2009879_3_14_2|d(false)
 
 ### 3.14 - Disable core Dumps
 - include_tasks: ../RedHat/generic/disable-coredumps.yml
-# - name: 3.14 disable core dumps
-#   pam_limits: 
-#     domain: "*" 
-#     limit_item: core 
-#     limit_type: "{{ line_item }}" 
-#     value: 0
-#   with_items:
-#     - soft
-#     - hard
-#   loop_control:
-#     loop_var: line_item
+  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2009879_3_14_3|d(false)
 
 ### 3.14 - Disable Kdump
 - include_tasks: ../RedHat/generic/disable-kdump.yml
+  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2009879_3_14_4|d(false)
 
 ### 3.15 - Disable Firewalld
 ### Firewall Settings can only be done if SAP instance ID is known,
@@ -101,7 +99,6 @@
 # - name: 3.15 Ensure firewall is disabled when instance ID unknown
 #   service: name=firewalld state=stopped enabled=no
 #   ignore_errors: True
-
 
 
 ### Firewall Calculation for SID=xx

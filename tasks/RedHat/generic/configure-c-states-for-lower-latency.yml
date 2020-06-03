@@ -16,7 +16,7 @@
       with_items:
         - "processor.max_cstate=1"
         - "intel_idle.max_cstate=1"
-      notify: regenerate grub2 conf
+      notify: "Regenerate grub2 conf handler"
       when:
         - ansible_architecture == 'x86_64'
         - ansible_os_family == 'RedHat'
