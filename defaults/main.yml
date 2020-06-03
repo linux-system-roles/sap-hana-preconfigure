@@ -10,8 +10,8 @@
 # 1 - set sap_hana_preconfigure_config_all to "no" (default is "yes"),
 # 2 - set sap_hana_preconfigure_installation or sap_hana_preconfigure_configuration, or both, to "yes" (default for both is "no")
 # 3 - and set one or more of the SAP notes related variables to "yes":
-sap_hana_preconfigure_config_all: no
-sap_hana_preconfigure_installation: yes
+#sap_hana_preconfigure_config_all: no
+#sap_hana_preconfigure_installation: yes
 #sap_hana_preconfigure_configuration: yes
 ## examples for RHEL7:
 #sap_hana_preconfigure_2292690_02: yes
