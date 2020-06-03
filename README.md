@@ -58,7 +58,7 @@ Note
 ----
 For finding out which SAP notes will be used by this role, please check the contents of variable __sap_hana_preconfigure_sapnotes in files vars/*.yml (choose the file which matches your OS distribution and version)
 
-Please do not run this role against a productive SAP HANA system. The role will unconditionally make changes to the managed node, which might not be intended on productive SAP HANA systems.
+Do not run this role against an SAP HANA or other production system. The role will enforce a certain configuration on the managed node(s), which might not be intended.
 
 Role Variables
 --------------
