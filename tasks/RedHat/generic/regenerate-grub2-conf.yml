@@ -13,7 +13,7 @@
     var: efi_exists.stat.exists
 
 - name: "Run grub-mkconfig (BIOS mode)"
-  command: bash -lc "grub2-mkconfig -o /boot/grub2/grub.cfg"
+  command: grub2-mkconfig -o /boot/grub2/grub.cfg
   register: command_result
   when:
     - not efi_exists.stat.exists
@@ -21,7 +21,7 @@
     var: command_result.stdout_lines, command_result.stderr_lines
 
 - name: "Run grub-mkconfig (UEFI mode)"
-  command: bash -lc "grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg"
+  command: grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg
   register: command_result
   when:
     - efi_exists.stat.exists
