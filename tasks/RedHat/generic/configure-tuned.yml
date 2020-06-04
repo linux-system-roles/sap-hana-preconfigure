@@ -11,7 +11,7 @@
         enabled: yes
 
     - name: Show active tuned profile
-      command: bash -lc "/usr/sbin/tuned-adm active | awk '/:/{print $NF}'"
+      command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
       check_mode: no
       register: current_profile
       changed_when: false
@@ -21,10 +21,10 @@
     - name: Switch to tuned profile sap-hana if not currently active
       block:
         - name: Switch to tuned profile sap-hana if not currently active
-          shell: /usr/sbin/tuned-adm profile sap-hana
+          command: /usr/sbin/tuned-adm profile sap-hana
         
         - name: Show active tuned profile
-          command: bash -lc "/usr/sbin/tuned-adm active | awk '{print $NF}'"
+          command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
           register: new_profile
           changed_when: false
         - debug:
@@ -35,5 +35,52 @@
 
   when:
     - sap_hana_preconfigure_switch_to_tuned_profile_sap_hana
+    - (ansible_architecture != "ppc64le" or (ansible_architecture == "ppc64le" and ansible_distribution_version != "8.0"))
+
+- block:
+    - name: On RHEL 8.0 on ppc64le, create directory /etc/tuned/sap-hana-ppc64le
+      file:
+        path: /etc/tuned/sap-hana-ppc64le
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: On RHEL 8.0 on ppc64le, copy file /etc/tuned/sap-hana-ppc64le/tuned.conf
+      copy:
+        src: etc/tuned/sap-hana-ppc64le/tuned.conf
+        dest: /etc/tuned/sap-hana-ppc64le/tuned.conf
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes
+
+    - name: On RHEL 8.0 on ppc64le, show active tuned profile again
+      command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
+      check_mode: no
+      register: current_profile_ppc64le
+      changed_when: false
+    - debug:
+        var: current_profile_ppc64le.stdout_lines, current_profile_ppc64le.stderr_lines
+
+    - name: On RHEL 8.0 on ppc64le, switch to tuned profiles sap-hana sap-hana-ppc64le if not currently active
+      block:
+        - name: Switch to tuned profiles sap-hana sap-hana-ppc64le if not currently active
+          command: /usr/sbin/tuned-adm profile sap-hana sap-hana-ppc64le
+        
+        - name: Show active tuned profile
+          command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
+          register: new_profile_ppc64le
+          changed_when: false
+        - debug:
+            var: new_profile_ppc64le.stdout_lines, new_profile_ppc64le.stderr_lines
+
+      when:
+        - current_profile_ppc64le.stdout != 'sap-hana sap-hana-ppc64le'
+
+  when:
+    - sap_hana_preconfigure_switch_to_tuned_profile_sap_hana
+    - ansible_architecture == "ppc64le"
+    - ansible_distribution_version == "8.0"
 
 ...

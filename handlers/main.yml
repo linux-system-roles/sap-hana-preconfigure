@@ -1,16 +1,11 @@
 ---
 
-#- name: sysctl -p /etc/sysctl.d/sap_hana.conf
-#  shell: sysctl -p /etc/sysctl.d/sap_hana.conf
-
-- name: regenerate grub2 conf
+- name: "Regenerate grub2 conf handler"
   import_tasks: tasks/RedHat/generic/regenerate-grub2-conf.yml
+  when: sap_hana_preconfigure_run_grub2_mkconfig|d(true)
 
-# Required for IBM SAP Note 
-- name: restart multipathd
-  service:
-           name: multipathd
-           state: restarted
+- name: "Reboot handler"
+  fail:
+    msg: Reboot is required!
+  when: sap_hana_preconfigure_fail_if_reboot_required|d(true)
 
-- name: activate MTU size
-  command: "ip link set mtu 9000 dev eth0"

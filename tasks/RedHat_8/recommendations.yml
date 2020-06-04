@@ -5,17 +5,17 @@
 ## TODO: Next task should be moved to sap-deploy, or sap-hostagent install !
 - name: ensure sapsys group and sapadm user are created 
   block:
-          - name: ensure sapsys group exists      
-            group: 
-              name: sapsys 
-              gid: "{{ sap_sapsys_gid }}"
-          - name: ensure sapadm user exists
-            user:
-              name: sapadm
-              update_password: on_create
-              uid: "{{ sap_sapadm_uid }}"
-              group: sapsys
-              password: "{{ sap_sapadm_pw_clear|password_hash('sha512') }}"
+    - name: ensure sapsys group exists      
+      group: 
+        name: sapsys 
+        gid: "{{ sap_sapsys_gid }}"
+    - name: ensure sapadm user exists
+      user:
+        name: sapadm
+        update_password: on_create
+        uid: "{{ sap_sapadm_uid }}"
+        group: sapsys
+        password: "{{ sap_sapadm_pw_clear|password_hash('sha512') }}"
   when:
     - sap_sapsys_gid is defined
     - sap_sapadm_uid is defined

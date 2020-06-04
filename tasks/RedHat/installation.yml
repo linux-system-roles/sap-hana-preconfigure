@@ -9,40 +9,61 @@
 #
 ##########################################################################################
 
-#- name: Enable Debugging
-#  debug:
-#    verbosity: "{{ debuglevel }}"
-#
-- name: ensure required packagegroups are installed
+- block:
+# repos required for SAP HANA on RHEL 7 and RHEL 8:
+  - set_fact:
+      __sap_hana_preconfigure_required_repos: "{{ lookup('vars','sap_hana_preconfigure_req_repos_RedHat_' +
+      ansible_distribution_major_version|string + '_' + ansible_architecture|string) }}"
+
+  - name: Enable E4S repositories
+    rhsm_repository:
+      name: "{{ __sap_hana_preconfigure_required_repos }}"
+      state: present
+
+  when: sap_hana_preconfigure_enable_sap_hana_repos
+  
+#- name: Ensure that the RHEL minor relase is fixed
+#  rhsm_release:
+#    release: "{{ ansible_distribution_version }}"
+
+- name: Detect if the minor RHEL release is set
+  shell: subscription-manager release --show | awk '{print $NF}'
+  register: subscription_manager_release_result
+  changed_when: false
+  when:
+    - sap_hana_preconfigure_set_minor_release
+
+- name: Set the minor RHEL release
+  shell: subscription-manager release --set="{{ ansible_distribution_version }}"
+  when:
+    - sap_hana_preconfigure_set_minor_release
+    - subscription_manager_release_result.stdout != ansible_distribution_version
+
+- name: Ensure required package groups are installed
   package: 
     state: present 
-    name: "{{ sap_hana_preconfigure_packagegroups }}"
-    update_only: true
-  check_mode: "{{ sap_hana_preconfigure_installation_check_only }}"
+    name: "{{ __sap_hana_preconfigure_packagegroups }}"
 
-- name: ensure required packages are installed
+- name: Ensure required packages are installed
   package:
     state: present
-    name: "{{ sap_hana_preconfigure_packages }}"
-  check_mode: "{{ sap_hana_preconfigure_installation_check_only }}"
+    name: "{{ __sap_hana_preconfigure_packages }}"
   register: sap_hana_preconfigure_register_groupinstall
 
 - name: Get status of installed packages
   yum:
-    name: "{{ sap_hana_preconfigure_packages }}"
+    name: "{{ __sap_hana_preconfigure_packages }}"
   register: result
   ignore_errors: True
   changed_when: false
 - debug:
     var: result.results
 
-- name: ensure system is updated to the latest patchlevel
+- name: Ensure system is updated to the latest patchlevel
   package:
     state: latest
     name: "*"
   when: sap_hana_preconfigure_update|bool
-  check_mode: "{{ sap_hana_preconfigure_installation_check_only }}"
-  register: sap_hana_preconfigure_register_packageinstall
 
 ### If this task fails, you need to enable the IBM PowerTools repository
 ### see https://www14.software.ibm.com/support/customercare/sas/f/lopdiags/home.html for details
@@ -54,63 +75,22 @@
 - name: Install IBM Tools 
   package:
     state: latest
-    name: "{{ sap_hana_preconfigure_required_ppc64le }}"
+    name: "{{ __sap_hana_preconfigure_required_ppc64le }}"
   when: ansible_architecture == "ppc64le" 
 
-- name: check if reboot is required (7.3+)
-  command: needs-restarting -r
-  register: sap_hana_preconfigure_register_reboot_required
-  changed_when: false
-  failed_when: sap_hana_preconfigure_register_reboot_required.rc > 1 
-  when: ( ansible_distribution_version >= "7.3" ) and ( ansible_distribution_major_version == "7" )
-
-# This did not work properly because, the last register variable is used in the next when statement.
-#- name: check if reboot is required (7.2)
-#  command: needs-restarting
-#  register: reboot_required_72
-#  changed_when: false
-#  failed_when: reboot_required_72.rc > 1
-#  when: ( ansible_distribution_version == "7.2" ) and ( ansible_distribution_major_version == "7" )
- 
-  # Not sure if this works for RHEL 7.2, 7.3, tested on 7.4+
-- name: Debug output of Reboot requirement
-  debug:
-    var: sap_hana_preconfigure_register_reboot_required 
-#   msg: "Reboot required: {{ sap_hana_preconfigure_register_reboot_required.rc }}"
-
-- name: Reboot if required
-  block:
-      # Reboot the server now and wait until it is back
-      # inspired by https://support.ansible.com/hc/en-us/articles/201958037-Reboot-a-server-and-wait-for-it-to-come-back
-      - name: restart machine if required
-        shell: sleep 2 && shutdown -r now "Ansible updates triggered"
-        async: 1
-        poll: 0
-        become: true
-        ignore_errors: true
-
-      - name: waiting for server to come back
-        local_action: wait_for host={{ inventory_hostname }} port=22 state=started delay=90 sleep=2 timeout={{ sap_hana_preconfigure_reboot_timeout }}
-        become: false
-  when: sap_hana_preconfigure_reboot_after_update == true and sap_hana_preconfigure_register_reboot_required.rc == 1
-
-### At this point the system should be updated and installed accordingly. 
-### We now check that the irequired minimum releases of the current target OS have been installed
-# Minimum supported Supported Kernel versions and patches to use with certified Hardware for SAP HANA on RHEL 7
-
-- name: ensure minimum packages are installed
+- name: Ensure minimum packages are installed
   block:
     - name: check if minimum release needs to be installed
       shell: |
-             set -x
-             required_pkg={{ pkg | join('-') }}
-             newest=$(echo -e "$required_pkg\n$(rpm -q {{ pkg[0] }} )"| sort -V | tail -1)
-             if [ $newest == $required_pkg ]; then
-                echo $newest
-             fi
+        set -x
+        required_pkg={{ pkg | join('-') }}
+        newest=$(echo -e "$required_pkg\n$(rpm -q {{ pkg[0] }} )"| sort -V | tail -1)
+        if [ $newest == $required_pkg ]; then
+           echo $newest
+        fi
       loop: "{{ sap_hana_preconfigure_min_pkgs }}"
       loop_control:
-               loop_var: pkg
+        loop_var: pkg
       check_mode: no
       register: sap_hana_preconfigure_register_minpkglist
       changed_when: false
@@ -124,17 +104,43 @@
         sap_hana_preconfigure_fact_minpkglist: "{{ sap_hana_preconfigure_fact_minpkglist | difference(['']) + [ pkg.stdout ] }}"
       loop: "{{ sap_hana_preconfigure_register_minpkglist.results }}"
       loop_control:
-               loop_var: pkg
+        loop_var: pkg
     - debug: var=sap_hana_preconfigure_fact_minpkglist
 
     - name: Install minimum packages if required
       yum:
-             name: "{{  sap_hana_preconfigure_fact_minpkglist }}"
-             state: present
+        name: "{{  sap_hana_preconfigure_fact_minpkglist }}"
+        state: present
       when: not ( sap_hana_preconfigure_fact_minpkglist == [ "" ] )
 
   when: 
     - sap_hana_preconfigure_min_package_check|bool
     - not( (sap_hana_preconfigure_min_pkgs is undefined) or (sap_hana_preconfigure_min_pkgs is none) or (sap_hana_preconfigure_min_pkgs | trim == '') ) 
+
+- set_fact:
+    needs_restarting_command: "needs-restarting -r"
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '7'
+
+- set_fact:
+    needs_restarting_command: "yum needs-restarting -r"
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '8'
+
+- name: Check if system needs to be restarted
+  command: "{{ needs_restarting_command }}"
+  register: needs_restarting_result
+  ignore_errors: true
+  changed_when: false
+  args:
+    warn: false
+  check_mode: false
+
+- name: Call Reboot handler if necessary
+  command: /bin/true
+  notify: "Reboot handler"
+  when: needs_restarting_result.rc == 1
 
 ...

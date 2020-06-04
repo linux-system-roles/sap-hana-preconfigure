@@ -10,7 +10,7 @@
     line: "\\1 {{ item }}\""
   with_items:
      - "elevator=noop"
-  notify: regenerate grub2 conf
+  notify: "Regenerate grub2 conf handler"
   when: ansible_architecture == "x86_64" and
         ansible_os_family == 'Suse' and
         ansible_distribution_major_version == '15'

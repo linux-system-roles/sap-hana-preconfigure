@@ -15,7 +15,7 @@
         line: "\\1 {{ line_item }}\""
       with_items:
          - "transparent_hugepage=never"
-      notify: regenerate grub2 conf
+      notify: "Regenerate grub2 conf handler"
       when:
         - ansible_os_family == 'RedHat'
         - sap_hana_preconfigure_modify_grub_cmdline_linux
