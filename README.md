@@ -74,7 +74,7 @@ sap_hana_preconfigure_config_all
 ```
 
 ### Perform installation or configuration steps, or both
-If you have set sap_hana_preconfigure_config_all (see above) to `no`, you can limit the scope of the role to only execute the installation or the configuration steps. For this purpose, set one of the following variables, or both, to `yes`. The default for both is `no`.
+If you have set `sap_hana_preconfigure_config_all` (see above) to `no`, you can limit the scope of the role to only execute the installation or the configuration steps. For this purpose, set one of the following variables, or both, to `yes`. The default for both is `no`.
 ```yaml
 sap_hana_preconfigure_installation
 sap_hana_preconfigure_configuration
