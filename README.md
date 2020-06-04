@@ -56,7 +56,9 @@ If you want to use this system in production, make sure that the time service is
 
 Note
 ----
-For finding out which SAP notes will be used by this role, please check the contents of variable __sap_hana_preconfigure_sapnotes in files vars/*.yml (choose the file which matches your OS distribution and version)
+For finding out which SAP notes will be used by this role, please check the contents of variable `__sap_hana_preconfigure_sapnotes` in files `vars/*.yml` (choose the file which matches your OS distribution and version).
+
+Before running this role on a RHEL on ppc64le system, make sure that you have access to the required IBM repos/packages as mentioned in the comments to variable `__sap_hana_preconfigure_required_ppc64le`, see files `vars/*.yml`.
 
 Do not run this role against an SAP HANA or other production system. The role will enforce a certain configuration on the managed node(s), which might not be intended.
 
@@ -118,26 +120,27 @@ sap_hana_preconfigure_fail_if_reboot_required
 ```
 
 ### Switch to tuned profile sap-hana
-If you do not want to have the role switch to tuned profile sap-hana, set the following variable to `no`. Default is `yes`.
+If you do not want the role to switch to tuned profile sap-hana, set the following variable to `no`. Default is `yes`. In case of `yes`, variable `sap_hana_preconfigure_use_tuned_where_possible` (see below) should be set to `yes` as well.
 ```yaml
 sap_hana_preconfigure_switch_to_tuned_profile_sap_hana
 ```
 
 ### Use tuned profile sap-hana where possible
-If you do not want to use the tuned profile sap-hana for configuring kernel parameters (where possible), and have the role configure them instead, set the following variable to `no`. Default is `yes`.
+If you do not want to use the tuned profile sap-hana for configuring kernel parameters (where possible), and have the role configure them by changing the kernel command line instead, set the following variable to `no`. Default is `yes`. In case of `yes`, variable `sap_hana_preconfigure_switch_to_tuned_profile_sap_hana` (see above) should be set to `yes` as well.
+Note: If this variable is set to `yes`, the role will not modify GRUB_CMDLINE_LINUX in /etc/default/grub, no matter how `sap_hana_preconfigure_modify_grub_cmdline_linux` (see below) is set.
 ```yaml
 sap_hana_preconfigure_use_tuned_where_possible
 ```
 
 ### Modify grub2 line GRUB_CMDLINE_LINUX
-If you do not want to modify the grub2 line GRUB_CMDLINE_LINUX in /etc/default/grub, set the following variable to no. The default is `yes`.
-Setting this variable to `no` probably only makes sense if `sap_hana_preconfigure_run_grub2_mkconfig` (see below) is also set to `no`.
+If you do not want to modify the grub2 line GRUB_CMDLINE_LINUX in /etc/default/grub, set the following variable to `no`. The default is `yes`. Setting this variable to `no` probably only makes sense if `sap_hana_preconfigure_run_grub2_mkconfig` (see below) is also set to `no`.
+Note: Even if this variable is set to `yes`, GRUB_CMDLINE_LINUX will only be modified if variable `sap_hana_preconfigure_use_tuned_where_possible` (see above) is set to `no`.
 ```yaml
 sap_hana_preconfigure_modify_grub_cmdline_linux
 ```
 
 ### Run grub2-mkconfig
-If you do not want to run grub2-mkconfig to regenerate the grub2 config file, set the following variable to `no`. The default is `yes`. Setting this variable to `no` probably only makes sense if `sap_hana_preconfigure_modify_grub_cmdline_linux` (see above) is also set to `no`.
+If you do not want to run grub2-mkconfig to regenerate the grub2 config file after a change to /etc/default/grub, set the following variable to `no`. The default is `yes`. Setting this variable to `no` probably only makes sense if `sap_hana_preconfigure_modify_grub_cmdline_linux` (see above) is also set to `no`.
 ```yaml
 sap_hana_preconfigure_run_grub2_mkconfig
 ```
