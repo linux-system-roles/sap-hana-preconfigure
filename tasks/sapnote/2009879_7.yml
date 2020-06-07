@@ -96,10 +96,7 @@
 ### NYI: Set proper firewall rules if SID/instance number is known
 ###
 - include_tasks: ../RedHat/generic/disable-firewall.yml
-# - name: 3.15 Ensure firewall is disabled when instance ID unknown
-#   service: name=firewalld state=stopped enabled=no
-#   ignore_errors: True
-
+  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2009879_3_15|d(false)
 
 ### Firewall Calculation for SID=xx
 ##################################################################
