@@ -21,7 +21,7 @@
           file:
             path: /etc/init.d/boot.local
             state: touch
-            mode: 0644
+            mode: 0755
 
         - name: Configure EPB at boot time
           lineinfile:
