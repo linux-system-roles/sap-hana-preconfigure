@@ -89,6 +89,7 @@ sap_hana_preconfigure_2292690_[01...07,09,10], example: sap_hana_preconfigure_22
 sap_hana_preconfigure_2009879_3_9
 sap_hana_preconfigure_2009879_3_13
 sap_hana_preconfigure_2009879_3_14_[1...4]
+sap_hana_preconfigure_2009879_3_15
 sap_hana_preconfigure_2382421
 ```
 
