@@ -47,6 +47,7 @@
   register: result
   ignore_errors: True
   changed_when: false
+
 - debug:
     var: result.results
 
@@ -67,6 +68,18 @@
   package:
     state: latest
     name: "{{ __sap_hana_preconfigure_required_ppc64le }}"
+  when: ansible_architecture == "ppc64le" 
+
+- name: Get status of installed IBM Tools
+  yum:
+    name: "{{ __sap_hana_preconfigure_required_ppc64le }}"
+  register: ibm_result
+  ignore_errors: True
+  changed_when: false
+  when: ansible_architecture == "ppc64le" 
+
+- debug:
+    var: ibm_result.results
   when: ansible_architecture == "ppc64le" 
 
 - name: Ensure minimum packages are installed
