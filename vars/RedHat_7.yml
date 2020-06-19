@@ -123,19 +123,6 @@ __sap_hana_preconfigure_packages:
 # libtool-ltdl: See https://answers.sap.com/questions/476177/hana-db-installation-ended-with-exit-code-127.html
 # This is required since HANA 2 SPS 03, and so we always install it.
 
-__sap_hana_preconfigure_packagegroups_x86_64:
-  - "@base"
-  - "@large-systems"
-  - "@network-file-system-client"
-  - "@performance"
-  - "@compat-libraries"
-
-__sap_hana_preconfigure_packagegroups_ppc64le:
-  - "@base"
-  - "@compat-libraries"
-
-__sap_hana_preconfigure_packagegroups: "{{ lookup('vars','__sap_hana_preconfigure_packagegroups_' + ansible_architecture|string ) }}"
-
 # Network related kernel parameters as set in SAP Note 2382421:
 __sap_hana_preconfigure_kernel_parameters_default:
 # The following two parameter should always be set:

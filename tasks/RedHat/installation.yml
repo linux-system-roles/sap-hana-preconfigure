@@ -22,10 +22,6 @@
 
   when: sap_hana_preconfigure_enable_sap_hana_repos
   
-#- name: Ensure that the RHEL minor relase is fixed
-#  rhsm_release:
-#    release: "{{ ansible_distribution_version }}"
-
 - name: Detect if the minor RHEL release is set
   shell: subscription-manager release --show | awk '{print $NF}'
   register: subscription_manager_release_result
@@ -38,11 +34,6 @@
   when:
     - sap_hana_preconfigure_set_minor_release
     - subscription_manager_release_result.stdout != ansible_distribution_version
-
-- name: Ensure required package groups are installed
-  package: 
-    state: present 
-    name: "{{ __sap_hana_preconfigure_packagegroups }}"
 
 - name: Ensure required packages are installed
   package:
@@ -84,8 +75,10 @@
       shell: |
         set -x
         required_pkg={{ pkg | join('-') }}
-        newest=$(echo -e "$required_pkg\n$(rpm -q {{ pkg[0] }} )"| sort -V | tail -1)
-        if [ $newest == $required_pkg ]; then
+#        newest=$(echo -e "$required_pkg\n$(rpm -q {{ pkg[0] }} )"| sort -V | tail -1)
+        newest=$(echo -e "$required_pkg\n$(rpm -q {{ pkg[0] }} )"| awk '{gsub ("\\.el", ".0.0."); print}' | sort -V | tail -1)
+#        if [ $newest == $required_pkg ]; then
+        if [ $newest == ${required_pkg/.el/.0.0.} ]; then
            echo $newest
         fi
       loop: "{{ sap_hana_preconfigure_min_pkgs }}"

@@ -83,9 +83,6 @@ __sap_hana_preconfigure_packages:
 # SAP NOTE 2777782:
   - tuned-profiles-sap-hana
 
-__sap_hana_preconfigure_packagegroups: 
-  - "@base"
-
 # Network related kernel parameters as set in SAP Note 2382421:
 __sap_hana_preconfigure_kernel_parameters_default:
 # The following two parameter should always be set:
