@@ -112,43 +112,20 @@
         {% endfor %}
         {{ ns.pkgs }}
 
-#    - name: check if minimum release needs to be installed
-#      shell: |
-#        set -x
-#        required_pkg={{ pkg | join('-') }}
-#        newest=$(echo -e "$required_pkg\n$(rpm -q {{ pkg[0] }} )"| sed "s,\.el,.0.0.," | sort -V | tail -1)
-#        if [ $newest == ${required_pkg/.el/.0.0.} ]; then
-#           echo $newest
-#        fi
-#      loop: "{{ __sap_hana_preconfigure_min_pkgs }}"
-#      loop_control:
-#        loop_var: pkg
-#      check_mode: no
-#      register: sap_hana_preconfigure_register_minpkglist
-#      changed_when: false
-
-#    - name: Initialize an empty list for our strings
-#      set_fact:
-#        sap_hana_preconfigure_fact_minpkglist: []
-
-#    - name: Create list of packages to be installed
-#      set_fact:
-#        sap_hana_preconfigure_fact_minpkglist: "{{ sap_hana_preconfigure_fact_minpkglist | difference(['']) + [ pkg.stdout ] }}"
-#      loop: "{{ sap_hana_preconfigure_register_minpkglist.results }}"
-#      loop_control:
-#        loop_var: pkg
-
   - debug: var=sap_hana_preconfigure_fact_minpkglist
 
+#    yum:
   - name: Install minimum packages if required
-    yum:
+    package:
       name: "{{ sap_hana_preconfigure_fact_minpkglist }}"
       state: present
-    when: not ( sap_hana_preconfigure_fact_minpkglist == [ "" ] )
+    when: sap_hana_preconfigure_fact_minpkglist | d([])
+#    when: not ( sap_hana_preconfigure_fact_minpkglist == [ "" ] )
 
   when: 
     - sap_hana_preconfigure_min_package_check|bool
-    - not( (__sap_hana_preconfigure_min_pkgs is undefined) or (__sap_hana_preconfigure_min_pkgs is none) or (__sap_hana_preconfigure_min_pkgs | trim == '') ) 
+    - __sap_hana_preconfigure_min_pkgs | d([])
+#    - not( (__sap_hana_preconfigure_min_pkgs is undefined) or (__sap_hana_preconfigure_min_pkgs is none) or (__sap_hana_preconfigure_min_pkgs | trim == '') ) 
 
 - set_fact:
     needs_restarting_command: "needs-restarting -r"
