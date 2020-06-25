@@ -19,39 +19,52 @@ __sap_hana_preconfigure_sapnotes:
   - "2382421"
 #  - "2235581" # no specific requirements for RHEL 8 yet
 
-# The packages for RHEL8 are almost the same as for RHEL7.
-# IBM publishes the packages as a repository here:
-# https://public.dhe.ibm.com/software/server/POWER/Linux/yum/OSS/RHEL/8/ppc64le/
-# To install the packages, you need to create an appropriate repofile 
-# or clone this repository (e.g. with Satellite product)
-__sap_hana_preconfigure_required_ppc64le:
-  - librtas
-  - src
-  - rsct.core.utils
-  - rsct.core
-  - rsct.basic
-  - rsct.opt.storagerm
-  - devices.chrp.base.ServiceRM
-  - DynamicRM
-  - ncurses-libs
-  - readline
-  - sqlite
-  - sg3_utils
-  - libgcc
-  - libstdc++
-  - zlib
-  - iprutils
-  - lsvpd
-  - libvpd
-  - libservicelog
-  - servicelog
-  - powerpc-utils
-#  - powerpc-utils-python # this package is no longer available for RHEL8
-  - ppc64-diag
-  - IBMinvscout
+# In SAP Note 2777782, certain minimal required packages for the different RHEL 8 minor releases are listed.
+# The following will assign them properly to __sap_hana_preconfigure_min_pkgs.
+# If variable __sap_hana_preconfigure_min_packages_VERSION_ARCH is not defined,
+# variable __sap_hana_preconfigure_min_pkgs will be undefined as well.
 
-# Minimum required package levels for RHEL 8:
-__sap_hana_preconfigure_min_packages_8:
+# Minimum required package levels for RHEL 8.0:
+__sap_hana_preconfigure_min_packages_8_0_x86_64:
+
+__sap_hana_preconfigure_min_packages_8_0_ppc64le:
+  - [ 'kernel' , '4.18.0-80.15.1.el8_0' ]
+
+__sap_hana_preconfigure_min_packages_8_1_x86_64:
+  - [ 'kernel' , '4.18.0-147.5.1.el8_1' ]
+
+__sap_hana_preconfigure_min_packages_8_1_ppc64le:
+  - [ 'kernel' , '4.18.0-147.5.1.el8_1' ]
+
+__sap_hana_preconfigure_min_packages_8_2_x86_64:
+
+__sap_hana_preconfigure_min_packages_8_2_ppc64le:
+
+__sap_hana_preconfigure_min_packages_8_3_x86_64:
+
+__sap_hana_preconfigure_min_packages_8_3_ppc64le:
+
+__sap_hana_preconfigure_min_packages_8_4_x86_64:
+
+__sap_hana_preconfigure_min_packages_8_4_ppc64le:
+
+__sap_hana_preconfigure_min_packages_8_5_x86_64:
+
+__sap_hana_preconfigure_min_packages_8_5_ppc64le:
+
+__sap_hana_preconfigure_min_packages_8_6_x86_64:
+
+__sap_hana_preconfigure_min_packages_8_6_ppc64le:
+
+__sap_hana_preconfigure_min_packages_8_7_x86_64:
+
+__sap_hana_preconfigure_min_packages_8_7_ppc64le:
+
+__sap_hana_preconfigure_min_packages_8_8_x86_64:
+
+__sap_hana_preconfigure_min_packages_8_8_ppc64le:
+
+__sap_hana_preconfigure_min_pkgs: "{{ lookup('vars','__sap_hana_preconfigure_min_packages_' + ansible_distribution_version|string|replace (\".\", \"_\") + '_' + ansible_architecture) }}"
 
 __sap_hana_preconfigure_packages:
 # SAP NOTE 2772999:
@@ -83,8 +96,36 @@ __sap_hana_preconfigure_packages:
 # SAP NOTE 2777782:
   - tuned-profiles-sap-hana
 
-__sap_hana_preconfigure_packagegroups: 
-  - "@base"
+# The packages for RHEL8 are almost the same as for RHEL7.
+# IBM publishes the packages as a repository here:
+# https://public.dhe.ibm.com/software/server/POWER/Linux/yum/OSS/RHEL/8/ppc64le/
+# To install the packages, you need to create an appropriate repofile 
+# or clone this repository (e.g. with Satellite product)
+__sap_hana_preconfigure_required_ppc64le:
+  - librtas
+  - src
+  - rsct.core.utils
+  - rsct.core
+  - rsct.basic
+  - rsct.opt.storagerm
+  - devices.chrp.base.ServiceRM
+  - DynamicRM
+  - ncurses-libs
+  - readline
+  - sqlite
+  - sg3_utils
+  - libgcc
+  - libstdc++
+  - zlib
+  - iprutils
+  - lsvpd
+  - libvpd
+  - libservicelog
+  - servicelog
+  - powerpc-utils
+#  - powerpc-utils-python # this package is no longer available for RHEL8
+  - ppc64-diag
+  - IBMinvscout
 
 # Network related kernel parameters as set in SAP Note 2382421:
 __sap_hana_preconfigure_kernel_parameters_default:
