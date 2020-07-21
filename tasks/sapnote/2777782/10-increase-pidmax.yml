@@ -7,7 +7,7 @@
   sysctl:
     sysctl_file: /etc/sysctl.d/sap.conf
     name: kernel.pid_max
-    value: 4194304
+    value: '4194304'
     state: present
     sysctl_set: yes
     reload: yes

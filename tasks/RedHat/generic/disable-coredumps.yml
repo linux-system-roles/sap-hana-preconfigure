@@ -9,7 +9,7 @@
     domain: "*" 
     limit_item: core 
     limit_type: "{{ line_item }}" 
-    value: 0
+    value: '0'
   with_items:
     - hard
     - soft
