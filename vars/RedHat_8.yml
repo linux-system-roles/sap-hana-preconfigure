@@ -103,6 +103,8 @@ __sap_hana_preconfigure_packages:
 # https://public.dhe.ibm.com/software/server/POWER/Linux/yum/OSS/RHEL/8/ppc64le/
 # To install the packages, you need to create an appropriate repofile 
 # or clone this repository (e.g. with Satellite product)
+__sap_hana_preconfigure_ibm_power_repo_url: 'http://public.dhe.ibm.com/software/server/POWER/Linux/yum/download/ibm-power-repo-lastest.noarch.rpm'
+
 __sap_hana_preconfigure_required_ppc64le:
   - librtas
   - src

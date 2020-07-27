@@ -114,6 +114,13 @@ If you want the role to set the RHEL release to a certain fixed minor release (a
 sap_hana_preconfigure_set_minor_release
 ```
 
+### URL for IBM service and productivity tools for POWER (ppc64le only)
+The following variable is set to the location of package ibm-power-repo-lastest.noarch.rpm or a package with similar contents, as defined by variable __sap_hana_preconfigure_ibm_power_repo_url in vars/RedHat_7.yml and vars/RedHat_8.yml.
+You can replace it by your own URL by setting this variable to a different URL.
+```yaml
+sap_hana_preconfigure_ibm_power_repo_url
+```
+
 ### How to behave if reboot is required
 The following variable will ensure that the role will fail if a reboot is required, if undefined or set to `yes`, which is also the default. Rebooting the managed node can be done in the playbook which is calling this role. By setting the variable to `no`, the role will not fail if a reboot is required.
 ```yaml

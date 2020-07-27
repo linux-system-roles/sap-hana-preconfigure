@@ -59,28 +59,37 @@
 
 ### If this task fails, you need to enable the IBM PowerTools repository
 ### see https://www14.software.ibm.com/support/customercare/sas/f/lopdiags/home.html for details
-##
-### # yum -y install http://public.dhe.ibm.com/software/server/POWER/Linux/yum/download/ibm-power-repo-latest.noarch.rpm
-### # /opt/ibm/lop/configure
-### # yum -y install ibm-power-managed-rhel7
-###
-- name: Install IBM Tools 
+
+- name: Install the ibm-power-repo package
+  yum:
+    name: "{{ sap_hana_preconfigure_ibm_power_repo_url }}"
+    state: present
+  when: ansible_architecture == "ppc64le"
+
+- name: Accept the license for the IBM tools
+  shell: |
+    MORE=+1000 /opt/ibm/lop/configure <<-EOF
+    y
+    EOF
+  when: ansible_architecture == "ppc64le"
+
+- name: Install IBM tools
   package:
     state: latest
     name: "{{ __sap_hana_preconfigure_required_ppc64le }}"
-  when: ansible_architecture == "ppc64le" 
+  when: ansible_architecture == "ppc64le"
 
-- name: Get status of installed IBM Tools
+- name: Get status of installed IBM tools
   yum:
     name: "{{ __sap_hana_preconfigure_required_ppc64le }}"
   register: ibm_result
   ignore_errors: True
   changed_when: false
-  when: ansible_architecture == "ppc64le" 
+  when: ansible_architecture == "ppc64le"
 
 - debug:
     var: ibm_result.results
-  when: ansible_architecture == "ppc64le" 
+  when: ansible_architecture == "ppc64le"
 
 - name: Ensure minimum packages are installed
   block:
