@@ -58,8 +58,6 @@ Note
 ----
 For finding out which SAP notes will be used by this role, please check the contents of variable `__sap_hana_preconfigure_sapnotes` in files `vars/*.yml` (choose the file which matches your OS distribution and version).
 
-Before running this role on a RHEL on ppc64le system, make sure that you have access to the required IBM repos/packages as mentioned in the comments to variable `__sap_hana_preconfigure_required_ppc64le`, see files `vars/*.yml`.
-
 Do not run this role against an SAP HANA or other production system. The role will enforce a certain configuration on the managed node(s), which might not be intended.
 
 Role Variables
