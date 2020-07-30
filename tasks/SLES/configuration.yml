@@ -12,6 +12,6 @@
   include_tasks: "sapnotes/{{ item }}/configuration.yml"
   with_items: "{{ __sap_hana_preconfigure_sapnotes | difference(['']) }}"
      
-- include: "{{ './' + ansible_distribution + ansible_distribution_major_version + '/recommendations.yml' }}"
+- include_tasks: "{{ './' + ansible_distribution + ansible_distribution_major_version + '/recommendations.yml' }}"
 
 ...
