@@ -14,7 +14,7 @@
 
 - name: "1275776 - Configuration saptune sap note 1275776"
   command: "saptune note apply 1275776"
-    
+
 - name: "1275776 - Configuration saptune sap note 1984787"
   command: "saptune note apply 1984787"
 

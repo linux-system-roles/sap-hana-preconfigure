@@ -5,7 +5,7 @@
 #    verbosity: "{{ debuglevel }}"
 #
 - name: list of required SAP Notes
-  debug: 
+  debug:
     var: __sap_hana_preconfigure_sapnotes | difference([''])
 
 # We want to disable firewalld, so we need to check if firewalld is installed
@@ -13,10 +13,10 @@
   package_facts:
     manager: auto
 
-- name: include configuration actions for required sapnotes 
+- name: include configuration actions for required sapnotes
   include_tasks: "sapnote/{{ item }}.yml"
   with_items: "{{ __sap_hana_preconfigure_sapnotes | difference(['']) }}"
-     
+
 - include_tasks: "{{ './' + ansible_distribution + '_' + ansible_distribution_major_version + '/recommendations.yml' }}"
 
 ...

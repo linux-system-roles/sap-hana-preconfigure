@@ -1,10 +1,10 @@
 ---
-- name: 2684254 - Increase UserTasksMax 
+- name: 2684254 - Increase UserTasksMax
   copy:
     dest: "/etc/systemd/logind.conf.d/sap.conf"
     content: |
       [Login]
-      UserTasksMax=infinity 
+      UserTasksMax=infinity
 #- name: Turn off auto-numa balancing
 #  sysctl:
 #          sysctl_file: /etc/sysctl.d/sap_hana.conf

@@ -22,7 +22,7 @@
       block:
         - name: Switch to tuned profile sap-hana if not currently active
           command: /usr/sbin/tuned-adm profile sap-hana
-        
+
         - name: Show active tuned profile
           command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
           register: new_profile
@@ -67,7 +67,7 @@
       block:
         - name: Switch to tuned profiles sap-hana sap-hana-ppc64le if not currently active
           command: /usr/sbin/tuned-adm profile sap-hana sap-hana-ppc64le
-        
+
         - name: Show active tuned profile
           command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
           register: new_profile_ppc64le

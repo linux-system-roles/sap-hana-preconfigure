@@ -36,7 +36,7 @@
   when: not( (sap_hana_preconfigure_ppcle_tso_if is undefined) or (sap_hana_preconfigure_ppcle_tso_if is none) or (sap_hana_preconfigure_ppcle_tso_if | trim == '') )
   loop_control:
     loop_var: line_item
-  
+
 - name: add largesend parameter
   sysctl:
     sysctl_file: /etc/sysctl.d/ibm_largesend.conf

@@ -19,7 +19,7 @@
   command: grub2-mkconfig -o /boot/grub2/grub.cfg
   register: command_result
   listen: "Regenerate grub2 conf handler"
-  when: 
+  when:
     - not efi_exists.stat.exists
     - sap_hana_preconfigure_run_grub2_mkconfig|d(true)
 

@@ -1,6 +1,6 @@
 ---
 
-- name: 2588899 - I/O scheduler 
+- name: 2588899 - I/O scheduler
   lineinfile:
     path: /etc/default/grub
     backup: yes

@@ -21,7 +21,7 @@
       state: present
 
   when: sap_hana_preconfigure_enable_sap_hana_repos
-  
+
 - name: Detect if the minor RHEL release is set
   shell: subscription-manager release --show | awk '{print $NF}'
   register: subscription_manager_release_result
@@ -131,7 +131,7 @@
     when: sap_hana_preconfigure_fact_minpkglist | d([])
 #    when: not ( sap_hana_preconfigure_fact_minpkglist == [ "" ] )
 
-  when: 
+  when:
     - sap_hana_preconfigure_min_package_check|bool
     - __sap_hana_preconfigure_min_pkgs | d([])
 #    - not( (__sap_hana_preconfigure_min_pkgs is undefined) or (__sap_hana_preconfigure_min_pkgs is none) or (__sap_hana_preconfigure_min_pkgs | trim == '') ) 
