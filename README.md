@@ -112,6 +112,12 @@ If you want the role to set the RHEL release to a certain fixed minor release (a
 sap_hana_preconfigure_set_minor_release
 ```
 
+### Add the repository for IBM service and productivity tools for POWER (ppc64le only)
+In case you do *not* want to automatically add the repository for the IBM service and productivity tools, set the following variable to `no`. Default is `yes`, meaning that the role will download and install the package specified in variable sap_hana_preconfigure_ibm_power_repo_url (see below) and also run the command /opt/ibm/lop/configure to accept the license.
+```yaml
+sap_hana_preconfigure_add_ibm_power_repo
+```
+
 ### URL for IBM service and productivity tools for POWER (ppc64le only)
 The following variable is set to the location of package ibm-power-repo-lastest.noarch.rpm or a package with similar contents, as defined by variable __sap_hana_preconfigure_ibm_power_repo_url in vars/RedHat_7.yml and vars/RedHat_8.yml.
 You can replace it by your own URL by setting this variable to a different URL.
