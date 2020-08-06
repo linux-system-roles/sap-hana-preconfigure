@@ -58,8 +58,6 @@ Note
 ----
 For finding out which SAP notes will be used by this role, please check the contents of variable `__sap_hana_preconfigure_sapnotes` in files `vars/*.yml` (choose the file which matches your OS distribution and version).
 
-Before running this role on a RHEL on ppc64le system, make sure that you have access to the required IBM repos/packages as mentioned in the comments to variable `__sap_hana_preconfigure_required_ppc64le`, see files `vars/*.yml`.
-
 Do not run this role against an SAP HANA or other production system. The role will enforce a certain configuration on the managed node(s), which might not be intended.
 
 Role Variables
@@ -112,6 +110,19 @@ sap_hana_preconfigure_req_repos_RedHat_8_ppc64le
 If you want the role to set the RHEL release to a certain fixed minor release (according to installed RHEL release), set the following variable to `yes`. Default is `no`.
 ```yaml
 sap_hana_preconfigure_set_minor_release
+```
+
+### Add the repository for IBM service and productivity tools for POWER (ppc64le only)
+In case you do *not* want to automatically add the repository for the IBM service and productivity tools, set the following variable to `no`. Default is `yes`, meaning that the role will download and install the package specified in variable sap_hana_preconfigure_ibm_power_repo_url (see below) and also run the command /opt/ibm/lop/configure to accept the license.
+```yaml
+sap_hana_preconfigure_add_ibm_power_repo
+```
+
+### URL for IBM service and productivity tools for POWER (ppc64le only)
+The following variable is set to the location of package ibm-power-repo-lastest.noarch.rpm or a package with similar contents, as defined by variable __sap_hana_preconfigure_ibm_power_repo_url in vars/RedHat_7.yml and vars/RedHat_8.yml.
+You can replace it by your own URL by setting this variable to a different URL.
+```yaml
+sap_hana_preconfigure_ibm_power_repo_url
 ```
 
 ### How to behave if reboot is required

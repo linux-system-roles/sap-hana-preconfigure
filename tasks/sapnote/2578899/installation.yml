@@ -10,7 +10,7 @@
       - libopenssl1_0_0
 
 
-- name: 2578899 - sysstat - monitoring data 
+- name: 2578899 - sysstat - monitoring data
   package:
     name: "sysstat"
 

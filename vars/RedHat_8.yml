@@ -25,11 +25,13 @@ __sap_hana_preconfigure_sapnotes:
 # variable __sap_hana_preconfigure_min_pkgs will be undefined as well.
 
 # Minimum required package levels for RHEL 8.0:
+# Attention: SAP note 2812427 requires more recent package kernel-4.18.0-80.15.1.el8_0 also for x86_64, covered by role sap-preconfigure
 __sap_hana_preconfigure_min_packages_8_0_x86_64:
 
 __sap_hana_preconfigure_min_packages_8_0_ppc64le:
   - [ 'kernel' , '4.18.0-80.15.1.el8_0' ]
 
+# Minimum required package levels for RHEL 8.1:
 __sap_hana_preconfigure_min_packages_8_1_x86_64:
   - [ 'kernel' , '4.18.0-147.5.1.el8_1' ]
 
@@ -101,6 +103,8 @@ __sap_hana_preconfigure_packages:
 # https://public.dhe.ibm.com/software/server/POWER/Linux/yum/OSS/RHEL/8/ppc64le/
 # To install the packages, you need to create an appropriate repofile 
 # or clone this repository (e.g. with Satellite product)
+__sap_hana_preconfigure_ibm_power_repo_url: 'http://public.dhe.ibm.com/software/server/POWER/Linux/yum/download/ibm-power-repo-latest.noarch.rpm'
+
 __sap_hana_preconfigure_required_ppc64le:
   - librtas
   - src

@@ -5,11 +5,11 @@
 #    verbosity: "{{ debuglevel }}"
 #
 - name: list of required SAP Notes
-  debug: 
+  debug:
     var: __sap_hana_preconfigure_sapnotes | difference([''])
 
-- name: include configuration actions for required sapnotes 
+- name: include configuration actions for required sapnotes
   include_tasks: "tasks/sapnote/{{ item }}/installation.yml"
   with_items: "{{ __sap_hana_preconfigure_sapnotes | difference(['']) }}"
-     
+
 ...

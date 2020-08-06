@@ -3,11 +3,11 @@
 ## This creates the SAP Users in case you define them in your playbook
 ## This has been done for providers who want to create the SAP users before handing 
 ## over the image to clients
-- name: ensure sapadm group and sapadm user is created 
+- name: ensure sapadm group and sapadm user is created
   block:
-    - name: ensure sapdm user exists      
-      group: 
-        name: sapsys 
+    - name: ensure sapdm user exists
+      group:
+        name: sapsys
         gid: "{{ sap_sapsys_gid }}"
     - name: ensure sapadm user exists
       user:
@@ -19,7 +19,7 @@
     - sap_sapsys_gid is defined
     - sap_sapadm_uid is defined
     - sap_sapadm_pw_clear is defined
-    
+
 ### Disable tempfile handling, otherwise things are gone after reboot
 #     already in sap-preconfigure, sapnote/2002167/06-additional-notes-for-installing-sap-systems.yml
 # - name: disable temp file handling for SAP applications
