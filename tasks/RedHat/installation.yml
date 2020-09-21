@@ -64,6 +64,7 @@
   yum:
     name: "{{ sap_hana_preconfigure_ibm_power_repo_url }}"
     state: present
+    disable_gpg_check: True
   when:
     - ansible_architecture == "ppc64le"
     - sap_hana_preconfigure_add_ibm_power_repo|d(true)
