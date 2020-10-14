@@ -22,12 +22,17 @@
         enabled: no
       when: not abrt_check.changed
 
-    - name: Get status of abrt
-      command: bash -lc "systemctl status abrtd"
-      register: command_result
-      ignore_errors: true
-    - debug:
-        var: command_result.stdout_lines, command_result.stderr_lines
+    - name: Collect facts about system services
+      service_facts:
+      register: services_state
+
+    - name: Get status of abrtd
+      debug:
+        msg: >
+             abrtd is
+             '{{ services_state.ansible_facts.services["abrtd.service"].state }}'
+             and
+             '{{ services_state.ansible_facts.services["abrtd.service"].status }}'
   when: not abrt_check.changed
 
 ...

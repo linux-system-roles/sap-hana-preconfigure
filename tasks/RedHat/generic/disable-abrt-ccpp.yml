@@ -22,12 +22,17 @@
         enabled: no
       when: not abrt_ccpp_check.changed
 
+    - name: Collect facts about system services
+      service_facts:
+      register: services_state
+
     - name: Get status of abrt-ccpp
-      command: bash -lc "systemctl status abrt-ccpp"
-      register: command_result
-      ignore_errors: true
-    - debug:
-        var: command_result.stdout_lines, command_result.stderr_lines
+      debug:
+        msg: >
+             abrt-ccpp is
+             '{{ services_state.ansible_facts.services["abrt-ccpp.service"].state }}'
+             and
+             '{{ services_state.ansible_facts.services["abrt-ccpp.service"].status }}'
   when: not abrt_ccpp_check.changed
 
 ...

@@ -10,11 +10,15 @@
     enabled: no
   when: "'firewalld' in ansible_facts.packages"
 
-- name: Get status of firewalld
-  command: bash -lc "systemctl status firewalld"
-  register: command_result
-  ignore_errors: True
-- debug:
-    var: command_result.stdout_lines, command_result.stderr_lines
+- name: Collect facts about system services
+  service_facts:
+  register: services_state
 
+- name: Get status of firewalld
+  debug:
+    msg: >
+         firewalld is
+         '{{ services_state.ansible_facts.services["firewalld.service"].state }}'
+         and
+         '{{ services_state.ansible_facts.services["firewalld.service"].status }}'
 ...
