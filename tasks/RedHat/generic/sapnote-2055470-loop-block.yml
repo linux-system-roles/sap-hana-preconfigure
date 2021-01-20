@@ -1,0 +1,33 @@
+---
+
+# loop block for sapnote/assert-2055470.yml
+
+- name: Get {{ line_item.name }} from /etc/sysctl.d/ibm_largesend.conf
+  command: awk 'BEGIN{FS="="}/{{ line_item.name }}/{print $NF}' /etc/sysctl.d/ibm_largesend.conf
+  register: ibm_largesend_conf_result
+  changed_when: no
+  ignore_errors: yes
+
+- name: Assert that {{ line_item.name }} is set correctly in /etc/sysctl.d/ibm_largesend.conf
+  assert:
+    that:
+      - ibm_largesend_conf_result.stdout == '{{ line_item.value }}'
+    fail_msg: "FAIL: The value of '{{ line_item.name }}' in /etc/sysctl.d/ibm_largesend.conf is '{{ ibm_largesend_conf_result.stdout }}' but the expected value is 'line_item.value'!"
+    success_msg: "PASS: The value of '{{ line_item.name }}' in /etc/sysctl.d/ibm_largesend.conf is '{{ ibm_largesend_conf_result.stdout }}'."
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+- name: Get {{ line_item.name }} from sysctl
+  shell: sysctl -n {{ line_item.name }} | awk '{gsub ("\t", " "); print}'
+  register: sysctl_result
+  changed_when: no
+  ignore_errors: yes
+
+- name: Assert that {{ line_item.name }} is set correctly as per sysctl
+  assert:
+    that:
+      - sysctl_result.stdout == '{{ line_item.value }}'
+    fail_msg: "FAIL: The current value of '{{ line_item.name }}' as per sysctl is '{{ sysctl_result.stdout }}' but the expected value is '{{ line_item.value }}'!"
+    success_msg: "PASS: The current value of '{{ line_item.name }}' as per sysctl is '{{ sysctl_result.stdout }}'."
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+...

@@ -98,8 +98,9 @@
 
 - name: Ensure minimum packages are installed
   block:
-  - name: Gather package facts
-    package_facts:
+# now in main.yml
+#  - name: Gather package facts
+#    package_facts:
 
   - set_fact:
       reqpkgs: "{{ __sap_hana_preconfigure_min_pkgs }}"

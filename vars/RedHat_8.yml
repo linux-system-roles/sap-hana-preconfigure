@@ -13,7 +13,6 @@ __sap_hana_preconfigure_req_repos_RedHat_8_ppc64le:
 
 # required SAP notes for RHEL 8:
 __sap_hana_preconfigure_sapnotes:
-  - "2772999"
   - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
   - "2777782"
   - "2382421"

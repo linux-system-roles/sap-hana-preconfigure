@@ -43,11 +43,10 @@
             var: command_result.stdout_lines, command_result.stderr_lines
 
       when:
-       - command_check_result.stdout != 'Not Available'
+        - command_check_result.stdout != 'Not Available'
 
   when:
     - ansible_architecture == 'x86_64'
-    - ansible_os_family == 'RedHat'
     - not sap_hana_preconfigure_use_tuned_where_possible
 
 ...

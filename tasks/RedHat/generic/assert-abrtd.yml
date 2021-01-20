@@ -1,0 +1,48 @@
+---
+
+- debug:
+    msg: "imported RedHat/generic/assert-abrtd.yml"
+
+#- debug:
+#    var: ansible_facts.packages
+
+- debug:
+    var: ansible_facts.packages['abrtd']
+
+#- name: Check abrt
+#  block:
+#    - name: Assert that abrtd is disabled
+#      assert:
+#        that:
+#          - "'stopped' in ansible_facts.packages['abrtd']"
+#
+#  when: "'abrtd' in ansible_facts.packages"
+#
+
+- name: Disable abrtd if installed, and get status of abrtd
+  block:
+    - name: Get status of abrtd
+      command: systemctl status abrtd
+      register: abrtd_status
+      ignore_errors: yes
+      changed_when: no
+
+    - name: Assert that abrtd is disabled
+      assert:
+        that:
+          - "'/usr/lib/systemd/system/abrtd.service; disabled' in abrtd_status.stdout"
+        fail_msg: "FAIL: Service 'abrtd' is not disabled!"
+        success_msg: "PASS: Service 'abrtd' is disabled."
+      ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+    - name: Assert that abrtd is inactive
+      assert:
+        that:
+          - "'inactive (dead)' in abrtd_status.stdout"
+        fail_msg: "FAIL: Service 'abrtd' is active!"
+        success_msg: "PASS: Service 'abrtd' is inactive."
+      ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+  when: "'abrtd' in ansible_facts.packages"
+
+...

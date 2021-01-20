@@ -82,13 +82,33 @@ sap_hana_preconfigure_configuration
 For defining one or more configuration steps of SAP notes to be executed or checked only, set variable `sap_hana_preconfigure_config_all` to `no`, `sap_hana_preconfigure_configuration` to `yes`, and one or more of the following variables to `yes`:
 ```yaml
 sap_hana_preconfigure_2777782_[02...10], example: sap_hana_preconfigure_2777782_05
-sap_hana_preconfigure_2772999_09
-sap_hana_preconfigure_2292690_[01...07,09,10], example: sap_hana_preconfigure_2292690_02
+sap_hana_preconfigure_2292690_[01...10], example: sap_hana_preconfigure_2292690_02
 sap_hana_preconfigure_2009879_3_9
-sap_hana_preconfigure_2009879_3_13
 sap_hana_preconfigure_2009879_3_14_[1...4]
 sap_hana_preconfigure_2009879_3_15
 sap_hana_preconfigure_2382421
+```
+
+### Run the role in assert mode
+If the following variable is set to `yes`, the role will only check if the configuration of the managed node(s) is according to the applicable SAP notes. Default is `no`.
+```yaml
+sap_hana_preconfigure_assert
+```
+
+### Behavior of the role in assert mode
+If the role is run in assert mode (see above) and the following variable is set to `yes`, assertion errors will not cause the role to fail. This can be useful for creating reports.
+Default is `no`, meaning that the role will fail for any assertion error which is discovered. This variable has no meaning if the role is not run in assert mode.
+```yaml
+sap_hana_preconfigure_assert_ignore_errors
+```
+
+### Perform all configuration checks in assert mode
+If the following variable is set to `yes`, if the role is configured with variable `sap_hana_preconfigure_assert` being set to `yes`, the role will check all configuration steps
+no matter of the setting of the tuned and grub variables. Default is `no`, meaning that only those configuration steps are checked which are enabled by the tuned and grub variables.
+Example: If variable `sap_hana_preconfigure_modify_grub_cmdline_linux` is set to `no`, when running the role in assert mode, the role will not check if the grub command line
+has been modified according to this role.
+```yaml
+sap_hana_preconfigure_assert_all_steps
 ```
 
 ### Repo checking and enabling

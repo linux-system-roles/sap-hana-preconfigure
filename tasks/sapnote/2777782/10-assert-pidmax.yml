@@ -1,0 +1,34 @@
+---
+
+- debug:
+    msg: "SAP note 2777782 Step 10: Increase kernel.pid_max"
+
+- name: Check if kernel.pid_max is set to 4194304 in /etc/sysctl.d/sap.conf
+  command: awk 'BEGIN{FS="="}/kernel.pid_max/{split ($2, a, " "); print a[1]}' /etc/sysctl.d/sap.conf
+  register: sap_conf_pid_max_result
+  changed_when: no
+  ignore_errors: yes
+
+- name: Assert that kernel.pid_max is set to 4194304 in /etc/sysctl.d/sap.conf
+  assert:
+    that:
+      - sap_conf_pid_max_result.stdout == '4194304'
+    fail_msg: "FAIL: The value of 'kernel.pid_max' in /etc/sysctl.d/sap.conf is '{{ sap_conf_pid_max_result.stdout }}' but the expected value is '4194304'!"
+    success_msg: "PASS: The value of 'kernel.pid_max' in /etc/sysctl.d/sap.conf is '{{ sap_conf_pid_max_result.stdout }}'."
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+- name: Check if kernel.pid_max is set to 4194304 as per sysctl
+  shell: sysctl -n kernel.pid_max
+  register: sysctl_pid_max_result
+  changed_when: no
+  ignore_errors: yes
+
+- name: Assert that kernel.pid_max is set to 4194304 as per sysctl
+  assert:
+    that:
+      - sysctl_pid_max_result.stdout == '4194304'
+    fail_msg: "FAIL: The current value of 'kernel.pid_max' as per sysctl is '{{ sysctl_pid_max_result.stdout }}' but the expected value is '4194304'!"
+    success_msg: "PASS: The current value of 'kernel.pid_max' as per sysctl is '{{ sysctl_pid_max_result.stdout }}'."
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+...

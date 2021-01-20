@@ -1,0 +1,20 @@
+---
+# tasks file for sap-preconfigure: configuration
+
+- debug:
+    msg: "imported RedHat/generic/assert-selinux.yml"
+
+- name: Check for SELinux
+  command: getenforce
+  register: getenforce_result
+  changed_when: no
+
+- name: Assert that SElinux is disabled
+  assert:
+    that:
+      - getenforce_result.stdout == 'Permissive' or getenforce_result.stdout == 'Disabled'
+    fail_msg: "FAIL: SElinux is enabled!"
+    success_msg: "PASS: SElinux is not enabled."
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+...

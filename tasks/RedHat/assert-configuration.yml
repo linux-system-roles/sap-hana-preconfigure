@@ -8,14 +8,11 @@
   debug:
     var: __sap_hana_preconfigure_sapnotes | difference([''])
 
-# We want to disable firewalld, so we need to check if firewalld is installed
-# now in main.yml
-#- name: Gather facts about installed packages
-#  package_facts:
-#    manager: auto
+- name: Gather service facts
+  service_facts:
 
 - name: include configuration actions for required sapnotes
-  include_tasks: "sapnote/{{ item }}.yml"
+  include_tasks: "sapnote/assert-{{ item }}.yml"
   with_items: "{{ __sap_hana_preconfigure_sapnotes | difference(['']) }}"
 
 ...
