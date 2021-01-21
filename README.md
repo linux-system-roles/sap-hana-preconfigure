@@ -60,6 +60,13 @@ For finding out which SAP notes will be used by this role, please check the cont
 
 Do not run this role against an SAP HANA or other production system. The role will enforce a certain configuration on the managed node(s), which might not be intended.
 
+Changes
+-------
+The previous version of this role used variable sap_hana_preconfigure_use_tuned_where_possible to switch between either tuned settings or kernel command line settings (where applicable).
+The current version modifies this behavior:
+- The variable sap_hana_preconfigure_use_tuned_where_possible has been renamed to sap_hana_preconfigure_use_tuned
+- The role can use tuned, or configure the kernel command line, or both.
+
 Role Variables
 --------------
 
@@ -81,7 +88,7 @@ sap_hana_preconfigure_configuration
 ### Define configuration steps of SAP notes
 For defining one or more configuration steps of SAP notes to be executed or checked only, set variable `sap_hana_preconfigure_config_all` to `no`, `sap_hana_preconfigure_configuration` to `yes`, and one or more of the following variables to `yes`:
 ```yaml
-sap_hana_preconfigure_2777782_[02...10], example: sap_hana_preconfigure_2777782_05
+sap_hana_preconfigure_2777782_[01...10], example: sap_hana_preconfigure_2777782_05
 sap_hana_preconfigure_2292690_[01...10], example: sap_hana_preconfigure_2292690_02
 sap_hana_preconfigure_2009879_3_9
 sap_hana_preconfigure_2009879_3_14_[1...4]
@@ -108,7 +115,7 @@ no matter of the setting of the tuned and grub variables. Default is `no`, meani
 Example: If variable `sap_hana_preconfigure_modify_grub_cmdline_linux` is set to `no`, when running the role in assert mode, the role will not check if the grub command line
 has been modified according to this role.
 ```yaml
-sap_hana_preconfigure_assert_all_steps
+sap_hana_preconfigure_assert_all_config
 ```
 
 ### Repo checking and enabling
@@ -152,27 +159,27 @@ sap_hana_preconfigure_fail_if_reboot_required
 ```
 
 ### Switch to tuned profile sap-hana
-If you do not want the role to switch to tuned profile sap-hana, set the following variable to `no`. Default is `yes`. In case of `yes`, variable `sap_hana_preconfigure_use_tuned_where_possible` (see below) should be set to `yes` as well.
+If you do not want the role to switch to tuned profile sap-hana, set the following variable to `no`. Default is `yes`. In case of `yes`, variable `sap_hana_preconfigure_use_tuned` (see below) should be set to `yes` as well.
 ```yaml
 sap_hana_preconfigure_switch_to_tuned_profile_sap_hana
 ```
 
-### Use tuned profile sap-hana where possible
-If you do not want to use the tuned profile sap-hana for configuring kernel parameters (where possible), and have the role configure them by changing the kernel command line instead, set the following variable to `no`. Default is `yes`. In case of `yes`, variable `sap_hana_preconfigure_switch_to_tuned_profile_sap_hana` (see above) should be set to `yes` as well.
-Note: If this variable is set to `yes`, the role will not modify GRUB_CMDLINE_LINUX in /etc/default/grub, no matter how `sap_hana_preconfigure_modify_grub_cmdline_linux` (see below) is set.
+### Use tuned profile sap-hana
+If you do not want to use the tuned profile sap-hana for configuring kernel parameters (where possible), set the following variable to `no`. Default is `yes`. In case of `yes`, variable `sap_hana_preconfigure_switch_to_tuned_profile_sap_hana` (see above) should be set to `yes` as well.
+Note: If this variable is set to `yes`, the role may still modify GRUB_CMDLINE_LINUX in /etc/default/grub, by setting variable `sap_hana_preconfigure_modify_grub_cmdline_linux` (see below) to `yes`.
 ```yaml
-sap_hana_preconfigure_use_tuned_where_possible
+sap_hana_preconfigure_use_tuned
 ```
 
 ### Modify grub2 line GRUB_CMDLINE_LINUX
-If you do not want to modify the grub2 line GRUB_CMDLINE_LINUX in /etc/default/grub, set the following variable to `no`. The default is `yes`. Setting this variable to `no` probably only makes sense if `sap_hana_preconfigure_run_grub2_mkconfig` (see below) is also set to `no`.
-Note: Even if this variable is set to `yes`, GRUB_CMDLINE_LINUX will only be modified if variable `sap_hana_preconfigure_use_tuned_where_possible` (see above) is set to `no`.
+If you want to modify the grub2 line GRUB_CMDLINE_LINUX in /etc/default/grub, set the following variable to `yes`. The default is `no`. Setting this variable to `yes` probably only makes sense if `sap_hana_preconfigure_run_grub2_mkconfig` (see below) is also set to `yes`.
+Note: If this variable is set to `yes`, GRUB_CMDLINE_LINUX will be modified even if variable `sap_hana_preconfigure_use_tuned` (see above) is also set to `yes`. Settings in GRUB_CMDLINE_LINUX override tuned settings.
 ```yaml
 sap_hana_preconfigure_modify_grub_cmdline_linux
 ```
 
 ### Run grub2-mkconfig
-If you do not want to run grub2-mkconfig to regenerate the grub2 config file after a change to /etc/default/grub, set the following variable to `no`. The default is `yes`. Setting this variable to `no` probably only makes sense if `sap_hana_preconfigure_modify_grub_cmdline_linux` (see above) is also set to `no`.
+If you do not want to run grub2-mkconfig to regenerate the grub2 config file after a change to /etc/default/grub (which is only possible by setting `sap_hana_preconfigure_modify_grub_cmdline_linux` to `yes`), set the following variable to `no`. The default is `yes`. Setting this variable to `no` probably only makes sense if `sap_hana_preconfigure_modify_grub_cmdline_linux` (see above) is also set to `no`.
 ```yaml
 sap_hana_preconfigure_run_grub2_mkconfig
 ```

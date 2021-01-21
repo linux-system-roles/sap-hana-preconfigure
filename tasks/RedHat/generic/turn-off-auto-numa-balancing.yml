@@ -33,6 +33,6 @@
       when: not numad_check.changed
 
   when:
-    - not sap_hana_preconfigure_use_tuned_where_possible
+    - not sap_hana_preconfigure_use_tuned
 
 ...

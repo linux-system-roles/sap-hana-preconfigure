@@ -46,8 +46,8 @@
   assert:
     that:
       - "ksm_running_result.stdout == '0'"
-    fail_msg: "FAIL: KSM is not configured currently!"
-    success_msg: "PASS: KSM is currently configured."
+    fail_msg: "FAIL: KSM is currently enabled but it needs to be disabled!"
+    success_msg: "PASS: KSM is disabled currently."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
 ...

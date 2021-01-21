@@ -66,7 +66,7 @@ sap_hana_preconfigure_update: no
 # sap_hana_id_user_sapadm: not yet used
 
 ##  HANA kernel parameters
-# [SAP Note 238241](https://launchpad.support.sap.com/#/notes/238241) defines kernel parameters that all Linux systems need to set.
+# [SAP Note 2382421](https://launchpad.support.sap.com/#/notes/2382421) defines kernel parameters that all Linux systems need to set.
 # The default parameter recomendations are dependent on the OS release. Hence the OS dependant default setting is defined in
 # ./vars/{{ansible_os_release}}.yml. If you need to add or change parameters for your system, copy these parameters from the vars file
 # into the variable sap_hana_preconfigure_kernel_parameters and add or change your settings:
@@ -89,9 +89,9 @@ sap_hana_preconfigure_ppcle_tso_if: "{{ ansible_interfaces| difference(['lo']) }
 
 sap_hana_preconfigure_switch_to_tuned_profile_sap_hana: yes
 
-sap_hana_preconfigure_use_tuned_where_possible: yes
+sap_hana_preconfigure_use_tuned: yes
 
-sap_hana_preconfigure_modify_grub_cmdline_linux: yes
+sap_hana_preconfigure_modify_grub_cmdline_linux: no
 
 sap_hana_preconfigure_run_grub2_mkconfig: yes
 
