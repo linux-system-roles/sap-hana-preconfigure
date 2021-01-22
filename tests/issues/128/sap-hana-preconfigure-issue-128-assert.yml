@@ -10,14 +10,12 @@
       that: "stat_boot_local.stat.isreg == true"
       fail_msg: "FAIL: The file /etc/init.d/boot.local does not exist or is no regular file!"
       success_msg: "PASS: The file /etc/init.d/boot.local exists and is a regular file."
-    ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
   - name: Assert that the mode of file /etc/init.d/boot.local is 0755
     assert:
       that: "stat_boot_local.stat.mode == '0755'"
       fail_msg: "FAIL: The file /etc/init.d/boot.local has mode '{{ stat_boot_local.stat.mode }}' but the expected mode is '0755'!"
       success_msg: "PASS: The file /etc/init.d/boot.local has mode 0755."
-    ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
   - name: Get KSM setting in /etc/init.d/boot.local
     command: awk '/ksm/{print}' /etc/init.d/boot.local
@@ -31,7 +29,6 @@
         - "'echo 0 > /sys/kernel/mm/ksm/run' in awk_ksm_boot_local_result.stdout"
       fail_msg: "FAIL: The line 'echo 0 > /sys/kernel/mm/ksm/run' is not in file /etc/init.d/boot.local!"
       success_msg: "PASS: The line 'echo 0 > /sys/kernel/mm/ksm/run' is in file /etc/init.d/boot.local."
-    ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
   - name: Get status of KSM
     command: cat /sys/kernel/mm/ksm/run
@@ -45,5 +42,4 @@
         - "ksm_running_result.stdout == '0'"
       fail_msg: "FAIL: KSM is currently configured!"
       success_msg: "PASS: KSM is not configured currently."
-    ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
