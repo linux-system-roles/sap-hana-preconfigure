@@ -53,6 +53,10 @@ sap_hana_preconfigure_min_package_check: yes
 # Set the following variable to "yes" if you want to run "yum update" during the installation part.
 sap_hana_preconfigure_update: no
 
+sap_hana_preconfigure_reboot_ok: no
+
+sap_hana_preconfigure_fail_if_reboot_required: yes
+
 ###
 #
 # The following variables are optional.

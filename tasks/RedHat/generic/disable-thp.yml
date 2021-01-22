@@ -14,7 +14,7 @@
     line: "\\1 {{ line_item }}\""
   with_items:
      - "transparent_hugepage=never"
-  notify: "Regenerate grub2 conf handler"
+  notify: __sap_hana_preconfigure_regenerate_grub2_conf_handler
   when:
     - sap_hana_preconfigure_modify_grub_cmdline_linux
   tags: grubconfig
