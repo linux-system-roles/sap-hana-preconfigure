@@ -134,13 +134,11 @@
     package:
       name: "{{ sap_hana_preconfigure_fact_minpkglist }}"
       state: present
-    when: sap_hana_preconfigure_fact_minpkglist | d([])
-#    when: not ( sap_hana_preconfigure_fact_minpkglist == [ "" ] )
+    when: sap_hana_preconfigure_fact_minpkglist|d([])
 
   when:
     - sap_hana_preconfigure_min_package_check|bool
-    - __sap_hana_preconfigure_min_pkgs | d([])
-#    - not( (__sap_hana_preconfigure_min_pkgs is undefined) or (__sap_hana_preconfigure_min_pkgs is none) or (__sap_hana_preconfigure_min_pkgs | trim == '') ) 
+    - __sap_hana_preconfigure_min_pkgs|d([])
 
 - set_fact:
     needs_restarting_command: "needs-restarting -r"

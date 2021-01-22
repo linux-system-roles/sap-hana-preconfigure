@@ -161,12 +161,12 @@
     loop_control:
       loop_var: line_item
     ignore_errors: yes
-  when: __sap_hana_preconfigure_min_pkgs != ""
+  when: __sap_hana_preconfigure_min_pkgs|d([])
 
 - debug:
     msg: "PASS: No minimum required package version defined (variable __sap_hana_preconfigure_min_pkgs)."
   ignore_errors: yes
-  when: __sap_hana_preconfigure_min_pkgs == ""
+  when: not __sap_hana_preconfigure_min_pkgs|d([])
 
 # There might be an issue with the previous version comparison:
 # echo -e "kernel-3.10.0-1062.1.1.el7.x86_64\n$(rpm -q kernel)" | sort -V | tail 1
