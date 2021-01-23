@@ -30,7 +30,7 @@
   assert:
     that:
       - awk_selinux_result.stdout == '{{ sap_hana_preconfigure_selinux_state }}'
-    fail_msg: "FAIL: The system is not configured for the SELinux state of '{{ sap_hana_preconfigure_selinux_state }}'"
+    fail_msg: "FAIL: The system is not configured for the SELinux state of '{{ sap_hana_preconfigure_selinux_state }}'. Current configuration: {{ awk_selinux_result.stdout }}."
     success_msg: "PASS: The system is configured for the SELinux state of '{{ sap_hana_preconfigure_selinux_state }}'"
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
   when: stat_selinux.stat.isreg
