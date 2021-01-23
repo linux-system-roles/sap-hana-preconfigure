@@ -1,21 +1,23 @@
 ---
 
-##########################################################################################
-# 
-# NOTE: THE installation part will completely fail, 
-# - if the system is not connected to proper copied RedHat Repositories 
-#   (no group definition available)
-# - is disconnected with no repos configured at all
-#
-##########################################################################################
+- assert:
+    that: ansible_distribution_version in "{{ sap_hana_preconfigure_supported_rhel_minor_releases }}"
+    fail_msg: "The RHEL release {{ ansible_distribution_version }} is not supported for SAP HANA!"
+    success_msg: "The RHEL release {{ ansible_distribution_version }} is supported for SAP HANA."
+  ignore_errors: "{{ not sap_hana_preconfigure_min_rhel_release_check }}"
 
 - block:
 # repos required for SAP HANA on RHEL 7 and RHEL 8:
   - set_fact:
-      __sap_hana_preconfigure_required_repos: "{{ lookup('vars','sap_hana_preconfigure_req_repos_RedHat_' +
-      ansible_distribution_major_version|string + '_' + ansible_architecture|string) }}"
+#      __sap_hana_preconfigure_required_repos: "{{ lookup('vars','sap_hana_preconfigure_req_repos_RedHat_' +
+#      ansible_distribution_major_version|string + '_' + ansible_architecture|string) }}"
+      __sap_hana_preconfigure_required_repos: "{{ lookup('vars','__sap_hana_preconfigure_req_repos_RedHat_' +
+      ansible_distribution_version|string|replace (\".\", \"_\") + '_' + ansible_architecture|string) }}"
 
-  - name: Enable E4S repositories
+  - debug:
+      var: __sap_hana_preconfigure_required_repos
+
+  - name: Enable required repositories
     rhsm_repository:
       name: "{{ __sap_hana_preconfigure_required_repos }}"
       state: present
@@ -50,12 +52,6 @@
 
 - debug:
     var: result.results
-
-- name: Ensure system is updated to the latest patchlevel
-  package:
-    state: latest
-    name: "*"
-  when: sap_hana_preconfigure_update|bool
 
 ### If this task fails, you need to enable the IBM PowerTools repository
 ### see https://www14.software.ibm.com/support/customercare/sas/f/lopdiags/home.html for details
@@ -96,49 +92,110 @@
     var: ibm_result.results
   when: ansible_architecture == "ppc64le"
 
-- name: Ensure minimum packages are installed
+- name: Ensure minimum required package versions are installed
   block:
-# now in main.yml
-#  - name: Gather package facts
-#    package_facts:
-
-  - set_fact:
-      reqpkgs: "{{ __sap_hana_preconfigure_min_pkgs }}"
+  - name: Check if minimum required package versions are installed
+# How does it work?
+# 1 - Print the required package name and version with a prefix "1" followed by a space.
+# 2 - In the same output sequence, list all installed versions of this package with a prefix "2" followed by a space.
+# 3 - Replace all occurrences of ".el" by ".0.0" so that the sort -V correctly sorts packages with ".el" in its name
+# 4 - Sort the list by the name and version.
+# 5 - Replace ".0.0" by ".el" again to get back the original names.
+# 6 - Store the last installed version of the package in variable latestpkg.
+# 7 - Store the last content of column 1 in variable col1, the last content of column 2 in variable col2,
+#     and the last number of fields in variable _nf.
+# 8 - case 1: If the last number of output fields is greater than 2, it indicates that the package is not installed
+#             because the output of "rpm -q" will be similar to "package XXX is not installed".
+# 8 - case 2a: If the first column of the last line of the output is "1", it means that the required package is
+#              the latest of all required and installed versions of the package, so it means that the package needs
+#              to be updated.
+# 8 - case 2b: If the first column of the last line of the output is "2", it means that at least of the installed
+#              versions the package is equal to or greater than the required package version.
+    shell: |
+           __result=$((echo "1 {{ pkg[0] }}-{{ pkg[1] }}";rpm -q --qf "%{NAME}-%{VERSION}-%{RELEASE}\n" {{ pkg[0] }} |
+             awk '{printf ("2 %s\n", $0)}') |
+             awk '{gsub ("\\.el", ".0.0"); print}' |
+             sort -k 2 -k 1 -V |
+             awk '{gsub ("\\.0\\.0", ".el"); col1=$1; col2=$2; _nf=NF}
+               $1==2{latestpkg=$2}
+               END {
+                      if (_nf>2) {
+                         printf ("{{ pkg[0] }}-{{ pkg[1] }}\n")
+                      } else {
+                         if (col1==1) {
+                            printf ("{{ pkg[0] }}-{{ pkg[1] }}\n")
+                         }
+                      }
+                   }')
+           echo ${__result}
+    with_list: "{{ __sap_hana_preconfigure_min_pkgs }}"
+    loop_control:
+      loop_var: pkg
+    check_mode: no
+    register: __sap_hana_preconfigure_register_minpkglist
+    changed_when: no
 
   - debug:
-      var: reqpkgs
+      var: __sap_hana_preconfigure_register_minpkglist
 
-  - set_fact:
-      sap_hana_preconfigure_fact_minpkglist: |-
-        {% set ns = namespace() %}
-        {% set ns.pkgs = [] %}
-        {% for reqpkg in reqpkgs %}
-        {%   if not reqpkg[0] in ansible_facts.packages %}
-        {%     set _ = ns.pkgs.append(reqpkg | join('-')) %}
-        {%   else %}
-        {%     set pkg = ansible_facts.packages[reqpkg[0]][-1] %}
-        {%     set verrel = pkg.version ~ '-' ~ pkg.release %}
-        {%     if reqpkg[1].replace (".el", ".0.0.") is version(verrel.replace (".el", ".0.0."), '>', strict=false) %}
-        {%       set _ = ns.pkgs.append(reqpkg | join('-')) %}
-        {%     else %}
-        {%       set _ = "pkg already installed with same or later version" %}
-        {%     endif %}
-        {%   endif %}
-        {% endfor %}
-        {{ ns.pkgs }}
-
-  - debug: var=sap_hana_preconfigure_fact_minpkglist
-
-#    yum:
   - name: Install minimum packages if required
-    package:
-      name: "{{ sap_hana_preconfigure_fact_minpkglist }}"
+    yum:
+      name: "{{ line_item.stdout }}"
       state: present
-    when: sap_hana_preconfigure_fact_minpkglist|d([])
+    with_items: "{{ __sap_hana_preconfigure_register_minpkglist.results }}"
+    loop_control:
+      loop_var: line_item
 
   when:
     - sap_hana_preconfigure_min_package_check|bool
     - __sap_hana_preconfigure_min_pkgs|d([])
+
+- name: Ensure system is updated to the latest patchlevel
+  package:
+    state: latest
+    name: "*"
+  when: sap_hana_preconfigure_update|bool
+
+#- name: Ensure minimum packages are installed
+#  block:
+#
+#  - set_fact:
+#      reqpkgs: "{{ __sap_hana_preconfigure_min_pkgs }}"
+#
+#  - debug:
+#      var: reqpkgs
+#
+#  - set_fact:
+#      sap_hana_preconfigure_fact_minpkglist: |-
+#        {% set ns = namespace() %}
+#        {% set ns.pkgs = [] %}
+#        {% for reqpkg in reqpkgs %}
+#        {%   if not reqpkg[0] in ansible_facts.packages %}
+#        {%     set _ = ns.pkgs.append(reqpkg | join('-')) %}
+#        {%   else %}
+#        {%     set pkg = ansible_facts.packages[reqpkg[0]][-1] %}
+#        {%     set verrel = pkg.version ~ '-' ~ pkg.release %}
+#        {%     if reqpkg[1].replace (".el", ".0.0.") is version(verrel.replace (".el", ".0.0."), '>', strict=false) %}
+#        {%       set _ = ns.pkgs.append(reqpkg | join('-')) %}
+#        {%     else %}
+#        {%       set _ = "pkg already installed with same or later version" %}
+#        {%     endif %}
+#        {%   endif %}
+#        {% endfor %}
+#        {{ ns.pkgs }}
+#
+#  - debug: var=sap_hana_preconfigure_fact_minpkglist
+#
+#    yum:
+#  - name: Install minimum packages if required
+#    package:
+#      name: "{{ sap_hana_preconfigure_fact_minpkglist }}"
+#      state: present
+#    when: sap_hana_preconfigure_fact_minpkglist|d([])
+#
+#  when:
+#    - sap_hana_preconfigure_min_package_check|bool
+#    - __sap_hana_preconfigure_min_pkgs|d([])
 
 - set_fact:
     needs_restarting_command: "needs-restarting -r"

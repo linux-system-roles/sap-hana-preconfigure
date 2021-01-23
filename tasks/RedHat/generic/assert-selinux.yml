@@ -1,20 +1,51 @@
 ---
-# tasks file for sap-preconfigure: configuration
 
 - debug:
     msg: "imported RedHat/generic/assert-selinux.yml"
 
-- name: Check for SELinux
+- name: Get info about file /etc/selinux/config
+  stat:
+    path: /etc/selinux/config
+  register: stat_selinux
+
+- name: Assert that file /etc/selinux/config exists and is a regular file
+  assert:
+    that: "stat_selinux.stat.isreg == true"
+    fail_msg: "FAIL: The file /etc/selinux/config does not exist or is no regular file!"
+#    success_msg: "PASS: The file /etc/selinux/config exists and is a regular file."
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+- debug:
+    msg: "WARN: The SELinux state has not been set to 'disabled' (variable sap_hana_preconfigure_selinux_state)."
+  when: sap_hana_preconfigure_selinux_state != 'disabled'
+
+- name: "Check if the permanent configuration of the SELinux state is '{{ sap_hana_preconfigure_selinux_state }}'"
+  command: awk 'BEGIN{FS="="}/^SELINUX=/{print $NF}' /etc/selinux/config
+  register: awk_selinux_result
+  changed_when: no
+  ignore_errors: yes
+  when: stat_selinux.stat.isreg
+
+- name: "Assert that the permanent configuration of the SELinux state is set to '{{ sap_hana_preconfigure_selinux_state }}'"
+  assert:
+    that:
+      - awk_selinux_result.stdout == '{{ sap_hana_preconfigure_selinux_state }}'
+    fail_msg: "FAIL: The system is not configured for the SELinux state of '{{ sap_hana_preconfigure_selinux_state }}'"
+    success_msg: "PASS: The system is configured for the SELinux state of '{{ sap_hana_preconfigure_selinux_state }}'"
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+  when: stat_selinux.stat.isreg
+
+- name: Check for the current SELinux state
   command: getenforce
   register: getenforce_result
   changed_when: no
 
-- name: Assert that SElinux is disabled
+- name: Assert that SELinux is set correctly
   assert:
     that:
-      - getenforce_result.stdout == 'Permissive' or getenforce_result.stdout == 'Disabled'
-    fail_msg: "FAIL: SElinux is enabled!"
-    success_msg: "PASS: SElinux is not enabled."
+      - getenforce_result.stdout == '{{ sap_hana_preconfigure_selinux_state }}'
+    fail_msg: "FAIL: SELinux is currently not {{ sap_hana_preconfigure_selinux_state }}! The current SELinux state is: {{ getenforce_result.stdout }}."
+    success_msg: "PASS: SELinux is currently {{ sap_hana_preconfigure_selinux_state }}."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
 ...

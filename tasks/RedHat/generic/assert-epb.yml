@@ -71,6 +71,10 @@
       when:
        - command_check_result.stdout != 'does not support'
 
+    - debug:
+        msg: "INFO: The system does not support Intel's performance bias setting (EPB)."
+      when: command_check_result.stdout == 'does not support'
+
   when: ansible_architecture == 'x86_64' and
         (not sap_hana_preconfigure_use_tuned or
            sap_hana_preconfigure_assert_all_config

@@ -29,6 +29,12 @@
 ## both:
 #sap_hana_preconfigure_2382421: yes
 
+# Perform a RHEL minor release check for SAP HANA:
+sap_hana_preconfigure_min_rhel_release_check: yes
+
+# supported RHEL minor releases for SAP HANA:
+sap_hana_preconfigure_supported_rhel_minor_releases: "{{ __sap_hana_preconfigure_supported_rhel_minor_releases }}"
+
 # Set to "yes" if you want the role to enable SAP HANA repos. The default is "no".
 sap_hana_preconfigure_enable_sap_hana_repos: no
 
@@ -90,6 +96,8 @@ sap_hana_preconfigure_ppcle_mtu9000_if: ''
 ## list where tso flag should be set 
 ## defaults to all interfaces
 sap_hana_preconfigure_ppcle_tso_if: "{{ ansible_interfaces| difference(['lo']) }}"
+
+sap_hana_preconfigure_selinux_state: "{{ __sap_hana_preconfigure_selinux_state }}"
 
 sap_hana_preconfigure_switch_to_tuned_profile_sap_hana: yes
 

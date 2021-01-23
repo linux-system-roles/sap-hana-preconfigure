@@ -118,6 +118,20 @@ has been modified according to this role.
 sap_hana_preconfigure_assert_all_config
 ```
 
+### Perform a RHEL minor release check for SAP HANA
+If the following variable is set to `no`, the role will install packages and modify settings on the managed node even if the RHEL release is not contained in the list of
+supported RHEL releases. Default is `yes`. In assert mode (`sap_hana_preconfigure_assert` = `yes`), the role will always perform the RHEL release check but will
+display display "WARN" or "INFO" if the variable is set to `no`, instead of the default "FAIL" or "PASS".
+```yaml
+sap_hana_preconfigure_min_rhel_release_check
+```
+
+### Override the supported RHEL minor release list for SAP HANA
+If you want to provide you own list of supported RHEL releases (e.g. for testing), override the variable. Otherwise, the defaults as set in vars/RedHat_*.yml will be used.
+```yaml
+sap_hana_preconfigure_supported_rhel_minor_releases
+```
+
 ### Repo checking and enabling
 If you want the role to check and if necessary enable SAP HANA repos, set the following variable to `yes`. Default is `no`.
 ```yaml
@@ -164,6 +178,12 @@ The following variable will cause the role to fail if a reboot is required, if u
 By setting the variable to `no`, the role will not fail if a reboot is required but just print a warning message.
 ```yaml
 sap_hana_preconfigure_fail_if_reboot_required
+```
+
+### Define SELinux state
+The following variable allows for defining the desired SELinux state. Default is `disabled`.
+```yaml
+sap_hana_preconfigure_selinux_state
 ```
 
 ### Switch to tuned profile sap-hana

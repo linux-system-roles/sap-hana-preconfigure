@@ -3,22 +3,6 @@
 - debug:
     msg: "imported RedHat/generic/assert-abrtd.yml"
 
-#- debug:
-#    var: ansible_facts.packages
-
-- debug:
-    var: ansible_facts.packages['abrtd']
-
-#- name: Check abrt
-#  block:
-#    - name: Assert that abrtd is disabled
-#      assert:
-#        that:
-#          - "'stopped' in ansible_facts.packages['abrtd']"
-#
-#  when: "'abrtd' in ansible_facts.packages"
-#
-
 - name: Disable abrtd if installed, and get status of abrtd
   block:
     - name: Get status of abrtd
@@ -44,5 +28,9 @@
       ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
   when: "'abrtd' in ansible_facts.packages"
+
+- debug:
+    msg: "PASS: Package 'abrtd' is not installed."
+  when: "'abrtd' not in ansible_facts.packages"
 
 ...

@@ -1,12 +1,58 @@
 ---
 
+# supported RHEL 8 minor releases for SAP HANA:
+__sap_hana_preconfigure_supported_rhel_minor_releases:
+  - "8.0"
+  - "8.1"
+  - "8.2"
+
 # required repos for RHEL 8:
-__sap_hana_preconfigure_req_repos_RedHat_8_x86_64:
+__sap_hana_preconfigure_req_repos_RedHat_8_0_x86_64:
   - "rhel-8-for-x86_64-baseos-e4s-rpms"
   - "rhel-8-for-x86_64-appstream-e4s-rpms"
   - "rhel-8-for-x86_64-sap-solutions-e4s-rpms"
 
-__sap_hana_preconfigure_req_repos_RedHat_8_ppc64le:
+__sap_hana_preconfigure_req_repos_RedHat_8_0_ppc64le:
+  - "rhel-8-for-ppc64le-baseos-e4s-rpms"
+  - "rhel-8-for-ppc64le-appstream-e4s-rpms"
+  - "rhel-8-for-ppc64le-sap-solutions-e4s-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_1_x86_64:
+  - "rhel-8-for-x86_64-baseos-e4s-rpms"
+  - "rhel-8-for-x86_64-appstream-e4s-rpms"
+  - "rhel-8-for-x86_64-sap-solutions-e4s-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_1_ppc64le:
+  - "rhel-8-for-ppc64le-baseos-e4s-rpms"
+  - "rhel-8-for-ppc64le-appstream-e4s-rpms"
+  - "rhel-8-for-ppc64le-sap-solutions-e4s-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_2_x86_64:
+  - "rhel-8-for-x86_64-baseos-e4s-rpms"
+  - "rhel-8-for-x86_64-appstream-e4s-rpms"
+  - "rhel-8-for-x86_64-sap-solutions-e4s-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_2_ppc64le:
+  - "rhel-8-for-ppc64le-baseos-e4s-rpms"
+  - "rhel-8-for-ppc64le-appstream-e4s-rpms"
+  - "rhel-8-for-ppc64le-sap-solutions-e4s-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_3_x86_64:
+  - "rhel-8-for-x86_64-baseos-rpms"
+  - "rhel-8-for-x86_64-appstream-rpms"
+  - "rhel-8-for-x86_64-sap-solutions-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_3_ppc64le:
+  - "rhel-8-for-ppc64le-baseos-rpms"
+  - "rhel-8-for-ppc64le-appstream-rpms"
+  - "rhel-8-for-ppc64le-sap-solutions-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_4_x86_64:
+  - "rhel-8-for-x86_64-baseos-e4s-rpms"
+  - "rhel-8-for-x86_64-appstream-e4s-rpms"
+  - "rhel-8-for-x86_64-sap-solutions-e4s-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_4_ppc64le:
   - "rhel-8-for-ppc64le-baseos-e4s-rpms"
   - "rhel-8-for-ppc64le-appstream-e4s-rpms"
   - "rhel-8-for-ppc64le-sap-solutions-e4s-rpms"

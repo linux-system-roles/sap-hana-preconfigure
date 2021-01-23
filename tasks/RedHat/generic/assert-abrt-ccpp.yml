@@ -3,22 +3,6 @@
 - debug:
     msg: "imported RedHat/generic/assert-abrt-ccpp.yml"
 
-#- debug:
-#    var: ansible_facts.packages
-
-- debug:
-    var: ansible_facts.packages['abrt-ccpp']
-
-#- name: Check abrt
-#  block:
-#    - name: Assert that abrt-ccpp is disabled
-#      assert:
-#        that:
-#          - "'stopped' in ansible_facts.packages['abrt-ccpp']"
-#
-#  when: "'abrt-ccpp' in ansible_facts.packages"
-#
-
 - name: Disable abrt-ccpp if installed, and get status of abrt-ccpp
   block:
     - name: Get status of abrt-ccpp
@@ -44,5 +28,9 @@
       ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
   when: "'abrt-ccpp' in ansible_facts.packages"
+
+- debug:
+    msg: "PASS: Package 'abrt-ccpp' is not installed."
+  when: "'abrt-ccpp' not in ansible_facts.packages"
 
 ...

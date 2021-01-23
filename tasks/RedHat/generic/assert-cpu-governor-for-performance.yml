@@ -72,11 +72,9 @@
       when:
         - command_check_result.stdout != 'Not Available'
 
-#  - debug:
-#      msg: "WARN: The system is not able to set CPU Governor for performance!"
-
-#    when:
-#      - command_check_result.stdout "= 'Not Available'
+    - debug:
+        msg: "INFO: The system is not capable of setting the CPU Governor for performance."
+      when: command_check_result.stdout == 'Not Available'
 
   when: ansible_architecture == 'x86_64' and
         (not sap_hana_preconfigure_use_tuned or

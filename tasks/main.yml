@@ -15,6 +15,7 @@
     assert_prefix: "assert-"
   when: sap_hana_preconfigure_assert|d(false)
 
+# required for installation and configuration tasks:
 - name: Gather package facts
   package_facts:
 

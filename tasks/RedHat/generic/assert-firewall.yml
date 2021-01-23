@@ -1,5 +1,4 @@
 ---
-# tasks file for sap-hana-preconfigure: configuration
 
 - debug:
     msg: "imported RedHat/generic/assert-firewall.yml"
