@@ -237,48 +237,54 @@ sap_hana_preconfigure_kernel_parameters:
 Example Playbook
 ----------------
 
-Here is an example playbook that prepares a server for hana installation.
-
+Simple playbook, named sap+hana.yml:
 ```yaml
 ---
-- hosts: hana
-  remote_user: root
-
-  vars:
-      # subscribe-rhn role variables
-      reg_activation_key: myregistration
-      reg_organization_id: 123456
-
-      repositories:
-          - rhel-7-server-rpms
-          - rhel-sap-hana-for-rhel-7-server-rpms
-
-          # If you want to use 4 years update services, use:
-          #       - rhel-7-server-e4s-rpms
-          #       - rhel-sap-hana-for-rhel-7-server-e4s-rpms
-
-          # If you want to use 2 years extend updates, use:
-          #       - rhel-7-server-eus-rpms
-          #       - rhel-sap-hana-for-rhel-7-server-eus-rpms
-
-
-          # rhel-system-roles.timesync variables
-
+- hosts: all
   roles:
-        - { role: redhat_sap.sap_rhsm }
-        - { role: linux-system-roles.sap-base-settings }
-        - { role: linux-system-roles.sap-hana-preconfigure }
+    - role: sap-preconfigure
+    - role: sap-hana-preconfigure
 ```
 
-Here is a simple playbook:
-
+Simple playbook for an extended check (assert) run, named sap+hana-assert.yml:
 ```yaml
 ---
-    - hosts: all
-      roles:
-         - role: sap-preconfigure
-         - role: sap-hana-preconfigure
+- hosts: all
+  vars:
+    sap_preconfigure_assert: yes
+    sap_preconfigure_assert_ignore_errors: yes
+    sap_hana_preconfigure_assert: yes
+    sap_hana_preconfigure_assert_ignore_errors: yes
+  roles:
+    - role: sap-preconfigure
+    - role: sap-hana-preconfigure
 ```
+
+Example Usage
+-------------
+Normal run, for configuring server host_1 for SAP HANA:
+```yaml
+ansible-playbook sap+hana.yml -l host_1
+```
+
+Extended Check (assert) run, not aborting if an error has been found:
+```yaml
+ansible-playbook sap+hana-assert.yml -l host_1
+```
+
+Same as above, with a nice compact and colored output, this time for two hosts:
+```yaml
+ansible-playbook sap+hana-assert.yml -l host_1,host_2 |
+awk '{sub ("    \"msg\": ", "")}
+  /: \[/{gsub ("\\[", ""); gsub ("]", ""); gsub (":", ""); host=$2}  /SAP note/{print "\033[30m[" host"] "$0}
+  /FAIL:/{nfail[host]++; print "\033[31m[" host"] "$0}
+  /WARN:/{nwarn[host]++; print "\033[33m[" host"] "$0}
+  /PASS:/{npass[host]++; print "\033[32m[" host"] "$0}
+  /INFO:/{print "\033[34m[" host"] "$0}
+  /changed/&&/unreachable/{print "\033[30m[" host"] "$0}
+  END{print ("---"); for (var in npass) printf ("[%s] \033[31mFAIL: %d  \033[33mWARN: %d  \033[32mPASS: %d\033[30m\n", var, nfail[var], nwarn[var], npass[var])}'
+```
+
 
 Contribution
 ------------
