@@ -279,7 +279,7 @@ awk '{sub ("    \"msg\": ", "")}
   /TASK/{task_line=$0}
   /fatal:/{fatal_line=$0; nfatal[host]++}
   /...ignoring/{nignore[host]++}
-  /: \[/{gsub ("\\[", ""); gsub ("]", ""); gsub (":", ""); host=$2}
+  /^[a-z]/&&/: \[/{gsub ("\\[", ""); gsub ("]", ""); gsub (":", ""); host=$2}
   /SAP note/{print "\033[30m[" host"] "$0}
   /FAIL:/{nfail[host]++; print "\033[31m[" host"] "$0}
   /WARN:/{nwarn[host]++; print "\033[33m[" host"] "$0}
