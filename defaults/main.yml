@@ -17,7 +17,6 @@
 #sap_hana_preconfigure_2292690_02: yes
 #sap_hana_preconfigure_2292690_05: yes
 #sap_hana_preconfigure_2009879_3_9: yes
-#sap_hana_preconfigure_2009879_3_13: yes
 #sap_hana_preconfigure_2009879_3_14_1: yes
 #sap_hana_preconfigure_2009879_3_14_2: yes
 #sap_hana_preconfigure_2009879_3_14_3: yes
@@ -28,6 +27,15 @@
 #sap_hana_preconfigure_2772999_09: yes
 ## both:
 #sap_hana_preconfigure_2382421: yes
+
+# Perform an assertion run:
+sap_hana_preconfigure_assert: no
+
+# In case of an assertion run, if set to "yes", the role will abort for any assertion error:
+sap_hana_preconfigure_assert_ignore_errors: no
+
+# In case of an assertion run, if set to "yes", check all configuration steps no matter if tuned or static configuration has been selected:
+sap_hana_preconfigure_assert_all_config: no
 
 # Perform a RHEL minor release check for SAP HANA:
 sap_hana_preconfigure_min_rhel_release_check: yes
@@ -56,11 +64,13 @@ sap_hana_sps: "0"
 # Set to no if you want to ignore these requirements.
 sap_hana_preconfigure_min_package_check: yes
 
-# Set the following variable to "yes" if you want to run "yum update" during the installation part.
+# Set the following variable to "yes" if you want to run "yum update" during the installation part:
 sap_hana_preconfigure_update: no
 
+# Set the following variable to "yes" if you want the role to reboot the server if necessary:
 sap_hana_preconfigure_reboot_ok: no
 
+# Set the following variable to "no" if you want the role to not fail if a reboot is required:
 sap_hana_preconfigure_fail_if_reboot_required: yes
 
 ###
@@ -99,13 +109,11 @@ sap_hana_preconfigure_ppcle_tso_if: "{{ ansible_interfaces| difference(['lo']) }
 
 sap_hana_preconfigure_selinux_state: "{{ __sap_hana_preconfigure_selinux_state }}"
 
-sap_hana_preconfigure_switch_to_tuned_profile_sap_hana: yes
-
 sap_hana_preconfigure_use_tuned: yes
 
 sap_hana_preconfigure_modify_grub_cmdline_linux: no
 
-sap_hana_preconfigure_run_grub2_mkconfig: yes
+sap_hana_preconfigure_run_grub2_mkconfig: "{{ __sap_hana_preconfigure_run_grub2_mkconfig }}"
 
 # Use the following variable to specify the name of the RHEL group which is used for the database processes
 # (if it exists, it will be used to configure process limits as per step

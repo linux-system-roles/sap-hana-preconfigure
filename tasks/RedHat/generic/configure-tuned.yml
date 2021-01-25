@@ -34,7 +34,7 @@
         - current_profile.stdout != 'sap-hana'
 
   when:
-    - sap_hana_preconfigure_switch_to_tuned_profile_sap_hana
+    - sap_hana_preconfigure_use_tuned
     - (ansible_architecture != "ppc64le" or (ansible_architecture == "ppc64le" and ansible_distribution_version != "8.0"))
 
 - block:
@@ -79,7 +79,7 @@
         - current_profile_ppc64le.stdout != 'sap-hana sap-hana-ppc64le'
 
   when:
-    - sap_hana_preconfigure_switch_to_tuned_profile_sap_hana
+    - sap_hana_preconfigure_use_tuned
     - ansible_architecture == "ppc64le"
     - ansible_distribution_version == "8.0"
 

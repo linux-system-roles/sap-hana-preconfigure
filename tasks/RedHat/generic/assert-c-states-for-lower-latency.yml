@@ -26,9 +26,10 @@
         success_msg: "PASS: 'intel_idle.max_cstate=1' is in GRUB_CMDLINE_LINUX in /etc/default/grub."
       ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
-  when: (ansible_architecture == 'x86_64' and
-           sap_hana_preconfigure_modify_grub_cmdline_linux
-        ) or
-        sap_hana_preconfigure_assert_all_config
+  when: ansible_architecture == 'x86_64' and
+        (not sap_hana_preconfigure_use_tuned or
+           sap_hana_preconfigure_modify_grub_cmdline_linux or
+           sap_hana_preconfigure_assert_all_config
+        )
 
 ...
