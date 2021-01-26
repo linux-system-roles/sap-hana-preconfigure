@@ -3,22 +3,36 @@
 - debug:
     msg: "imported RedHat/generic/configure-firewall.yml"
 
-- name: Stop and disable service firewalld
-  systemd:
-    name: firewalld
-    state: stopped
-    enabled: no
-  when: "'firewalld' in ansible_facts.packages"
+- name: Gather package facts
+  package_facts:
+    manager: auto
 
-- name: Collect facts about system services
-  service_facts:
-  register: services_state
+- name: Configure firewall
+  block:
 
-- name: Get status of firewalld
-  debug:
-    msg: >
-         firewalld is
-         '{{ services_state.ansible_facts.services["firewalld.service"].state }}'
-         and
-         '{{ services_state.ansible_facts.services["firewalld.service"].status }}'
+    - name: Stop and disable service firewalld
+      systemd:
+        name: firewalld
+        state: stopped
+        enabled: no
+
+    - name: Collect facts about system services
+      service_facts:
+      register: services_state
+
+    - name: Get status of firewalld
+      debug:
+        msg: >
+             firewalld is
+             '{{ services_state.ansible_facts.services["firewalld.service"].state }}'
+             and
+             '{{ services_state.ansible_facts.services["firewalld.service"].status }}'
+  rescue:
+
+    - name: Report if firewalld not installed
+      fail:
+        msg: "Firewalld is not installed"
+      when: "'firewalld' not in ansible_facts.packages"
+      ignore_errors: true
+
 ...
