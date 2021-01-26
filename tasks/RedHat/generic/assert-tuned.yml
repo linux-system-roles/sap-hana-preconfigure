@@ -6,6 +6,7 @@
 - name: Report tuned version
   debug:
     msg: "INFO: The installed version of package tuned is: {{ ansible_facts.packages['tuned'][0].version }}"
+  ignore_errors: yes
   when: sap_hana_preconfigure_use_tuned or
         sap_hana_preconfigure_assert_all_config
 
@@ -66,6 +67,7 @@
 - name: Report tuned-profiles-sap-hana version
   debug:
     msg: "INFO: The installed version of package tuned-profiles-sap-hana is: {{ ansible_facts.packages['tuned-profiles-sap-hana'][0].version }}"
+  ignore_errors: yes
   when: sap_hana_preconfigure_use_tuned or
         sap_hana_preconfigure_assert_all_config
 
@@ -73,12 +75,14 @@
   shell: /usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'
   check_mode: no
   register: current_profile
+  ignore_errors: yes
   changed_when: false
   when: sap_hana_preconfigure_use_tuned or
         sap_hana_preconfigure_assert_all_config
 
 - debug:
     var: current_profile.stdout_lines, current_profile.stderr_lines
+  ignore_errors: yes
   when: sap_hana_preconfigure_use_tuned or
         sap_hana_preconfigure_assert_all_config
 

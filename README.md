@@ -276,7 +276,7 @@ ansible-playbook sap+hana-assert.yml -l host_1,host_2 |
 awk '{sub ("    \"msg\": ", "")}
   /TASK/{task_line=$0}
   /fatal:/{fatal_line=$0; nfatal[host]++}
-  /...ignoring/{nignore[host]++}
+  /...ignoring/{nfatal[host]--; if (nfatal[host]<0) nfatal[host]=0}
   /^[a-z]/&&/: \[/{gsub ("\\[", ""); gsub ("]", ""); gsub (":", ""); host=$2}
   /SAP note/{print "\033[30m[" host"] "$0}
   /FAIL:/{nfail[host]++; print "\033[31m[" host"] "$0}
@@ -284,7 +284,7 @@ awk '{sub ("    \"msg\": ", "")}
   /PASS:/{npass[host]++; print "\033[32m[" host"] "$0}
   /INFO:/{print "\033[34m[" host"] "$0}
   /changed/&&/unreachable/{print "\033[30m[" host"] "$0}
-  END{print ("---"); for (var in npass) {printf ("[%s] ", var); if (nfatal[var]>nignore[var]) {
+  END{print ("---"); for (var in npass) {printf ("[%s] ", var); if (nfatal[var]>0) {
         printf ("\033[31mFATAL ERROR!!! Playbook might have been aborted!!!\033[30m Last TASK and fatal output:\n"); print task_line, fatal_line
      }
      else printf ("\033[31mFAIL: %d  \033[33mWARN: %d  \033[32mPASS: %d\033[30m\n", nfail[var], nwarn[var], npass[var])}}'
