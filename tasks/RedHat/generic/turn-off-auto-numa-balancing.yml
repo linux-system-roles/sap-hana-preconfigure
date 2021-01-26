@@ -24,12 +24,17 @@
             enabled: no
           when: not numad_check.changed
 
-        - name: Get status of numad
-          command: bash -lc "systemctl status numad"
-          register: command_result
-          ignore_errors: true
-        - debug:
-            var: command_result.stdout_lines, command_result.stderr_lines
+    - name: Collect facts about system services
+      service_facts:
+      register: services_state
+
+    - name: Get status of numad
+      debug:
+        msg: >
+             numad is
+             '{{ services_state.ansible_facts.services["numad.service"].state }}'
+             and
+             '{{ services_state.ansible_facts.services["numad.service"].status }}'
       when: not numad_check.changed
 
   when:
