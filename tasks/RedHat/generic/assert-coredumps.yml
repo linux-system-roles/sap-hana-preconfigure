@@ -1,0 +1,50 @@
+---
+
+- debug:
+    msg: "imported RedHat/generic/assert-coredumps.yml"
+
+- name: Get info about file /etc/security/limits.d/99-sap.conf
+  stat:
+    path: /etc/security/limits.d/99-sap.conf
+  register: stat_sap_conf_2
+
+- name: Assert that file /etc/security/limits.d/99-sap.conf exists
+  assert:
+    that: "stat_sap_conf_2.stat.isreg == true"
+    fail_msg: "FAIL: The file /etc/security/limits.d/99-sap.conf does not exist or is no regular file!"
+    success_msg: "PASS: The file /etc/security/limits.d/99-sap.conf exists and is a regular file."
+  ignore_errors: "{{ sap_preconfigure_assert_ignore_errors|d(false) }}"
+
+- name: Check if the hard limit of core file creation is 0 for all users
+  command: awk '$1=="*"&&/core/&&/hard/{print $NF}' /etc/security/limits.d/99-sap.conf
+  register: awk_corefile_hard_result
+  changed_when: no
+  ignore_errors: yes
+  when: stat_sap_conf_2.stat.isreg
+
+- name: Assert that the hard limit of core file creation is 0 for all users
+  assert:
+    that:
+      - awk_corefile_hard_result.stdout == '0'
+    fail_msg: "FAIL: The hard limit of core file creation for all users in /etc/security/limits.d/99-sap.conf is '{{ awk_corefile_hard_result.stdout }}' but the expected value is 0!"
+    success_msg: "PASS: The hard limit of core file creation for all users in /etc/security/limits.d/99-sap.conf is '{{ awk_corefile_hard_result.stdout }}'."
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+  when: stat_sap_conf_2.stat.isreg
+
+- name: Check if the soft limit of core file creation is 0 for all users
+  command: awk '$1=="*"&&/core/&&/soft/{print $NF}' /etc/security/limits.d/99-sap.conf
+  register: awk_corefile_soft_result
+  changed_when: no
+  ignore_errors: yes
+  when: stat_sap_conf_2.stat.isreg
+
+- name: Assert that the soft limit of core file creation is 0 for all users
+  assert:
+    that:
+      - awk_corefile_soft_result.stdout == '0'
+    fail_msg: "FAIL: The soft limit of core file creation for all users in /etc/security/limits.d/99-sap.conf is '{{ awk_corefile_soft_result.stdout }}' but the expected value is 0 !"
+    success_msg: "PASS: The soft limit of core file creation for all users in /etc/security/limits.d/99-sap.conf is '{{ awk_corefile_soft_result.stdout }}'."
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+  when: stat_sap_conf_2.stat.isreg
+
+...

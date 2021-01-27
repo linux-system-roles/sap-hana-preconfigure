@@ -1,0 +1,20 @@
+---
+# OS RELEASE: RHEL 6.x, 7.x
+# Check EUS Channels
+# https://launchpad.support.sap.com/#/notes/2009879
+# 
+# This SAP Note Contains the general installation guides for all RHEL systems in PDF format
+# We include the release specific stuff here
+#
+
+- debug:
+    msg: "SAP note 2009879: Recommended RHEL settings for SAP HANA (pdf)"
+
+- debug:
+    msg: "sapnote/assert-2009879.yml"
+
+### Package installation is done in installation.yml
+
+- include_tasks: assert-2009879_{{ ansible_distribution_major_version }}.yml
+
+...

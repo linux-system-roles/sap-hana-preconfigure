@@ -60,6 +60,16 @@ For finding out which SAP notes will be used by this role, please check the cont
 
 Do not run this role against an SAP HANA or other production system. The role will enforce a certain configuration on the managed node(s), which might not be intended.
 
+Changes
+-------
+The previous version of this role used variable sap_hana_preconfigure_use_tuned_where_possible to switch between either tuned settings or kernel command line settings (where applicable).
+The current version modifies this behavior:
+- The variable sap_hana_preconfigure_use_tuned_where_possible has been renamed to sap_hana_preconfigure_use_tuned
+- The variable sap_hana_preconfigure_switch_to_tuned_profile_sap_hana has been removed.
+- If sap_hana_preconfigure_use_tuned is set to `yes`, which is also the default, the role will configure the system for using tuned and also switch to tuned profile sap-hana.
+  If sap_hana_preconfigure_use_tuned is set to `no`, the role will perform a static configuration, including the modification of the linux command line in grub.
+- The role can use tuned, or configure the kernel command line, or both.
+
 Role Variables
 --------------
 
@@ -81,14 +91,48 @@ sap_hana_preconfigure_configuration
 ### Define configuration steps of SAP notes
 For defining one or more configuration steps of SAP notes to be executed or checked only, set variable `sap_hana_preconfigure_config_all` to `no`, `sap_hana_preconfigure_configuration` to `yes`, and one or more of the following variables to `yes`:
 ```yaml
-sap_hana_preconfigure_2777782_[02...10], example: sap_hana_preconfigure_2777782_05
-sap_hana_preconfigure_2772999_09
-sap_hana_preconfigure_2292690_[01...07,09,10], example: sap_hana_preconfigure_2292690_02
+sap_hana_preconfigure_2777782_[01...10], example: sap_hana_preconfigure_2777782_05
+sap_hana_preconfigure_2292690_[01...10], example: sap_hana_preconfigure_2292690_02
 sap_hana_preconfigure_2009879_3_9
-sap_hana_preconfigure_2009879_3_13
 sap_hana_preconfigure_2009879_3_14_[1...4]
 sap_hana_preconfigure_2009879_3_15
 sap_hana_preconfigure_2382421
+```
+
+### Run the role in assert mode
+If the following variable is set to `yes`, the role will only check if the configuration of the managed node(s) is according to the applicable SAP notes. Default is `no`.
+```yaml
+sap_hana_preconfigure_assert
+```
+
+### Behavior of the role in assert mode
+If the role is run in assert mode (see above) and the following variable is set to `yes`, assertion errors will not cause the role to fail. This can be useful for creating reports.
+Default is `no`, meaning that the role will fail for any assertion error which is discovered. This variable has no meaning if the role is not run in assert mode.
+```yaml
+sap_hana_preconfigure_assert_ignore_errors
+```
+
+### Perform all configuration checks in assert mode
+If the following variable is set to `yes`, if the role is configured with variable `sap_hana_preconfigure_assert` being set to `yes`, the role will check all configuration steps
+no matter of the setting of the tuned and grub variables. Default is `no`, meaning that only those configuration steps are checked which are enabled by the tuned and grub variables.
+Example: If variable `sap_hana_preconfigure_modify_grub_cmdline_linux` is set to `no`, when running the role in assert mode, the role will not check if the grub command line
+has been modified according to this role.
+```yaml
+sap_hana_preconfigure_assert_all_config
+```
+
+### Perform a RHEL minor release check for SAP HANA
+If the following variable is set to `no`, the role will install packages and modify settings on the managed node even if the RHEL release is not contained in the list of
+supported RHEL releases. Default is `yes`. In assert mode (`sap_hana_preconfigure_assert` = `yes`), the role will always perform the RHEL release check but will
+display display "WARN" or "INFO" if the variable is set to `no`, instead of the default "FAIL" or "PASS".
+```yaml
+sap_hana_preconfigure_min_rhel_release_check
+```
+
+### Override the supported RHEL minor release list for SAP HANA
+If you want to provide you own list of supported RHEL releases (e.g. for testing), override the variable. Otherwise, the defaults as set in vars/RedHat_*.yml will be used.
+```yaml
+sap_hana_preconfigure_supported_rhel_minor_releases
 ```
 
 ### Repo checking and enabling
@@ -125,34 +169,43 @@ You can replace it by your own URL by setting this variable to a different URL.
 sap_hana_preconfigure_ibm_power_repo_url
 ```
 
+### Reboot the system if required
+If the following variable is set to `yes`, the role will reboot the managed node if required. The default is `no`, in which case the role will only report that a reboot is required.
+```yaml
+sap_hana_preconfigure_reboot_ok
+```
+
 ### How to behave if reboot is required
-The following variable will ensure that the role will fail if a reboot is required, if undefined or set to `yes`, which is also the default. Rebooting the managed node can be done in the playbook which is calling this role. By setting the variable to `no`, the role will not fail if a reboot is required.
+In case `sap_hana_preconfigure_reboot_ok` (see above) is set to `no`, we should make sure that a reboot requirement does not remain unnoticed.
+The following variable will cause the role to fail if a reboot is required, if undefined or set to `yes`, which is also the default.
+By setting the variable to `no`, the role will not fail if a reboot is required but just print a warning message.
 ```yaml
 sap_hana_preconfigure_fail_if_reboot_required
 ```
 
-### Switch to tuned profile sap-hana
-If you do not want the role to switch to tuned profile sap-hana, set the following variable to `no`. Default is `yes`. In case of `yes`, variable `sap_hana_preconfigure_use_tuned_where_possible` (see below) should be set to `yes` as well.
+### Define SELinux state
+The following variable allows for defining the desired SELinux state. Default is `disabled`.
 ```yaml
-sap_hana_preconfigure_switch_to_tuned_profile_sap_hana
+sap_hana_preconfigure_selinux_state
 ```
 
-### Use tuned profile sap-hana where possible
-If you do not want to use the tuned profile sap-hana for configuring kernel parameters (where possible), and have the role configure them by changing the kernel command line instead, set the following variable to `no`. Default is `yes`. In case of `yes`, variable `sap_hana_preconfigure_switch_to_tuned_profile_sap_hana` (see above) should be set to `yes` as well.
-Note: If this variable is set to `yes`, the role will not modify GRUB_CMDLINE_LINUX in /etc/default/grub, no matter how `sap_hana_preconfigure_modify_grub_cmdline_linux` (see below) is set.
+### Use tuned profile sap-hana
+By default, the role will activate tuned profile `sap-hana` for configuring kernel parameters (where possible). If you do not want to use the tuned profile sap-hana,
+set the following variable to `no`. In this case, the role will also modify GRUB_CMDLINE_LINUX, no matter how variable `sap_hana_preconfigure_modify_grub_cmdline_linux` (see below) is set.
+Note: If this variable is set to `yes`, the role may still modify GRUB_CMDLINE_LINUX in /etc/default/grub, by setting variable `sap_hana_preconfigure_modify_grub_cmdline_linux` to `yes`. This provides more flexibility for setting certain kernel parameters.
 ```yaml
-sap_hana_preconfigure_use_tuned_where_possible
+sap_hana_preconfigure_use_tuned
 ```
 
 ### Modify grub2 line GRUB_CMDLINE_LINUX
-If you do not want to modify the grub2 line GRUB_CMDLINE_LINUX in /etc/default/grub, set the following variable to `no`. The default is `yes`. Setting this variable to `no` probably only makes sense if `sap_hana_preconfigure_run_grub2_mkconfig` (see below) is also set to `no`.
-Note: Even if this variable is set to `yes`, GRUB_CMDLINE_LINUX will only be modified if variable `sap_hana_preconfigure_use_tuned_where_possible` (see above) is set to `no`.
+If you want to modify the grub2 line GRUB_CMDLINE_LINUX in /etc/default/grub, set the following variable to `yes`. The default is `no`. Setting this variable to `yes` probably only makes sense if `sap_hana_preconfigure_run_grub2_mkconfig` (see below) is also set to `yes`.
+Note: If variable sap_hana_preconfigure_use_tuned (see above) is set to `no`, GRUB_CMDLINE_LINUX will modified in any case, no matter how variable `sap_hana_preconfigure_modify_grub_cmdline_linux` is set. This is to guarantee that either the tuned settings or the static settings will be applied. If variable sap_hana_preconfigure_use_tuned (see above) is set to `yes`, `sap_hana_preconfigure_modify_grub_cmdline_linux` can still be set to `yes` for modifying GRUB_CMDLINE_LINUX, providing more flexibility for setting certain kernel parameters.
 ```yaml
 sap_hana_preconfigure_modify_grub_cmdline_linux
 ```
 
 ### Run grub2-mkconfig
-If you do not want to run grub2-mkconfig to regenerate the grub2 config file after a change to /etc/default/grub, set the following variable to `no`. The default is `yes`. Setting this variable to `no` probably only makes sense if `sap_hana_preconfigure_modify_grub_cmdline_linux` (see above) is also set to `no`.
+If you do not want to run grub2-mkconfig to regenerate the grub2 config file after a change to /etc/default/grub (see the desciption of the two previous parameters), set the following variable to `no`. The default is `yes`.
 ```yaml
 sap_hana_preconfigure_run_grub2_mkconfig
 ```
@@ -182,48 +235,62 @@ sap_hana_preconfigure_kernel_parameters:
 Example Playbook
 ----------------
 
-Here is an example playbook that prepares a server for hana installation.
-
+Simple playbook, named sap+hana.yml:
 ```yaml
 ---
-- hosts: hana
-  remote_user: root
-
-  vars:
-      # subscribe-rhn role variables
-      reg_activation_key: myregistration
-      reg_organization_id: 123456
-
-      repositories:
-          - rhel-7-server-rpms
-          - rhel-sap-hana-for-rhel-7-server-rpms
-
-          # If you want to use 4 years update services, use:
-          #       - rhel-7-server-e4s-rpms
-          #       - rhel-sap-hana-for-rhel-7-server-e4s-rpms
-
-          # If you want to use 2 years extend updates, use:
-          #       - rhel-7-server-eus-rpms
-          #       - rhel-sap-hana-for-rhel-7-server-eus-rpms
-
-
-          # rhel-system-roles.timesync variables
-
+- hosts: all
   roles:
-        - { role: redhat_sap.sap_rhsm }
-        - { role: linux-system-roles.sap-base-settings }
-        - { role: linux-system-roles.sap-hana-preconfigure }
+    - role: sap-preconfigure
+    - role: sap-hana-preconfigure
 ```
 
-Here is a simple playbook:
-
+Simple playbook for an extended check (assert) run, named sap+hana-assert.yml:
 ```yaml
 ---
-    - hosts: all
-      roles:
-         - role: sap-preconfigure
-         - role: sap-hana-preconfigure
+- hosts: all
+  vars:
+    sap_preconfigure_assert: yes
+    sap_preconfigure_assert_ignore_errors: yes
+    sap_hana_preconfigure_assert: yes
+    sap_hana_preconfigure_assert_ignore_errors: yes
+  roles:
+    - role: sap-preconfigure
+    - role: sap-hana-preconfigure
 ```
+
+Example Usage
+-------------
+Normal run, for configuring server host_1 for SAP HANA:
+```yaml
+ansible-playbook sap+hana.yml -l host_1
+```
+
+Extended Check (assert) run, not aborting if an error has been found:
+```yaml
+ansible-playbook sap+hana-assert.yml -l host_1
+```
+
+Same as above, with a nice compact and colored output, this time for two hosts:
+```yaml
+ansible-playbook sap+hana-assert.yml -l host_1,host_2 |
+awk '{sub ("    \"msg\": ", "")}
+  /TASK/{task_line=$0}
+  /fatal:/{fatal_line=$0; nfatal[host]++}
+  /...ignoring/{nfatal[host]--; if (nfatal[host]<0) nfatal[host]=0}
+  /^[a-z]/&&/: \[/{gsub ("\\[", ""); gsub ("]", ""); gsub (":", ""); host=$2}
+  /SAP note/{print "\033[30m[" host"] "$0}
+  /FAIL:/{nfail[host]++; print "\033[31m[" host"] "$0}
+  /WARN:/{nwarn[host]++; print "\033[33m[" host"] "$0}
+  /PASS:/{npass[host]++; print "\033[32m[" host"] "$0}
+  /INFO:/{print "\033[34m[" host"] "$0}
+  /changed/&&/unreachable/{print "\033[30m[" host"] "$0}
+  END{print ("---"); for (var in npass) {printf ("[%s] ", var); if (nfatal[var]>0) {
+        printf ("\033[31mFATAL ERROR!!! Playbook might have been aborted!!!\033[30m Last TASK and fatal output:\n"); print task_line, fatal_line
+     }
+     else printf ("\033[31mFAIL: %d  \033[33mWARN: %d  \033[32mPASS: %d\033[30m\n", nfail[var], nwarn[var], npass[var])}}'
+```
+Note: For terminals with white font on dark background, replace the color code `30m` by `37m`.
+In case you need to reset terminal font colors to the default, run: `tput init`.
 
 Contribution
 ------------

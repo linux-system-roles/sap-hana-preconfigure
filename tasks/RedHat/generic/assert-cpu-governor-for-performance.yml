@@ -1,0 +1,84 @@
+---
+
+- debug:
+    msg: "imported RedHat/generic/assert-cpu-governor-for-performance.yml"
+
+# can be configured by tuned profile sap-hana, entry "governor=performance"
+#   in included tuned profile throughput-performance
+- block:
+    - name: Check if system is able to set CPU Governor for performance
+      command: bash -lc "LC_ALL=C cpupower frequency-info -g | awk '/available cpufreq governors/{print $(NF-1), $NF}'"
+      check_mode: no
+      register: command_check_result
+      ignore_errors: true
+      changed_when: no
+
+    - debug:
+        var: command_check_result.stdout_lines, command_check_result.stderr_lines
+
+    - name: Check that the CPU Governor for performance is configured
+      block:
+        - name: Get info about file /etc/rc.d/rc.local
+          stat:
+            path: /etc/rc.d/rc.local
+          register: stat_rc_local
+
+        - name: Assert that file /etc/rc.d/rc.local exists
+          assert:
+            that: "stat_rc_local.stat.isreg == true"
+            fail_msg: "FAIL: The file /etc/rc.d/rc.local does not exist or is no regular file!"
+            success_msg: "PASS: The file /etc/rc.d/rc.local exists and is a regular file."
+          ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+        - name: Assert that the mode of file /etc/rc.d/rc.local is 0644
+          assert:
+            that: "stat_rc_local.stat.mode == '0644'"
+            fail_msg: "FAIL: The file /etc/rc.d/rc.local does not have mode 0644!"
+            success_msg: "PASS: The file /etc/rc.d/rc.local has mode 0644."
+          ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+        - name: Get the contents of file /etc/rc.d/rc.local (x86_64 platform only)
+          command: grep cpupower /etc/rc.d/rc.local
+          register: grep_rc_local_result
+          changed_when: no
+          ignore_errors: yes
+
+        - name: Assert that CPU Governor for performance is configured at boot time (x86_64 platform only)
+          assert:
+            that:
+              - "grep_rc_local_result.stdout == 'cpupower frequency-set -g performance'"
+            fail_msg: "FAIL: The CPU Governor for performance is not configured at boot time!"
+            success_msg: "PASS: CPU Governor for performance is configured at boot time."
+          ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+        - name: Get the current status of the CPU Governor for performance (x86_64 platform only)
+          command: cpupower frequency-info -g
+          register: cpupower_result
+          changed_when: no
+          ignore_errors: yes
+
+        - debug:
+            var: cpupower_result.stdout_lines
+
+        - name: Assert that the current status of the CPU Governor for performance is performance (x86_64 platform only)
+          assert:
+            that:
+              - "'performance' in cpupower_result.stdout_lines"
+#              - "'powersave' not in cpupower_result.stdout_lines"
+            fail_msg: "FAIL: The current status of the CPU Governor for performance is not 'performance'!"
+            success_msg: "PASS: The current status of the CPU Governor for performance is 'performance'."
+          ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+      when:
+        - command_check_result.stdout != 'Not Available'
+
+    - debug:
+        msg: "INFO: The system is not capable of setting the CPU Governor for performance."
+      when: command_check_result.stdout == 'Not Available'
+
+  when: ansible_architecture == 'x86_64' and
+        (not sap_hana_preconfigure_use_tuned or
+           sap_hana_preconfigure_assert_all_config
+        )
+
+...

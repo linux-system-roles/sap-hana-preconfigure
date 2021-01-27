@@ -1,0 +1,225 @@
+---
+
+- name: Assert that the RHEL release is supported for SAP HANA
+  assert:
+    that: ansible_distribution_version in "{{ sap_hana_preconfigure_supported_rhel_minor_releases }}"
+    fail_msg: "FAIL: The RHEL release {{ ansible_distribution_version }} is not supported for SAP HANA!"
+    success_msg: "PASS: The RHEL release {{ ansible_distribution_version }} is supported for SAP HANA."
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+  when: sap_hana_preconfigure_min_rhel_release_check
+
+- name: Report if the RHEL release is supported for SAP HANA
+  assert:
+    that: ansible_distribution_version in "{{ sap_hana_preconfigure_supported_rhel_minor_releases }}"
+    fail_msg: "WARN: The RHEL release {{ ansible_distribution_version }} is not supported for SAP HANA!"
+    success_msg: "INFO: The RHEL release {{ ansible_distribution_version }} is supported for SAP HANA."
+  ignore_errors: yes
+  when: not sap_hana_preconfigure_min_rhel_release_check
+
+# repos required for SAP HANA on RHEL 7 and RHEL 8:
+- set_fact:
+    __sap_hana_preconfigure_required_repos: "{{ lookup('vars','__sap_hana_preconfigure_req_repos_RedHat_' +
+    ansible_distribution_version|string|replace (\".\", \"_\") + '_' + ansible_architecture|string) }}"
+
+- name: Get info about enabled repos
+  shell: subscription-manager repos --list-enabled | awk '/Repo ID:/{print $NF}'
+  register: enabled_repos_result
+  changed_when: no
+
+- name: Assert that all required repos are enabled
+  assert:
+    that:
+      - "'{{ line_item }}' in enabled_repos_result.stdout_lines"
+    fail_msg: "FAIL: Repository '{{ line_item }}' is not enabled!"
+    success_msg: "PASS: Repository '{{ line_item }}' is enabled."
+  with_items:
+    - "{{ __sap_hana_preconfigure_required_repos }}"
+  loop_control:
+    loop_var: line_item
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+- name: Detect if and how the minor RHEL release is set
+  shell: subscription-manager release | awk 'NF==2{printf $NF}NF!=2{print}'
+  register: subscription_manager_release_result
+  changed_when: no
+  ignore_errors: yes
+
+- debug:
+    var: subscription_manager_release_result
+
+- name: Assert that the RHEL version is locked correctly
+  assert:
+    that:
+      - subscription_manager_release_result.stdout == '{{ ansible_distribution_version }}'
+    fail_msg: "FAIL: The RHEL release lock status is '{{ subscription_manager_release_result.stdout }}' but the expected value is '{{ ansible_distribution_version }}'!"
+    success_msg: "PASS: The RHEL release is correctly locked to '{{ ansible_distribution_version }}'."
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+- name: Assert that all required packages are installed
+  assert:
+    that:
+      - "'{{ line_item }}' in ansible_facts.packages"
+    fail_msg: "FAIL: Package '{{ line_item }}' is not installed!"
+    success_msg: "PASS: Package '{{ line_item }}' is installed."
+  with_items:
+    - "{{ __sap_hana_preconfigure_packages }}"
+  loop_control:
+    loop_var: line_item
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+### If this task fails, you need to enable the IBM PowerTools repository
+### see https://www14.software.ibm.com/support/customercare/sas/f/lopdiags/home.html for details
+##
+### # yum -y install http://public.dhe.ibm.com/software/server/POWER/Linux/yum/download/ibm-power-repo-latest.noarch.rpm
+### # /opt/ibm/lop/configure
+### # yum -y install ibm-power-managed-rhel7
+###
+- name: Get install status of required IBM packages
+  shell: yum info installed {{ __sap_hana_preconfigure_required_ppc64le | map('quote') | join(' ') }} | awk '/Name/{n=$NF}/Version/{v=$NF}/Release/{r=$NF}/Description/{printf ("%s\n", n)}'
+  register: yum_ibm_result
+  changed_when: no
+  args:
+    warn: false
+
+- name: Assert that all required IBM packages are installed
+  assert:
+    that:
+      - "'{{ line_item }}' in yum_ibm_result.stdout_lines"
+    fail_msg: "FAIL: Package '{{ line_item }}' is not installed!"
+    success_msg: "PASS: Package '{{ line_item }}' is installed."
+  with_items:
+    - "{{ __sap_hana_preconfigure_required_ppc64le }}"
+  loop_control:
+    loop_var: line_item
+  when: ansible_architecture == "ppc64le"
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+- name: Minimum required package version check
+  block:
+  - name: Check if minimum required package versions are installed
+# How does it work?
+# 1 - Print the required package name and version with a prefix "1" followed by a space.
+# 2 - In the same output sequence, list all installed versions of this package with a prefix "2" followed by a space.
+# 3 - Replace all occurrences of ".el" by ".0.0" so that the sort -V correctly sorts packages with ".el" in its name
+# 4 - Sort the list by the name and version.
+# 5 - Replace ".0.0" by ".el" again to get back the original names.
+# 6 - Store the last installed version of the package in variable latestpkg.
+# 7 - Store the last content of column 1 in variable col1, the last content of column 2 in variable col2,
+#     and the last number of fields in variable _nf.
+# 8 - case 1: If the last number of output fields is greater than 2, it indicates that the package is not installed
+#             because the output of "rpm -q" will be similar to "package XXX is not installed".
+# 8 - case 2a: If the first column of the last line of the output is "1", it means that the required package is
+#              the latest of all required and installed versions of the package, so it means that the package needs
+#              to be updated.
+# 8 - case 2b: If the first column of the last line of the output is "2", it means that at least of the installed
+#              versions the package is equal to or greater than the required package version.
+    shell: |
+           (echo "1 {{ pkg[0] }}-{{ pkg[1] }}";rpm -q --qf "%{NAME}-%{VERSION}-%{RELEASE}\n" {{ pkg[0] }} |
+             awk '{printf ("2 %s\n", $0)}') |
+             awk '{gsub ("\\.el", ".0.0"); print}' |
+             sort -k 2 -k 1 -V |
+             awk '{gsub ("\\.0\\.0", ".el"); col1=$1; col2=$2; _nf=NF}
+               $1==2{latestpkg=$2}
+               END {
+                      if (_nf>2) {
+                         printf ("Package '\''{{ pkg[0] }}'\'' needs to be installed as {{ pkg[0] }}-{{ pkg[1] }}!\n")
+                      } else {
+                         if (col1==1) {
+                            printf ("Package '\''{{ pkg[0] }}'\'' needs to be updated to %s! Currently installed latest version: %s.\n", $2, latestpkg)
+                         }
+                         if (col1==2) {
+                            printf ("Package '\''{{ pkg[0] }}'\'' is already installed as {{ pkg[0] }}-{{ pkg[1] }} or later. Currently installed latest version: %s.\n", latestpkg)
+                         }
+                      }
+                   }'
+    with_list: "{{ __sap_hana_preconfigure_min_pkgs }}"
+    loop_control:
+      loop_var: pkg
+    check_mode: no
+    register: __sap_hana_preconfigure_register_minpkglist_assert
+    changed_when: no
+
+  - name: Assert that minimum required package versions are installed
+# If the output includes the string "is already installed" (case 2b), we have a PASS. Otherwise, it's a FAIL.
+    assert:
+      that: "'is already installed' in line_item.stdout"
+      fail_msg: "FAIL: {{ line_item.stdout }}"
+      success_msg: "PASS: {{ line_item.stdout }}"
+    with_items: "{{ __sap_hana_preconfigure_register_minpkglist_assert.results }}"
+    loop_control:
+      loop_var: line_item
+      label: ""
+    ignore_errors: yes
+
+  when:
+    - sap_hana_preconfigure_min_package_check|bool
+    - __sap_hana_preconfigure_min_pkgs|d([])
+    - sap_hana_preconfigure_assert_ignore_errors|d(false)
+
+- debug:
+    msg: "INFO: No minimum required package version defined (variable __sap_hana_preconfigure_min_pkgs)."
+  when: not __sap_hana_preconfigure_min_pkgs|d([])
+
+- name: Get info about possible package updates
+  command: yum check-update
+  register: yum_check_update_result
+  args:
+    warn: false
+  changed_when: false
+  ignore_errors: "{{ sap_hana_preconfigure_ignore_errors|d(false) }}"
+  when: sap_hana_preconfigure_update
+
+- name: Assert that there are no more possible package updates
+  assert:
+    that:
+      - yum_check_update_result.rc == 0
+    fail_msg: "FAIL: System needs to be updated!"
+    success_msg: "PASS: There are no more outstanding package updates."
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+  when: sap_hana_preconfigure_update
+
+- debug:
+    msg: "INFO: Not checking for possible package updates (variable sap_hana_preconfigure_update)."
+  when: not sap_hana_preconfigure_update
+
+- set_fact:
+    needs_restarting_command: "needs-restarting -r"
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '7'
+
+- set_fact:
+    needs_restarting_command: "yum needs-restarting -r"
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '8'
+    - ansible_distribution_version != '8.0'
+
+- set_fact:
+    needs_restarting_command: "_IKRNL=$(rpm -q --last kernel | awk 'NR==1{sub(/kernel-/,\"\"); print $1}');
+      _CKRNL=$(uname -r); if [ ${_IKRNL} != ${_CKRNL} ]; then exit 1; else exit 0; fi"
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_version == '8.0'
+
+- debug:
+    var: needs_restarting_command
+
+- name: Check if system needs to be restarted
+  command: "{{ needs_restarting_command }}"
+  register: needs_restarting_result
+  changed_when: false
+  args:
+    warn: false
+  check_mode: false
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+- name: Assert that system needs no restart
+  assert:
+    that:
+      - needs_restarting_result.rc == 0
+    fail_msg: "FAIL: System needs to be restarted!"
+    success_msg: "PASS: System needs no restart."
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+...
