@@ -1,18 +1,19 @@
 sap-hana-preconfigure
 =====================
 
-This role configures a RHEL 7.x or RHEL 8 system according to the SAP notes so that SAP HANA is installable
+This role installs additional required packages and performs additional configuration steps for installing and running SAP HANA.
+If you want to configure a RHEL system for the installation and later usage of SAP HANA, you have to first run role sap-preconfigure
+and then role sap-hana-preconfigure.
 
 Requirements
 ------------
 
-To use this role your system needs to be installed with at least the RHEL core packges.
-It is strongly recommended that you have run the following roles before this:
-- 'linux-system-roles.timesync'
-- 'linux-system-roles.sap-base-settings' (for RHEL 7.x until RHEL 7.5)
-- 'linux-system-roles.sap-preconfigure' (for RHEL 7.6 and later and RHEL 8.x)
+To use this role, your system needs to be configured with the basic requirements for SAP NetWeaver or SAP HANA. This is typically done by running
+role sap-preconfigure (for RHEL managed nodes before RHEL 7.6, community maintained role sap-base-settings can be used).
+It is also stronly recommended to run role linux-system-roles.timesync for all systems running SAP HANA, to maintain an identical system time,
+before or after running role sap-hana-preconfigure.
 
-It needs to be properly registered and have at least the following RedHat repositories accessable (see also example playbook):
+Managed nodes need to be properly registered to a repository source and have at least the following Red Hat repositories accessable (see also example playbook):
 
 for RHEL 7.x:
 - rhel-7-[server|for-power-le]-e4s-rpms
@@ -23,12 +24,11 @@ for RHEL 8.x:
 - rhel-8-for-[x86_64|ppc64le]-appstream-e4s-rpms
 - rhel-8-for-[x86_64|ppc64le]-sap-solutions-e4s-rpms
 
-For details, see the Red Hat knowledge base article: [How to subscribe SAP HANA systems to the Update Services for SAP Solutions](https://access.redhat.com/solutions/3075991))
-You can use the [sap_rhsm](https://galaxy.ansible.com/redhat_sap/sap_rhsm) role to automate this process.
+For details, see the Red Hat knowledge base article: [How to subscribe SAP HANA systems to the Update Services for SAP Solutions](https://access.redhat.com/solutions/3075991)). If you set role parameter sap_hana_preconfigure_enable_sap_hana_repos to `yes`, the role can enable these repos.
 
-To install HANA on Red Hat Enterprise Linux 6, 7, or 8, you need some additional packages
-which come in a special repository. To get this repository you need to have one
-of the following products:
+To install HANA on Red Hat Enterprise Linux 6, 7, or 8, you need some additional packages which are contained in the rhel-sap-hana-for-rhel-7-[server|for-power-le]-e4s-rpms or rhel-8-for-[x86_64|ppc64le]-sap-solutions-e4s-rpms repo.
+
+To get this repository you need to have one of the following products:
 
 - [RHEL for SAP Solutions](https://access.redhat.com/solutions/3082481) (premium, standard)
 - RHEL for Business Partner NFRs

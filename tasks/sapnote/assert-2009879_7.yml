@@ -32,92 +32,120 @@
         - name: Get info about file /usr/lib64/libssl.so.1.0.1
           stat:
             path: /usr/lib64/libssl.so.1.0.1
-          register: stat_libssl_1
+          register: __stat_libssl_1
 
-        - name: Assert that file /usr/lib64/libssl.so.1.0.1 exists and is a link
+        - name: Assert that file /usr/lib64/libssl.so.1.0.1 exists
           assert:
-            that:
-              - stat_libssl_1.stat.islnk == true
-            fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 does not exist or is no link!"
-            success_msg: "PASS: File /usr/lib64/libssl.so.1.0.1 exist and is a link."
+            that: __stat_lpbldap.stat.exists
+            fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 does not exist!"
+            success_msg: "PASS: File /usr/lib64/libssl.so.1.0.1 exist."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
-        - name: Assert that file /usr/lib64/libssl.so.1.0.1 is a link to /usr/lib64/libssl.so.1.0.1
+        - name: Assert that file /usr/lib64/libssl.so.1.0.1 is a link
           assert:
-            that:
-              - stat_libssl_1.stat.lnk_target == '/usr/lib64/libssl.so.1.0.1e'
+            that: __stat_libssl_1.stat.islnk
+            fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 is not a link!"
+            success_msg: "PASS: File /usr/lib64/libssl.so.1.0.1 is a link."
+          ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+          when: __stat_libssl_1.stat.exists
+
+        - name: Assert that file /usr/lib64/libssl.so.1.0.1 is a link to /usr/lib64/libssl.so.1.0.1e
+          assert:
+            that: "__stat_libssl_1.stat.lnk_target == '/usr/lib64/libssl.so.1.0.1e'"
             fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 is not a link to /usr/lib64/libssl.so.1.0.1e!"
             success_msg: "PASS: File /usr/lib64/libssl.so.1.0.1 is a link to /usr/lib64/libssl.so.1.0.1e."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+          when: __stat_libssl_1.stat.exists
 
         - name: Get info about file /usr/lib64/libcrypto.so.1.0.1
           stat:
             path: /usr/lib64/libcrypto.so.1.0.1
-          register: stat_libcrypto_1
+          register: __stat_libcrypto_1
+
+        - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 exists
+          assert:
+            that: __stat_libcrypto_1.stat.exists
+            fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 does not exist!"
+            success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 exist."
+          ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
         - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 exists and is a link
           assert:
-            that:
-              - stat_libcrypto_1.stat.islnk == true
-            fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 does not exist or is no link!"
-            success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 exist and is a link."
+            that: __stat_libcrypto_1.stat.islnk
+            fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 is not a link!"
+            success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 is a link."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+          when: __stat_libcrypto_1.stat.exists
 
-        - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 is a link to /usr/lib64/libcrypto.so.1.0.1
+        - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 is a link to /usr/lib64/libcrypto.so.1.0.1e
           assert:
-            that:
-              - stat_libcrypto_1.stat.lnk_target == '/usr/lib64/libcrypto.so.1.0.1e'
+            that: "__stat_libcrypto_1.stat.lnk_target == '/usr/lib64/libcrypto.so.1.0.1e'"
             fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 is not a link to /usr/lib64/libcrypto.so.1.0.1e!"
             success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 is a link to /usr/lib64/libcrypto.so.1.0.1e."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+          when: __stat_libcrypto_1.stat.exists
 
-      when: ansible_distribution_version  == '7.2'
+      when: "ansible_distribution_version  == '7.2'"
 
     - name: ... in case of RHEL 7.3 and above
       block:
         - name: Get info about file /usr/lib64/libssl.so.1.0.1
           stat:
             path: /usr/lib64/libssl.so.1.0.1
-          register: stat_libssl_2
+          register: __stat_libssl_2
 
-        - name: Assert that file /usr/lib64/libssl.so.1.0.1 exists and is a link
+        - name: Assert that file /usr/lib64/libssl.so.1.0.1 exists
           assert:
-            that:
-              - stat_libssl_2.stat.islnk == true
-            fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 does not exist or is no link!"
-            success_msg: "PASS: File /usr/lib64/libssl.so.1.0.1 exist and is a link."
+            that: __stat_libssl_2.stat.exists
+            fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 does not exist!"
+            success_msg: "PASS: File /usr/lib64/libssl.so.1.0.1 exist."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
-        - name: Assert that file /usr/lib64/libssl.so.1.0.1 is a link to /usr/lib64/libssl.so.1.0.1
+        - name: Assert that file /usr/lib64/libssl.so.1.0.1 is a link
           assert:
-            that:
-              - stat_libssl_2.stat.lnk_target == '/usr/lib64/libssl.so.10'
+            that: __stat_libssl_2.stat.islnk
+            fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 is not a link!"
+            success_msg: "PASS: File /usr/lib64/libssl.so.1.0.1 is a link."
+          ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+          when: __stat_libssl_2.stat.exists
+
+        - name: Assert that file /usr/lib64/libssl.so.1.0.1 is a link to /usr/lib64/libssl.so.10
+          assert:
+            that: "__stat_libssl_2.stat.lnk_target == '/usr/lib64/libssl.so.10'"
             fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 is not a link to /usr/lib64/libssl.so.10!"
             success_msg: "PASS: File /usr/lib64/libssl.so.1.0.1 is a link to /usr/lib64/libssl.so.10."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+          when: __stat_libssl_2.stat.exists
 
         - name: Get info about file /usr/lib64/libcrypto.so.1.0.1
           stat:
             path: /usr/lib64/libcrypto.so.1.0.1
-          register: stat_libcrypto_2
+          register: __stat_libcrypto_2
 
-        - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 exists and is a link
+        - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 exists
           assert:
-            that:
-              - stat_libcrypto_2.stat.islnk == true
-            fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 does not exist or is no link!"
-            success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 exist and is a link."
+            that: __stat_libcrypto_2.stat.exists
+            fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 does not exist!"
+            success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 exist."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+        - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 is a link
+          assert:
+            that: __stat_libcrypto_2.stat.islnk
+            fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 is not a link!"
+            success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 is a link."
+          ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+          when: __stat_libcrypto_2.stat.exists
 
         - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 is a link to /usr/lib64/libcrypto.so.10
           assert:
-            that:
-              - stat_libcrypto_2.stat.lnk_target == '/usr/lib64/libcrypto.so.10'
+            that: "__stat_libcrypto_2.stat.lnk_target == '/usr/lib64/libcrypto.so.10'"
             fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 is not a link to /usr/lib64/libcrypto.so.10!"
             success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 is a link to /usr/lib64/libcrypto.so.10."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+          when: __stat_libcrypto_2.stat.exists
 
-      when: ansible_distribution_version != '7.2'
+      when: "ansible_distribution_version != '7.2'"
 
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2009879_3_9|d(false)
 
@@ -151,7 +179,7 @@
 #    - name: Assert that the hard limit of nproc is unlimited for group sapsys
 #      assert:
 #        that:
-#          - awk_nofile_hard_result.stdout == 'unlimited'
+#          - "awk_nofile_hard_result.stdout == 'unlimited'"
 #        fail_msg: "FAIL: The hard limit of nproc is not set to 'unlimited' in /etc/security/limits.d/99-sap.conf!"
 #        success_msg: "PASS: The hard limit of nproc is set to 'unlimited' in /etc/security/limits.d/99-sap.conf."
 #      ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
@@ -164,7 +192,7 @@
 #    - name: Assert that the soft limit of nproc is unlimited for group sapsys
 #      assert:
 #        that:
-#          - awk_nofile_soft_result.stdout == 'unlimited'
+#          - "awk_nofile_soft_result.stdout == 'unlimited'"
 #        fail_msg: "FAIL: The soft limit of nproc is not set to 'unlimited' in /etc/security/limits.d/99-sap.conf!"
 #        success_msg: "PASS: The soft limit of nproc is set to 'unlimited' in /etc/security/limits.d/99-sap.conf."
 #      ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"

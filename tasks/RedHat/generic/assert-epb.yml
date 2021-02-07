@@ -6,74 +6,82 @@
 # can be configured by tuned profile sap-hana, entry "energy_perf_bias=performance"
 #   in included tuned profile throughput-performance
 - block:
-    - name: Check if system supports Intel's performance bias setting
+    - name: Check if system supports Intel's performance bias setting (x86_64 platform only)
       command: bash -lc "LC_ALL=C cpupower info | head -1 | awk '{print $2, $3, $4}'"
       check_mode: no
-      register: command_check_result
+      register: __cpupower_info_result_2
       ignore_errors: true
       changed_when: no
 
     - debug:
-        var: command_check_result.stdout_lines, command_check_result.stderr_lines
+        var: __cpupower_info_result_2.stdout_lines, __cpupower_info_result_2.stderr_lines
 
-    - name: Change EPB if possible
+    - name: Check EPB if possible (x86_64 platform only)
       block:
         - name: Get info about file /etc/init.d/boot.local
           stat:
             path: /etc/init.d/boot.local
-          register: stat_boot_local
+          register: __stat_boot_local
 
-        - name: Assert that file /etc/init.d/boot.local exists
+        - name: Assert that file /etc/init.d/boot.local exists (x86_64 platform only)
           assert:
-            that: "stat_boot_local.stat.isreg == true"
-            fail_msg: "FAIL: The file /etc/init.d/boot.local does not exist or is no regular file!"
-            success_msg: "PASS: The file /etc/init.d/boot.local exists and is a regular file."
-          ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+            that: __stat_boot_local.stat.exists
+            fail_msg: "FAIL: File /etc/init.d/boot.local does not exist!"
+            success_msg: "PASS: File /etc/init.d/boot.local exist."
+          ignore_errors: "{{ sap_preconfigure_assert_ignore_errors|d(false) }}"
 
-        - name: Assert that the mode of file /etc/init.d/boot.local is 0755
+        - name: Assert that file /etc/init.d/boot.local is a regular file (x86_64 platform only)
           assert:
-            that: "stat_boot_local.stat.mode == '0755'"
-            fail_msg: "FAIL: The file /etc/init.d/boot.local has mode '{{ stat_boot_local.stat.mode }}' but the expected mode is '0755'!"
-            success_msg: "PASS: The file /etc/init.d/boot.local has mode 0755."
+            that: __stat_boot_local.stat.isreg
+            fail_msg: "FAIL: File /etc/init.d/boot.local is not a regular file!"
+            success_msg: "PASS: File /etc/init.d/boot.local is a regular file."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+          when: __stat_boot_local.stat.exists
+
+        - name: Assert that the mode of file /etc/init.d/boot.local is 0755 (x86_64 platform only)
+          assert:
+            that: "__stat_boot_local.stat.mode == '0755'"
+            fail_msg: "FAIL: File /etc/init.d/boot.local has mode '{{ __stat_boot_local.stat.mode }}' but the expected mode is '0755'!"
+            success_msg: "PASS: File /etc/init.d/boot.local has mode 0755."
+          ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+          when: __stat_boot_local.stat.exists
 
         - name: Get the contents of file /etc/init.d/boot.local (x86_64 platform only)
           command: grep cpupower /etc/init.d/boot.local
-          register: grep_boot_local_result
+          register: __boot_local_cpupower_result
           changed_when: no
           ignore_errors: yes
+          when: __stat_boot_local.stat.exists
 
         - name: Assert that EPB is configured at boot time (x86_64 platform only)
           assert:
-            that:
-              - "grep_boot_local_result.stdout == 'cpupower set -b 0'"
+            that: "__boot_local_cpupower_result.stdout == 'cpupower set -b 0'"
             fail_msg: "FAIL: EPB is not configured at boot time!"
             success_msg: "PASS: EPB is configured at boot time."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+          when: __stat_boot_local.stat.exists
 
         - name: Get the current setting of EPB (x86_64 platform only)
           command: cpupower info | grep perf-bias
-          register: cpupower_epb_result
+          register: __cpupower_epb_result
           changed_when: no
           ignore_errors: yes
 
         - debug:
-            var: cpupower_epb_result
+            var: __cpupower_epb_result
 
         - name: Assert that the current setting of EPB is '0' (x86_64 platform only)
           assert:
-            that:
-              - "cpupower_epb_result.stdout == '0'"
+            that: "__cpupower_epb_result.stdout == '0'"
             fail_msg: "FAIL: EPB is currently not configured!"
             success_msg: "PASS: EPB is currently configured."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
-      when:
-       - command_check_result.stdout != 'does not support'
+      when: "__cpupower_info_result_2.stdout != 'does not support'"
 
     - debug:
         msg: "INFO: The system does not support Intel's performance bias setting (EPB)."
-      when: command_check_result.stdout == 'does not support'
+      when: "__cpupower_info_result_2.stdout == 'does not support'"
 
   when: ansible_architecture == 'x86_64' and
         (not sap_hana_preconfigure_use_tuned or

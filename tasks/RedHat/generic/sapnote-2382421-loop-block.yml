@@ -4,30 +4,28 @@
 
 - name: Get {{ line_item.name }} from {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}
   command: awk 'BEGIN{FS="="}/{{ line_item.name }}/{print $NF}' {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}
-  register: saphana_conf_result
+  register: __saphana_conf_result_2
   changed_when: no
   ignore_errors: yes
 
 - name: Assert that {{ line_item.name }} is set correctly in {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}
   assert:
-    that:
-      - saphana_conf_result.stdout == '{{ line_item.value }}'
-    fail_msg: "FAIL: The value of '{{ line_item.name }}' in '{{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}' is '{{ saphana_conf_result.stdout }}' but the expected value is 'line_item.value'!"
-    success_msg: "PASS: The value of '{{ line_item.name }}' in '{{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}' is '{{ saphana_conf_result.stdout }}'."
+    that: "__saphana_conf_result_2.stdout == '{{ line_item.value }}'"
+    fail_msg: "FAIL: The value of '{{ line_item.name }}' in '{{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}' is '{{ __saphana_conf_result_2.stdout }}' but the expected value is 'line_item.value'!"
+    success_msg: "PASS: The value of '{{ line_item.name }}' in '{{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}' is '{{ __saphana_conf_result_2.stdout }}'."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
 - name: Get {{ line_item.name }} from sysctl
   shell: sysctl -n {{ line_item.name }} | awk '{gsub ("\t", " "); print}'
-  register: sysctl_result
+  register: __sysctl_result_2
   changed_when: no
   ignore_errors: yes
 
 - name: Assert that {{ line_item.name }} is set correctly as per sysctl
   assert:
-    that:
-      - sysctl_result.stdout == '{{ line_item.value }}'
-    fail_msg: "FAIL: The current value of '{{ line_item.name }}' as per sysctl is '{{ sysctl_result.stdout }}' but the expected value is '{{ line_item.value }}'!"
-    success_msg: "PASS: The current value of '{{ line_item.name }}' as per sysctl is '{{ sysctl_result.stdout }}'."
+    that: "__sysctl_result_2.stdout == '{{ line_item.value }}'"
+    fail_msg: "FAIL: The current value of '{{ line_item.name }}' as per sysctl is '{{ __sysctl_result_2.stdout }}' but the expected value is '{{ line_item.value }}'!"
+    success_msg: "PASS: The current value of '{{ line_item.name }}' as per sysctl is '{{ __sysctl_result_2.stdout }}'."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
 

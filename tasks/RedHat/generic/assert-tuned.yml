@@ -13,8 +13,7 @@
 
 - name: "Assert that tuned.service exists - use_tuned: yes"
   assert:
-    that:
-      - "'tuned.service' in ansible_facts.services"
+    that: "'tuned.service' in ansible_facts.services"
     fail_msg: "FAIL: Service tuned could not be found!"
     success_msg: "PASS: Service tuned is available."
   when: sap_hana_preconfigure_use_tuned
@@ -22,8 +21,7 @@
 
 - name: "Assert that tuned is enabled - use_tuned: yes"
   assert:
-    that:
-      - ansible_facts.services['tuned.service']['status'] == 'enabled'
+    that: "ansible_facts.services['tuned.service']['status'] == 'enabled'"
     fail_msg: "FAIL: Service tuned is not enabled!"
     success_msg: "PASS: Service tuned is enabled."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
@@ -33,8 +31,7 @@
 
 - name: "Assert that tuned is active - use_tuned: yes"
   assert:
-    that:
-      - ansible_facts.services['tuned.service']['state'] == 'running'
+    that: "ansible_facts.services['tuned.service']['state'] == 'running'"
     fail_msg: "FAIL: Service tuned is not active!"
     success_msg: "PASS: Service tuned is active."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
@@ -51,8 +48,7 @@
 
 - name: "Assert that tuned is disabled - use_tuned: no"
   assert:
-    that:
-      - ansible_facts.services['tuned.service']['status'] == 'disabled'
+    that: "ansible_facts.services['tuned.service']['status'] == 'disabled'"
     fail_msg: "FAIL: Service tuned is not disabled!"
     success_msg: "PASS: Service tuned is disabled."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
@@ -62,8 +58,7 @@
 
 - name: "Assert that tuned is inactive - use_tuned: no"
   assert:
-    that:
-      - ansible_facts.services['tuned.service']['state'] == 'inactive'
+    that: "ansible_facts.services['tuned.service']['state'] == 'inactive'"
     fail_msg: "FAIL: Service tuned is not inactive!"
     success_msg: "PASS: Service tuned is inactive."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
@@ -82,24 +77,23 @@
 - name: Get active tuned profile
   shell: /usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'
   check_mode: no
-  register: current_profile
+  register: __current_tuned_profile
   ignore_errors: yes
   changed_when: false
   when: sap_hana_preconfigure_use_tuned or
         sap_hana_preconfigure_assert_all_config
 
 - debug:
-    var: current_profile.stdout_lines, current_profile.stderr_lines
+    var: __current_tuned_profile.stdout_lines, __current_tuned_profile.stderr_lines
   ignore_errors: yes
   when: sap_hana_preconfigure_use_tuned or
         sap_hana_preconfigure_assert_all_config
 
-- name: Assert that tuned profile sap-hana is currently active for non-RHEL 8, non-ppc64le
+- name: Assert that tuned profile sap-hana is currently active for non-RHEL 8.0, non-ppc64le
   assert:
-    that:
-      - current_profile.stdout == 'sap-hana'
+    that: "__current_tuned_profile.stdout == 'sap-hana'"
     fail_msg: "FAIL: The tuned profile 'sap-hana' is currently not active!
-      Currently active profile: '{{ current_profile.stdout }}'."
+      Currently active profile: '{{ __current_tuned_profile.stdout }}'."
     success_msg: "PASS: The tuned profile 'sap-hana' is currently active."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
   when: (ansible_architecture != "ppc64le" or
@@ -111,12 +105,11 @@
            sap_hana_preconfigure_assert_all_config
         )
 
-- name: Assert that tuned profile sap-hana is currently active for RHEL 8 on ppc64le
+- name: Assert that tuned profiles sap-hana and sap-hana-ppc64le are currently active for RHEL 8.0 on ppc64le
   assert:
-    that:
-      - current_profile.stdout == 'sap-hana sap-hana-ppc64le'
+    that: "__current_tuned_profile.stdout == 'sap-hana sap-hana-ppc64le'"
     fail_msg: "FAIL: The tuned profiles 'sap-hana sap-hana-ppc64le' are currently not active!
-      Currently active profile: '{{ current_profile.stdout }}'."
+      Currently active profile: '{{ __current_tuned_profile.stdout }}'."
     success_msg: "PASS: The tuned profiles 'sap-hana sap-hana-ppc64le' are currently active."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
   when: (ansible_architecture == "ppc64le" and
