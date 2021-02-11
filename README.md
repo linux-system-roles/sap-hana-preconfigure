@@ -10,7 +10,7 @@ Requirements
 
 To use this role, your system needs to be configured with the basic requirements for SAP NetWeaver or SAP HANA. This is typically done by running
 role sap-preconfigure (for RHEL managed nodes before RHEL 7.6, community maintained role sap-base-settings can be used).
-It is also stronly recommended to run role linux-system-roles.timesync for all systems running SAP HANA, to maintain an identical system time,
+It is also strongly recommended to run role linux-system-roles.timesync for all systems running SAP HANA, to maintain an identical system time,
 before or after running role sap-hana-preconfigure.
 
 Managed nodes need to be properly registered to a repository source and have at least the following Red Hat repositories accessable (see also example playbook):
