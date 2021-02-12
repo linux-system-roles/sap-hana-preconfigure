@@ -10,7 +10,7 @@
         state: started
         enabled: yes
 
-    - name: Show active tuned profile
+    - name: Show currently active tuned profile
       command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
       check_mode: no
       register: current_profile
@@ -23,8 +23,9 @@
         - name: Switch to tuned profile sap-hana if not currently active
           command: /usr/sbin/tuned-adm profile sap-hana
 
-        - name: Show active tuned profile
+        - name: Show new active tuned profile
           command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
+          check_mode: no
           register: new_profile
           changed_when: false
         - debug:
