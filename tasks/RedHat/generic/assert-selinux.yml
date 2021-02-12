@@ -6,13 +6,13 @@
 - name: Get info about file /etc/selinux/config
   stat:
     path: /etc/selinux/config
-  register: stat_selinux
+  register: __stat_selinux_conf
 
 - name: Assert that file /etc/selinux/config exists and is a regular file
   assert:
-    that: "stat_selinux.stat.isreg == true"
-    fail_msg: "FAIL: The file /etc/selinux/config does not exist or is no regular file!"
-#    success_msg: "PASS: The file /etc/selinux/config exists and is a regular file."
+    that: __stat_selinux_conf.stat.isreg
+    fail_msg: "FAIL: File /etc/selinux/config does not exist or is no regular file!"
+#    success_msg: "PASS: File /etc/selinux/config exists and is a regular file."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
 - debug:
@@ -21,30 +21,28 @@
 
 - name: "Check if the permanent configuration of the SELinux state is '{{ sap_hana_preconfigure_selinux_state }}'"
   command: awk 'BEGIN{FS="="}/^SELINUX=/{print $NF}' /etc/selinux/config
-  register: awk_selinux_result
+  register: __selinux_conf_result
   changed_when: no
   ignore_errors: yes
-  when: stat_selinux.stat.isreg
+  when: __stat_selinux_conf.stat.isreg
 
 - name: "Assert that the permanent configuration of the SELinux state is set to '{{ sap_hana_preconfigure_selinux_state }}'"
   assert:
-    that:
-      - awk_selinux_result.stdout == "{{ sap_hana_preconfigure_selinux_state }}"
-    fail_msg: "FAIL: The system is not configured for the SELinux state of '{{ sap_hana_preconfigure_selinux_state }}'. Current configuration: '{{ awk_selinux_result.stdout }}'."
+    that: __selinux_conf_result.stdout == "{{ sap_hana_preconfigure_selinux_state }}"
+    fail_msg: "FAIL: The system is not configured for the SELinux state of '{{ sap_hana_preconfigure_selinux_state }}'. Current configuration: '{{ __selinux_conf_result.stdout }}'."
     success_msg: "PASS: The system is configured for the SELinux state of '{{ sap_hana_preconfigure_selinux_state }}'"
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-  when: stat_selinux.stat.isreg
+  when: __stat_selinux_conf.stat.isreg
 
 - name: Check for the current SELinux state
   shell: getenforce | awk '{print tolower ($0)}'
-  register: getenforce_result
+  register: __getenforce_result
   changed_when: no
 
 - name: Assert that SELinux is set correctly
   assert:
-    that:
-      - getenforce_result.stdout == "{{ sap_hana_preconfigure_selinux_state }}"
-    fail_msg: "FAIL: SELinux is currently not '{{ sap_hana_preconfigure_selinux_state }}'! The current SELinux state is: '{{ getenforce_result.stdout }}'."
+    that: __getenforce_result.stdout == "{{ sap_hana_preconfigure_selinux_state }}"
+    fail_msg: "FAIL: SELinux is currently not '{{ sap_hana_preconfigure_selinux_state }}'! The current SELinux state is: '{{ __getenforce_result.stdout }}'."
     success_msg: "PASS: SELinux is currently '{{ sap_hana_preconfigure_selinux_state }}'."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 

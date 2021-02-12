@@ -11,23 +11,21 @@
       block:
         - name: Get status of numad
           command: systemctl status numad
-          register: numad_status
+          register: __numad_status
           ignore_errors: yes
           changed_when: no
 #      no_log: yes
 
         - name: Assert that numad is disabled
           assert:
-            that:
-              - "'/usr/lib/systemd/system/numad.service; disabled' in numad_status.stdout"
+            that: "'/usr/lib/systemd/system/numad.service; disabled' in __numad_status.stdout"
             fail_msg: "FAIL: Service 'numad' is not disabled!"
             success_msg: "PASS: Service 'numad' is disabled."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
         - name: Assert that numad is inactive
           assert:
-            that:
-              - "'inactive (dead)' in numad_status.stdout"
+            that: "'inactive (dead)' in __numad_status.stdout"
             fail_msg: "FAIL: Service 'numad' is active!"
             success_msg: "PASS: Service 'numad' is inactive."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"

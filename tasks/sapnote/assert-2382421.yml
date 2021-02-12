@@ -13,14 +13,22 @@
     - name: Get info about file {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}
       stat:
         path: "{{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}"
-      register: stat_saphana_conf
+      register: __stat_saphana_conf
 
     - name: Assert that file {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} exists
       assert:
-        that: "stat_saphana_conf.stat.isreg == true"
-        fail_msg: "FAIL: The file {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} does not exist or is no regular file!"
-        success_msg: "PASS: The file {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} exists and is a regular file."
+        that: __stat_boot_local.stat.exists
+        fail_msg: "FAIL: File {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} does not exist!"
+        success_msg: "PASS: File {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} exists."
+      ignore_errors: "{{ sap_preconfigure_assert_ignore_errors|d(false) }}"
+
+    - name: Assert that file {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} is a regular file
+      assert:
+        that: __stat_saphana_conf.stat.isreg
+        fail_msg: "FAIL: File {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} is not a regular file!"
+        success_msg: "PASS: File {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} is a regular file."
       ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+      when: __stat_saphana_conf.stat.exists
 
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2382421|d(false)
 
@@ -29,6 +37,8 @@
   loop: "{{ __sap_hana_preconfigure_kernel_parameters_default }}"
   loop_control:
     loop_var: line_item
-  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2382421|d(false)
+  when: 
+    - __stat_saphana_conf.stat.exists
+    - sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2382421|d(false)
 
 ...

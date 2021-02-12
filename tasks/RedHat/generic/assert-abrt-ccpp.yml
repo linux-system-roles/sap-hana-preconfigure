@@ -7,22 +7,20 @@
   block:
     - name: Get status of abrt-ccpp
       command: systemctl status abrt-ccpp
-      register: abrt-ccpp_status
+      register: __abrt-ccpp_status
       ignore_errors: yes
       changed_when: no
 
     - name: Assert that abrt-ccpp is disabled
       assert:
-        that:
-          - "'/usr/lib/systemd/system/abrt-ccpp.service; disabled' in abrt-ccpp_status.stdout"
+        that: "'/usr/lib/systemd/system/abrt-ccpp.service; disabled' in __abrt-ccpp_status.stdout"
         fail_msg: "FAIL: Service 'abrt-ccpp' is not disabled!"
         success_msg: "PASS: Service 'abrt-ccpp' is disabled."
       ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
     - name: Assert that abrt-ccpp is inactive
       assert:
-        that:
-          - "'inactive (dead)' in abrt-ccpp_status.stdout"
+        that: "'inactive (dead)' in __abrt-ccpp_status.stdout"
         fail_msg: "FAIL: Service 'abrt-ccpp' is active!"
         success_msg: "PASS: Service 'abrt-ccpp' is inactive."
       ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
