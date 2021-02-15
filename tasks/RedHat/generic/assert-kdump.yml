@@ -5,20 +5,20 @@
 
 - name: Get status of kdump
   command: systemctl status kdump
-  register: __kdump_status
+  register: __sap_hana_preconfigure_register_kdump_status_assert
   ignore_errors: yes
   changed_when: no
 
 - name: Assert that kdump is disabled
   assert:
-    that: "'/usr/lib/systemd/system/kdump.service; disabled' in __kdump_status.stdout"
+    that: "'/usr/lib/systemd/system/kdump.service; disabled' in __sap_hana_preconfigure_register_kdump_status_assert.stdout"
     fail_msg: "FAIL: Service 'kdump' is not disabled!"
     success_msg: "PASS: Service 'kdump' is disabled."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
 - name: Assert that kdump is inactive
   assert:
-    that: "'inactive (dead)' in __kdump_status.stdout"
+    that: "'inactive (dead)' in __sap_hana_preconfigure_register_kdump_status_assert.stdout"
     fail_msg: "FAIL: Service 'kdump' is active!"
     success_msg: "PASS: Service 'kdump' is inactive."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"

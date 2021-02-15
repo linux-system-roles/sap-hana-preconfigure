@@ -72,7 +72,7 @@
 # Intel Systems only
 #  - name: "Configure CPU Governor for Performance now"
 #    command: bash -lc "cpupower frequency-set -g performance"
-#    register: command_result
+#    register: __sap_hana_preconfigure_register_sles15_cpupower_frequency_set
 #    ignore_errors: True
 
 - name: "Energy Performance Bias (EPB, applies to Intel-based systems only)"

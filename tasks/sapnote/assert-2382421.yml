@@ -13,7 +13,7 @@
     - name: Get info about file {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}
       stat:
         path: "{{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}"
-      register: __stat_saphana_conf
+      register: __sap_hana_preconfigure_register_stat_sysctl_saphana_conf_assert
 
     - name: Assert that file {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} exists
       assert:
@@ -24,11 +24,11 @@
 
     - name: Assert that file {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} is a regular file
       assert:
-        that: __stat_saphana_conf.stat.isreg
+        that: __sap_hana_preconfigure_register_stat_sysctl_saphana_conf_assert.stat.isreg
         fail_msg: "FAIL: File {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} is not a regular file!"
         success_msg: "PASS: File {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} is a regular file."
       ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-      when: __stat_saphana_conf.stat.exists
+      when: __sap_hana_preconfigure_register_stat_sysctl_saphana_conf_assert.stat.exists
 
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2382421|d(false)
 
@@ -38,7 +38,7 @@
   loop_control:
     loop_var: line_item
   when: 
-    - __stat_saphana_conf.stat.exists
+    - __sap_hana_preconfigure_register_stat_sysctl_saphana_conf_assert.stat.exists
     - sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2382421|d(false)
 
 ...

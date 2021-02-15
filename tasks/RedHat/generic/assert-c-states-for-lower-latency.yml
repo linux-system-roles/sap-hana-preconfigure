@@ -7,19 +7,19 @@
 - block:
     - name: Get contents of GRUB_CMDLINE_LINUX in /etc/default/grub
       command: grep GRUB_CMDLINE_LINUX /etc/default/grub
-      register: __default_grub_cmdline_result_1
+      register: __sap_hana_preconfigure_register_default_grub_cmdline_cstate_assert
       changed_when: no
 
     - name: Assert that processor.max_cstate=1 is in GRUB_CMDLINE_LINUX in /etc/default/grub
       assert:
-        that: "'processor.max_cstate=1' in __default_grub_cmdline_result_1.stdout"
+        that: "'processor.max_cstate=1' in __sap_hana_preconfigure_register_default_grub_cmdline_cstate_assert.stdout"
         fail_msg: "FAIL: 'processor.max_cstate=1' is not in GRUB_CMDLINE_LINUX in /etc/default/grub!"
         success_msg: "PASS: 'processor.max_cstate=1' is in GRUB_CMDLINE_LINUX in /etc/default/grub."
       ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
     - name: Assert that intel_idle.max_cstate=1 is in GRUB_CMDLINE_LINUX in /etc/default/grub
       assert:
-        that: "'intel_idle.max_cstate=1' in __default_grub_cmdline_result_1.stdout"
+        that: "'intel_idle.max_cstate=1' in __sap_hana_preconfigure_register_default_grub_cmdline_cstate_assert.stdout"
         fail_msg: "FAIL: 'intel_idle.max_cstate=1' is not in GRUB_CMDLINE_LINUX in /etc/default/grub!"
         success_msg: "PASS: 'intel_idle.max_cstate=1' is in GRUB_CMDLINE_LINUX in /etc/default/grub."
       ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"

@@ -13,10 +13,10 @@
     - name: Show currently active tuned profile
       command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
       check_mode: no
-      register: current_profile
+      register: __sap_hana_preconfigure_register_current_tuned_profile
       changed_when: false
     - debug:
-        var: current_profile.stdout_lines, current_profile.stderr_lines
+        var: __sap_hana_preconfigure_register_current_tuned_profile.stdout_lines, __sap_hana_preconfigure_register_current_tuned_profile.stderr_lines
 
     - name: Switch to tuned profile sap-hana if not currently active
       block:
@@ -26,13 +26,13 @@
         - name: Show new active tuned profile
           command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
           check_mode: no
-          register: new_profile
+          register: __sap_hana_preconfigure_register_new_tuned_profile
           changed_when: false
         - debug:
-            var: new_profile.stdout_lines, new_profile.stderr_lines
+            var: __sap_hana_preconfigure_register_new_tuned_profile.stdout_lines, __sap_hana_preconfigure_register_new_tuned_profile.stderr_lines
 
       when:
-        - current_profile.stdout != 'sap-hana'
+        - __sap_hana_preconfigure_register_current_tuned_profile.stdout != 'sap-hana'
 
   when:
     - sap_hana_preconfigure_use_tuned
@@ -59,10 +59,11 @@
     - name: On RHEL 8.0 on ppc64le, show active tuned profile again
       command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
       check_mode: no
-      register: current_profile_ppc64le
+      register: __sap_hana_preconfigure_register_current_tuned_profile_ppc64le
       changed_when: false
     - debug:
-        var: current_profile_ppc64le.stdout_lines, current_profile_ppc64le.stderr_lines
+        var: __sap_hana_preconfigure_register_current_tuned_profile_ppc64le.stdout_lines,
+             __sap_hana_preconfigure_register_current_tuned_profile_ppc64le.stderr_lines
 
     - name: On RHEL 8.0 on ppc64le, switch to tuned profiles sap-hana sap-hana-ppc64le if not currently active
       block:
@@ -71,13 +72,14 @@
 
         - name: Show active tuned profile
           command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
-          register: new_profile_ppc64le
+          register: __sap_hana_preconfigure_register_new_tuned_profile_ppc64le
           changed_when: false
         - debug:
-            var: new_profile_ppc64le.stdout_lines, new_profile_ppc64le.stderr_lines
+            var: __sap_hana_preconfigure_register_new_tuned_profile_ppc64le.stdout_lines,
+                 __sap_hana_preconfigure_register_new_tuned_profile_ppc64le.stderr_lines
 
       when:
-        - current_profile_ppc64le.stdout != 'sap-hana sap-hana-ppc64le'
+        - __sap_hana_preconfigure_register_current_tuned_profile_ppc64le.stdout != 'sap-hana sap-hana-ppc64le'
 
   when:
     - sap_hana_preconfigure_use_tuned

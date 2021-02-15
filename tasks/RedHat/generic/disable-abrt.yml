@@ -8,10 +8,10 @@
     name: abrt
     state: present
   check_mode: true
-  register: abrt_check
+  register: __sap_hana_preconfigure_register_abrt_installed
   ignore_errors: yes
 - debug:
-    var: abrt_check
+    var: __sap_hana_preconfigure_register_abrt_installed
 
 - name: Disable abrtd if installed, and get status of abrtd
   block:
@@ -20,14 +20,15 @@
         name: abrtd
         state: stopped
         enabled: no
-      when: not abrt_check.changed
+      when: not __sap_hana_preconfigure_register_abrt_installed.changed
 
     - name: Get status of abrt
       command: bash -lc "systemctl status abrtd"
-      register: command_result
+      register: __sap_hana_preconfigure_register_abrt_status
       ignore_errors: true
     - debug:
-        var: command_result.stdout_lines, command_result.stderr_lines
-  when: not abrt_check.changed
+        var: __sap_hana_preconfigure_register_abrt_status.stdout_lines, __sap_hana_preconfigure_register_abrt_status.stderr_lines
+
+  when: not __sap_hana_preconfigure_register_abrt_installed.changed
 
 ...

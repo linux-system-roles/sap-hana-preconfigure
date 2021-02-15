@@ -77,23 +77,23 @@
 - name: Get active tuned profile
   shell: /usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'
   check_mode: no
-  register: __current_tuned_profile
+  register: __sap_hana_preconfigure_register_current_tuned_profile_assert
   ignore_errors: yes
   changed_when: false
   when: sap_hana_preconfigure_use_tuned or
         sap_hana_preconfigure_assert_all_config
 
 - debug:
-    var: __current_tuned_profile.stdout_lines, __current_tuned_profile.stderr_lines
+    var: __sap_hana_preconfigure_register_current_tuned_profile_assert.stdout_lines, __sap_hana_preconfigure_register_current_tuned_profile_assert.stderr_lines
   ignore_errors: yes
   when: sap_hana_preconfigure_use_tuned or
         sap_hana_preconfigure_assert_all_config
 
 - name: Assert that tuned profile sap-hana is currently active for non-RHEL 8.0, non-ppc64le
   assert:
-    that: "__current_tuned_profile.stdout == 'sap-hana'"
+    that: "__sap_hana_preconfigure_register_current_tuned_profile_assert.stdout == 'sap-hana'"
     fail_msg: "FAIL: The tuned profile 'sap-hana' is currently not active!
-      Currently active profile: '{{ __current_tuned_profile.stdout }}'."
+      Currently active profile: '{{ __sap_hana_preconfigure_register_current_tuned_profile_assert.stdout }}'."
     success_msg: "PASS: The tuned profile 'sap-hana' is currently active."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
   when: (ansible_architecture != "ppc64le" or
@@ -107,9 +107,9 @@
 
 - name: Assert that tuned profiles sap-hana and sap-hana-ppc64le are currently active for RHEL 8.0 on ppc64le
   assert:
-    that: "__current_tuned_profile.stdout == 'sap-hana sap-hana-ppc64le'"
+    that: "__sap_hana_preconfigure_register_current_tuned_profile_assert.stdout == 'sap-hana sap-hana-ppc64le'"
     fail_msg: "FAIL: The tuned profiles 'sap-hana sap-hana-ppc64le' are currently not active!
-      Currently active profile: '{{ __current_tuned_profile.stdout }}'."
+      Currently active profile: '{{ __sap_hana_preconfigure_register_current_tuned_profile_assert.stdout }}'."
     success_msg: "PASS: The tuned profiles 'sap-hana sap-hana-ppc64le' are currently active."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
   when: (ansible_architecture == "ppc64le" and

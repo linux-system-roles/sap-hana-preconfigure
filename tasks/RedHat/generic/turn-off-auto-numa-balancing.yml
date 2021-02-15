@@ -10,10 +10,10 @@
         name: numad
         state: present
       check_mode: true
-      register: numad_check
+      register: __sap_hana_preconfigure_register_numad_installed
       ignore_errors: yes
     - debug:
-        var: numad_check
+        var: __sap_hana_preconfigure_register_numad_installed
 
     - name: Disable numad if installed, and get status of numad
       block:
@@ -22,15 +22,15 @@
             name: numad
             state: stopped
             enabled: no
-          when: not numad_check.changed
+          when: not __sap_hana_preconfigure_register_numad_installed.changed
 
         - name: Get status of numad
           command: bash -lc "systemctl status numad"
-          register: command_result
+          register: __sap_hana_preconfigure_register_numad_status
           ignore_errors: true
         - debug:
-            var: command_result.stdout_lines, command_result.stderr_lines
-      when: not numad_check.changed
+            var: __sap_hana_preconfigure_register_numad_status.stdout_lines, __sap_hana_preconfigure_register_numad_status.stderr_lines
+      when: not __sap_hana_preconfigure_register_numad_installed.changed
 
   when:
     - not sap_hana_preconfigure_use_tuned

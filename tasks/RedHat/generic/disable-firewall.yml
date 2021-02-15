@@ -12,9 +12,9 @@
 
 - name: Get status of firewalld
   command: bash -lc "systemctl status firewalld"
-  register: command_result
+  register: __sap_hana_preconfigure_register_firewalld_status
   ignore_errors: True
 - debug:
-    var: command_result.stdout_lines, command_result.stderr_lines
+    var: __sap_hana_preconfigure_register_firewalld_status.stdout_lines, __sap_hana_preconfigure_register_firewalld_status.stderr_lines
 
 ...

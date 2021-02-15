@@ -4,45 +4,47 @@
   stat:
     path: /sys/firmware/efi
     get_checksum: no
-  register: efi_exists
+  register: __sap_hana_preconfigure_register_stat_sys_firmware_efi
   listen: __sap_hana_preconfigure_regenerate_grub2_conf_handler
   when:
     - sap_hana_preconfigure_run_grub2_mkconfig|d(true)
 
 - debug:
-    var: efi_exists.stat.exists
+    var: __sap_hana_preconfigure_register_stat_sys_firmware_efi.stat.exists
   listen: __sap_hana_preconfigure_regenerate_grub2_conf_handler
   when:
     - sap_hana_preconfigure_run_grub2_mkconfig|d(true)
 
 - name: "Run grub-mkconfig (BIOS mode)"
   command: grub2-mkconfig -o /boot/grub2/grub.cfg
-  register: command_result
+  register: __sap_hana_preconfigure_register_grub2_mkconfig_bios_mode
   listen: __sap_hana_preconfigure_regenerate_grub2_conf_handler
   when:
-    - not efi_exists.stat.exists
+    - not __sap_hana_preconfigure_register_stat_sys_firmware_efi.stat.exists
     - sap_hana_preconfigure_run_grub2_mkconfig|d(true)
 
 - debug:
-    var: command_result.stdout_lines, command_result.stderr_lines
+    var: __sap_hana_preconfigure_register_grub2_mkconfig_bios_mode.stdout_lines,
+         __sap_hana_preconfigure_register_grub2_mkconfig_bios_mode.stderr_lines
   listen: __sap_hana_preconfigure_regenerate_grub2_conf_handler
   when:
-    - not efi_exists.stat.exists
+    - not __sap_hana_preconfigure_register_stat_sys_firmware_efi.stat.exists
     - sap_hana_preconfigure_run_grub2_mkconfig|d(true)
 
 - name: "Run grub-mkconfig (UEFI mode)"
   command: grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg
-  register: command_result
+  register: __sap_hana_preconfigure_register_grub2_mkconfig_uefi_mode
   listen: __sap_hana_preconfigure_regenerate_grub2_conf_handler
   when:
-    - efi_exists.stat.exists
+    - __sap_hana_preconfigure_register_stat_sys_firmware_efi.stat.exists
     - sap_hana_preconfigure_run_grub2_mkconfig|d(true)
 
 - debug:
-    var: command_result.stdout_lines, command_result.stderr_lines
+    var: __sap_hana_preconfigure_register_grub2_mkconfig_uefi_mode.stdout_lines,
+         __sap_hana_preconfigure_register_grub2_mkconfig_uefi_mode.stderr_lines
   listen: __sap_hana_preconfigure_regenerate_grub2_conf_handler
   when:
-    - efi_exists.stat.exists
+    - __sap_hana_preconfigure_register_stat_sys_firmware_efi.stat.exists
     - sap_hana_preconfigure_run_grub2_mkconfig|d(true)
 
 - name: Reboot the managed node
