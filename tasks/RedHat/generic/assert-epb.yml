@@ -29,7 +29,7 @@
             that: __sap_hana_preconfigure_register_stat_boot_local_epb_assert.stat.exists
             fail_msg: "FAIL: File /etc/init.d/boot.local does not exist!"
             success_msg: "PASS: File /etc/init.d/boot.local exist."
-          ignore_errors: "{{ sap_preconfigure_assert_ignore_errors|d(false) }}"
+          ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
         - name: Assert that file /etc/init.d/boot.local is a regular file (x86_64 platform only)
           assert:
