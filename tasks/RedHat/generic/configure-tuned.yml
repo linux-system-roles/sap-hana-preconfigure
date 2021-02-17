@@ -20,7 +20,7 @@
 
     - name: Switch to tuned profile sap-hana if not currently active
       block:
-        - name: Switch to tuned profile sap-hana if not currently active
+        - name: Switch to tuned profile sap-hana
           command: /usr/sbin/tuned-adm profile sap-hana
 
         - name: Show new active tuned profile
@@ -67,7 +67,7 @@
 
     - name: On RHEL 8.0 on ppc64le, switch to tuned profiles sap-hana sap-hana-ppc64le if not currently active
       block:
-        - name: Switch to tuned profiles sap-hana sap-hana-ppc64le if not currently active
+        - name: Switch to tuned profiles sap-hana sap-hana-ppc64le
           command: /usr/sbin/tuned-adm profile sap-hana sap-hana-ppc64le
 
         - name: Show active tuned profile
