@@ -23,7 +23,7 @@
       when: not abrt_ccpp_check.changed
 
     - name: Get status of abrt-ccpp
-      command: bash -lc "systemctl status abrt-ccpp"
+      command: systemctl status abrt-ccpp
       register: command_result
       ignore_errors: true
     - debug:

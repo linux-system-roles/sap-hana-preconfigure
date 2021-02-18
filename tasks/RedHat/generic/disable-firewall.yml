@@ -11,7 +11,7 @@
   when: "'firewalld' in ansible_facts.packages"
 
 - name: Get status of firewalld
-  command: bash -lc "systemctl status firewalld"
+  command: systemctl status firewalld
   register: command_result
   ignore_errors: True
 - debug:

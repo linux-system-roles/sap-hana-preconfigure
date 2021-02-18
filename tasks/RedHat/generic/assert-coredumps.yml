@@ -13,14 +13,14 @@
     that: __stat_limits_sap_conf_2.stat.exists
     fail_msg: "FAIL: File /etc/security/limits.d/99-sap.conf does not exist!"
     success_msg: "PASS: File /etc/security/limits.d/99-sap.conf exist."
-  ignore_errors: "{{ sap_preconfigure_assert_ignore_errors|d(false) }}"
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
 - name: Assert that file /etc/security/limits.d/99-sap.conf is a regular file
   assert:
     that: __stat_limits_sap_conf_2.stat.isreg
     fail_msg: "FAIL: File /etc/security/limits.d/99-sap.conf is not a regular file!"
     success_msg: "PASS: File /etc/security/limits.d/99-sap.conf is a regular file."
-  ignore_errors: "{{ sap_preconfigure_assert_ignore_errors|d(false) }}"
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
   when: __stat_limits_sap_conf_2.stat.exists
 
 - name: Check if the hard limit of core file creation is 0 for all users

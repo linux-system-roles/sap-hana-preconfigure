@@ -7,6 +7,7 @@
   register: __saphana_conf_result_2
   changed_when: no
   ignore_errors: yes
+  when: __stat_saphana_conf.stat.exists
 
 - name: Assert that {{ line_item.name }} is set correctly in {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}
   assert:
@@ -14,6 +15,7 @@
     fail_msg: "FAIL: The value of '{{ line_item.name }}' in '{{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}' is '{{ __saphana_conf_result_2.stdout }}' but the expected value is 'line_item.value'!"
     success_msg: "PASS: The value of '{{ line_item.name }}' in '{{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}' is '{{ __saphana_conf_result_2.stdout }}'."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+  when: __stat_saphana_conf.stat.exists
 
 - name: Get {{ line_item.name }} from sysctl
   shell: sysctl -n {{ line_item.name }} | awk '{gsub ("\t", " "); print}'

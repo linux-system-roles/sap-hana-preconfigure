@@ -7,7 +7,7 @@
 #   in included tuned profile throughput-performance
 - block:
     - name: Check if system is able to set CPU Governor for performance (x86_64 platform only)
-      command: bash -lc "LC_ALL=C cpupower frequency-info -g | awk '/available cpufreq governors/{print $(NF-1), $NF}'"
+      shell: LC_ALL=C cpupower frequency-info -g | awk '/available cpufreq governors/{print $(NF-1), $NF}'
       check_mode: no
       register: __cpupower_frequency_result
       ignore_errors: true
@@ -28,7 +28,7 @@
             that: __stat_boot_local.stat.exists
             fail_msg: "FAIL: File /etc/rc.d/rc.local does not exist!"
             success_msg: "PASS: File /etc/rc.d/rc.local exist."
-          ignore_errors: "{{ sap_preconfigure_assert_ignore_errors|d(false) }}"
+          ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
         - name: Assert that file /etc/rc.d/rc.local exists (x86_64 platform only)
           assert:

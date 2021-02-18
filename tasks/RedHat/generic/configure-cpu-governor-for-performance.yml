@@ -7,7 +7,7 @@
 #   in included tuned profile throughput-performance
 - block:
     - name: Check if system is able to set CPU Governor for performance
-      command: bash -lc "LC_ALL=C cpupower frequency-info -g | awk '/available cpufreq governors/{print $(NF-1), $NF}'"
+      shell: LC_ALL=C cpupower frequency-info -g | awk '/available cpufreq governors/{print $(NF-1), $NF}'
       check_mode: no
       register: command_check_result
       ignore_errors: true
@@ -29,13 +29,13 @@
             line: "cpupower frequency-set -g performance"
 
         - name: Configure CPU Governor for performance on the running system (x86_64 platform only)
-          command: bash -lc "cpupower frequency-set -g performance"
+          command: cpupower frequency-set -g performance
           register: command_result
         - debug:
             var: command_result.stdout_lines, command_result.stderr_lines
 
         - name: Get status of CPU Governor
-          command: bash -lc "cpupower frequency-info -g"
+          command: cpupower frequency-info -g
           register: command_result
           ignore_errors: true
           changed_when: false

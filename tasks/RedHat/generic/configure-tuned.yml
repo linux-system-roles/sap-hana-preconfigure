@@ -11,7 +11,7 @@
         enabled: yes
 
     - name: Show currently active tuned profile
-      command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
+      shell: /usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'
       check_mode: no
       register: current_profile
       changed_when: false
@@ -20,11 +20,11 @@
 
     - name: Switch to tuned profile sap-hana if not currently active
       block:
-        - name: Switch to tuned profile sap-hana if not currently active
+        - name: Switch to tuned profile sap-hana
           command: /usr/sbin/tuned-adm profile sap-hana
 
         - name: Show new active tuned profile
-          command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
+          shell: /usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'
           check_mode: no
           register: new_profile
           changed_when: false
@@ -57,7 +57,7 @@
         backup: yes
 
     - name: On RHEL 8.0 on ppc64le, show active tuned profile again
-      command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
+      shell: /usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'
       check_mode: no
       register: current_profile_ppc64le
       changed_when: false
@@ -66,11 +66,11 @@
 
     - name: On RHEL 8.0 on ppc64le, switch to tuned profiles sap-hana sap-hana-ppc64le if not currently active
       block:
-        - name: Switch to tuned profiles sap-hana sap-hana-ppc64le if not currently active
+        - name: Switch to tuned profiles sap-hana sap-hana-ppc64le
           command: /usr/sbin/tuned-adm profile sap-hana sap-hana-ppc64le
 
         - name: Show active tuned profile
-          command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
+          shell: /usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'
           register: new_profile_ppc64le
           changed_when: false
         - debug:

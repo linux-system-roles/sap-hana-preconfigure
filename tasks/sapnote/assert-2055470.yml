@@ -62,7 +62,7 @@
       success_msg: "PASS: File /etc/sysctl.d/ibm_largesend.conf exists."
     ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
-  - name: Assert that file /etc/sysctl.d/ibm_largesend.conf exists
+  - name: Assert that file /etc/sysctl.d/ibm_largesend.conf is a regular file
     assert:
       that: __stat_ibm_largesend_conf.stat.isreg
       fail_msg: "FAIL: File /etc/sysctl.d/ibm_largesend.conf is not a regular file!"
