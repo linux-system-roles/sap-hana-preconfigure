@@ -23,7 +23,7 @@
       when: not abrt_check.changed
 
     - name: Get status of abrt
-      command: bash -lc "systemctl status abrtd"
+      command: systemctl status abrtd
       register: command_result
       ignore_errors: true
     - debug:

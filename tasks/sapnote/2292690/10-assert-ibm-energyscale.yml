@@ -7,7 +7,7 @@
 - name: Check of package pseries-energy
   block:
     - name: Check if package pseries-energy is not installed
-      shell: yum info installed pseries-energy
+      command: yum info installed pseries-energy
       register: yum_pseries_energy_result
       changed_when: no
       ignore_errors: yes

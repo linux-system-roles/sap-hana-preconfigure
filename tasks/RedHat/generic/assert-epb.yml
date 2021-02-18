@@ -8,7 +8,7 @@
 # More details on EPB are in: https://github.com/torvalds/linux/blob/be1fcde604e429691771ce70230668af8097e29b/arch/x86/kernel/cpu/intel_epb.c
 - block:
     - name: Check if system supports Intel's performance bias setting (x86_64 platform only)
-      command: bash -lc "LC_ALL=C cpupower info | head -1 | awk '{print $2, $3, $4}'"
+      shell: LC_ALL=C cpupower info | head -1 | awk '{print $2, $3, $4}'
       check_mode: no
       register: __cpupower_info_result_2
       ignore_errors: true
@@ -63,7 +63,7 @@
           when: __stat_boot_local.stat.exists
 
         - name: Get the current setting of EPB (x86_64 platform only)
-          command: bash -lc "cpupower info -b | awk '/perf-bias/{print $NF}'"
+          shell: cpupower info -b | awk '/perf-bias/{print $NF}'
           register: __cpupower_epb_result
           changed_when: no
           ignore_errors: yes

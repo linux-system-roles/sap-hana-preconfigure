@@ -39,7 +39,7 @@
   when: __stat_sap_conf.stat.isreg
 
 - name: Check if kernel.pid_max is set to 4194304 as per sysctl
-  shell: sysctl -n kernel.pid_max
+  command: sysctl -n kernel.pid_max
   register: sysctl_pid_max_result
   changed_when: no
   ignore_errors: yes

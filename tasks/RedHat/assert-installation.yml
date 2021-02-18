@@ -209,7 +209,7 @@
     var: needs_restarting_command
 
 - name: Check if system needs to be restarted
-  command: "{{ needs_restarting_command }}"
+  shell: "{{ needs_restarting_command }}"
   register: needs_restarting_result
   changed_when: false
   args:

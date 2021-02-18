@@ -172,7 +172,7 @@
 #- name: 3.13 Set the hard and soft limit for the max number of processes per user (nproc) to unlimited for group sapsys
 #  block:
 #    - name: Get the hard limit of nproc for group sapsys
-#      command: awk '/sapsys/&&/nproc/&&/hard/{print $NF}' /etc/security/limits.d/99-sap.conf
+#      shell: awk '/sapsys/&&/nproc/&&/hard/{print $NF}' /etc/security/limits.d/99-sap.conf
 #      register: awk_nofile_hard_result
 #      changed_when: no
 #
@@ -185,7 +185,7 @@
 #      ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 #
 #    - name: Get the soft limit of nproc for group sapsys
-#      command: awk '/sapsys/&&/nproc/&&/soft/{print $NF}' /etc/security/limits.d/99-sap.conf
+#      shell: awk '/sapsys/&&/nproc/&&/soft/{print $NF}' /etc/security/limits.d/99-sap.conf
 #      register: awk_nofile_soft_result
 #      changed_when: no
 #
