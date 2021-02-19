@@ -8,5 +8,3 @@
     name: kdump
     state: stopped
     enabled: no
-
-...

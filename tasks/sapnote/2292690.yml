@@ -31,5 +31,3 @@
 
 - import_tasks: 2292690/10-ibm-energyscale.yml
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2292690_10|d(false)
-
-...

@@ -69,5 +69,3 @@
   when:
     - not sap_hana_preconfigure_fail_if_reboot_required|d(true)
     - not sap_hana_preconfigure_reboot_ok|d(false)
-
-...

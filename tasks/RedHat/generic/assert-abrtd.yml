@@ -30,5 +30,3 @@
 - debug:
     msg: "PASS: Package 'abrtd' is not installed."
   when: "'abrtd' not in ansible_facts.packages"
-
-...

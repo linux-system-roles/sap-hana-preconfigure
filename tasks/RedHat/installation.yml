@@ -193,5 +193,3 @@
   command: /bin/true
   notify: __sap_hana_preconfigure_reboot_handler
   when: __sap_hana_preconfigure_register_needs_restarting.rc == 1
-
-...

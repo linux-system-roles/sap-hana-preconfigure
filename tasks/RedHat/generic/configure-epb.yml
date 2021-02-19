@@ -51,5 +51,3 @@
   when:
     - ansible_architecture == 'x86_64'
     - not sap_hana_preconfigure_use_tuned
-
-...

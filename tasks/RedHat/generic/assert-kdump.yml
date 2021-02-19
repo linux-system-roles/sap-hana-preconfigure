@@ -22,5 +22,3 @@
     fail_msg: "FAIL: Service 'kdump' is active!"
     success_msg: "PASS: Service 'kdump' is inactive."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-
-...

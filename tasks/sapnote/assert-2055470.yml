@@ -84,5 +84,3 @@
   when: 
     - __sap_hana_preconfigure_register_stat_sysctl_ibm_largesend_conf_assert.stat.exists
     - sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2055470|d(false)
-
-...

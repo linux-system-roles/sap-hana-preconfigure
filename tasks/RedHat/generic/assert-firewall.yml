@@ -42,5 +42,3 @@
     msg: "PASS: Service 'firewalld' is not installed."
 
   when: "'firewalld' not in ansible_facts.packages"
-
-...

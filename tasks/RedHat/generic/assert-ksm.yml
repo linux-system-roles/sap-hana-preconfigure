@@ -59,5 +59,3 @@
     fail_msg: "FAIL: KSM is currently enabled but it needs to be disabled!"
     success_msg: "PASS: KSM is disabled currently."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-
-...

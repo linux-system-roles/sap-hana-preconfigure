@@ -24,5 +24,3 @@
 
 - include_tasks: '{{ ansible_distribution }}/{{ assert_prefix }}configuration.yml'
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_configuration|d(false)
-
-...

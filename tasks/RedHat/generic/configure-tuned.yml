@@ -85,5 +85,3 @@
     - sap_hana_preconfigure_use_tuned
     - ansible_architecture == "ppc64le"
     - ansible_distribution_version == "8.0"
-
-...

@@ -225,5 +225,3 @@
     fail_msg: "FAIL: System needs to be restarted!"
     success_msg: "PASS: System needs no restart."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-
-...

@@ -30,4 +30,3 @@
 
 - import_tasks: 2777782/10-increase-pidmax.yml
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2777782_10|d(false)
-

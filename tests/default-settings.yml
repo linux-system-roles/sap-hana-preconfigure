@@ -5,4 +5,3 @@
     sap_hana_preconfigure_fail_if_reboot_required: no
   roles:
     - role: sap-hana-preconfigure
-

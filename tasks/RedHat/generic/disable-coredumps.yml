@@ -15,5 +15,3 @@
     - soft
   loop_control:
     loop_var: line_item
-
-...

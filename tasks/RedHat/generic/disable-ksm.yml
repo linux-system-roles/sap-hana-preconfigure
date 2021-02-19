@@ -33,5 +33,3 @@
   changed_when: false
 - debug:
     var: __sap_hana_preconfigure_register_ksm_status.stdout_lines, __sap_hana_preconfigure_register_ksm_status.stderr_lines
-
-...

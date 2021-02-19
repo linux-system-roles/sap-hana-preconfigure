@@ -34,5 +34,3 @@
 
   when:
     - not sap_hana_preconfigure_use_tuned
-
-...

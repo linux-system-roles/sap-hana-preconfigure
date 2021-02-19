@@ -30,5 +30,3 @@
         var: __sap_hana_preconfigure_register_abrt_status.stdout_lines, __sap_hana_preconfigure_register_abrt_status.stderr_lines
 
   when: not __sap_hana_preconfigure_register_abrt_installed.changed
-
-...

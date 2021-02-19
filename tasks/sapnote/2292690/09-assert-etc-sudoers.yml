@@ -15,5 +15,3 @@
     fail_msg: "FAIL: The string 'Defaults requiretty' was found in /etc/sudoers!"
     success_msg: "PASS: The string 'Defaults requiretty' was not found in /etc/sudoers!"
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-
-...

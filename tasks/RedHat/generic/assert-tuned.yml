@@ -118,5 +118,3 @@
         (sap_hana_preconfigure_use_tuned or
            sap_hana_preconfigure_assert_all_config
         )
-
-...

@@ -16,5 +16,3 @@
   ignore_errors: True
 - debug:
     var: __sap_hana_preconfigure_register_firewalld_status.stdout_lines, __sap_hana_preconfigure_register_firewalld_status.stderr_lines
-
-...

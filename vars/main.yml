@@ -10,5 +10,3 @@ __sap_hana_preconfigure_etc_sysctl_saphana_conf: /etc/sysctl.d/sap_hana.conf
 __sap_hana_preconfigure_selinux_state: disabled
 
 __sap_hana_preconfigure_run_grub2_mkconfig: yes
-
-...

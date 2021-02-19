@@ -62,5 +62,3 @@
     - { name: net.ipv4.tcp_mem, value: "56623104 56623104 56623104" }
   loop_control:
     loop_var: line_item
-
-...

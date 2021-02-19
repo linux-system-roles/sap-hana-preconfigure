@@ -6,5 +6,3 @@
 - import_tasks: ../../RedHat/generic/disable-abrt-ccpp.yml
 - import_tasks: ../../RedHat/generic/disable-coredumps.yml
 - import_tasks: ../../RedHat/generic/disable-kdump.yml
-
-...

@@ -33,5 +33,3 @@
     success_msg: "PASS: The current value of '{{ line_item.name }}' as per sysctl is
                   '{{ __sap_hana_preconfigure_register_sysctl_network_parameter_assert.stdout }}'."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-
-

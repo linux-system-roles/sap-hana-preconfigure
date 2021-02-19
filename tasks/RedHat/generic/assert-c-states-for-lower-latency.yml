@@ -29,5 +29,3 @@
            sap_hana_preconfigure_modify_grub_cmdline_linux or
            sap_hana_preconfigure_assert_all_config
         )
-
-...

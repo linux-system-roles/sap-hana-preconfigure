@@ -21,5 +21,3 @@
         success_msg: "PASS: Package 'pseries-energy' is not installed."
 
   when: ansible_architecture == "ppc64le"
-
-...
