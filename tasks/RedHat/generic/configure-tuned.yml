@@ -11,7 +11,7 @@
         enabled: yes
 
     - name: Show currently active tuned profile
-      command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
+      shell: /usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'
       check_mode: no
       register: __sap_hana_preconfigure_register_current_tuned_profile
       changed_when: false
@@ -24,7 +24,7 @@
           command: /usr/sbin/tuned-adm profile sap-hana
 
         - name: Show new active tuned profile
-          command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
+          shell: /usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'
           check_mode: no
           register: __sap_hana_preconfigure_register_new_tuned_profile
           changed_when: false
@@ -57,7 +57,7 @@
         backup: yes
 
     - name: On RHEL 8.0 on ppc64le, show active tuned profile again
-      command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
+      shell: /usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'
       check_mode: no
       register: __sap_hana_preconfigure_register_current_tuned_profile_ppc64le
       changed_when: false
@@ -71,7 +71,7 @@
           command: /usr/sbin/tuned-adm profile sap-hana sap-hana-ppc64le
 
         - name: Show active tuned profile
-          command: bash -lc "/usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'"
+          shell: /usr/sbin/tuned-adm active | grep ":" | cut -d ":" -f 2 | awk '{$1=$1;print}'
           register: __sap_hana_preconfigure_register_new_tuned_profile_ppc64le
           changed_when: false
         - debug:

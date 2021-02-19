@@ -41,7 +41,7 @@
   when: __sap_hana_preconfigure_register_stat_sysctl_sap_conf_assert.stat.isreg
 
 - name: Check if kernel.pid_max is set to 4194304 as per sysctl
-  shell: sysctl -n kernel.pid_max
+  command: sysctl -n kernel.pid_max
   register: __sap_hana_preconfigure_register_sysctl_pid_max_assert
   changed_when: no
   ignore_errors: yes

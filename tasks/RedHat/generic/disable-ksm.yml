@@ -21,13 +21,13 @@
   when: __sap_hana_preconfigure_register_stat_boot_local_ksm.stat.exists
 
 - name: Disable KSM on the running system
-  command: bash -lc "echo 0 > /sys/kernel/mm/ksm/run"
+  shell: echo 0 > /sys/kernel/mm/ksm/run
   register: __sap_hana_preconfigure_register_disable_ksm
 - debug:
     var: __sap_hana_preconfigure_register_disable_ksm.stdout_lines, __sap_hana_preconfigure_register_disable_ksm.stderr_lines
 
 - name: Get status of KSM
-  command: bash -lc "cat /sys/kernel/mm/ksm/run"
+  command: cat /sys/kernel/mm/ksm/run
   register: __sap_hana_preconfigure_register_ksm_status
   ignore_errors: true
   changed_when: false

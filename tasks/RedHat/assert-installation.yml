@@ -211,7 +211,7 @@
     var: __sap_hana_preconfigure_fact_needs_restarting_command_assert
 
 - name: Check if system needs to be restarted
-  command: "{{ __sap_hana_preconfigure_fact_needs_restarting_command_assert }}"
+  shell: "{{ __sap_hana_preconfigure_fact_needs_restarting_command_assert }}"
   register: __sap_hana_preconfigure_register_needs_restarting_assert
   changed_when: false
   args:

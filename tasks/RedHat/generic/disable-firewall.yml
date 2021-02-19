@@ -11,7 +11,7 @@
   when: "'firewalld' in ansible_facts.packages"
 
 - name: Get status of firewalld
-  command: bash -lc "systemctl status firewalld"
+  command: systemctl status firewalld
   register: __sap_hana_preconfigure_register_firewalld_status
   ignore_errors: True
 - debug:

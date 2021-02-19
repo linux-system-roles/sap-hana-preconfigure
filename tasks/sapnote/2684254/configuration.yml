@@ -71,7 +71,7 @@
 
 # Intel Systems only
 #  - name: "Configure CPU Governor for Performance now"
-#    command: bash -lc "cpupower frequency-set -g performance"
+#    command: cpupower frequency-set -g performance
 #    register: __sap_hana_preconfigure_register_sles15_cpupower_frequency_set
 #    ignore_errors: True
 

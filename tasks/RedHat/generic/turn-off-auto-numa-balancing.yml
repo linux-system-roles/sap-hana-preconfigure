@@ -25,7 +25,7 @@
           when: not __sap_hana_preconfigure_register_numad_installed.changed
 
         - name: Get status of numad
-          command: bash -lc "systemctl status numad"
+          command: systemctl status numad
           register: __sap_hana_preconfigure_register_numad_status
           ignore_errors: true
         - debug:

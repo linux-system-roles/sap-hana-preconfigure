@@ -23,7 +23,7 @@
       when: not __sap_hana_preconfigure_register_abrt_ccpp_installed.changed
 
     - name: Get status of abrt-ccpp
-      command: bash -lc "systemctl status abrt-ccpp"
+      command: systemctl status abrt-ccpp
       register: __sap_hana_preconfigure_register_abrt_ccpp_status
       ignore_errors: true
     - debug:
