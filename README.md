@@ -227,7 +227,7 @@ into the variable sap_hana_preconfigure_kernel_parameters and add or change your
 ```yaml
 sap_hana_preconfigure_kernel_parameters:
   - { name: net.core.somaxconn, value: 4096 }
-  - { name: net.ipv4.tcp_max_syn_backlog, value: 8192}
+  - { name: net.ipv4.tcp_max_syn_backlog, value: 8192 }
   - { name: net.ipv4.tcp_timestamps, value: 1 }
   - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
 ```
