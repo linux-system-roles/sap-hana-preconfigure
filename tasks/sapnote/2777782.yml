@@ -1,8 +1,9 @@
 ---
 # tasks file for sap-hana-preconfigure configuration
 
-- import_tasks: 2777782/01-disable-selinux.yml
-  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2777782_01|d(false)
+# SELinux is already configured in role sap-preconfigure:
+#- import_tasks: 2777782/01-disable-selinux.yml
+#  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2777782_01|d(false)
 
 - import_tasks: 2777782/02-configure-tuned.yml
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2777782_02|d(false)
