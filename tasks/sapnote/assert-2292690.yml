@@ -25,9 +25,9 @@
 - import_tasks: 2292690/07-assert-ksm.yml
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2292690_07|d(false)
 
-# The following task is already part of role sap-preconfigure:
-- import_tasks: 2292690/08-assert-selinux.yml
-  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2292690_08|d(false)
+# SELinux is already configured in role sap-preconfigure:
+#- import_tasks: 2292690/08-assert-selinux.yml
+#  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2292690_08|d(false)
 
 - import_tasks: 2292690/09-assert-etc-sudoers.yml
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2292690_09|d(false)

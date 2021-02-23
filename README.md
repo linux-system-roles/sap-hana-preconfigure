@@ -62,13 +62,19 @@ Do not run this role against an SAP HANA or other production system. The role wi
 
 Changes
 -------
-The previous version of this role used variable sap_hana_preconfigure_use_tuned_where_possible to switch between either tuned settings or kernel command line settings (where applicable).
+1) Previous versions of this role used variable sap_hana_preconfigure_use_tuned_where_possible to switch between either tuned settings or kernel command line settings (where applicable).
 The current version modifies this behavior:
 - The variable sap_hana_preconfigure_use_tuned_where_possible has been renamed to sap_hana_preconfigure_use_tuned
 - The variable sap_hana_preconfigure_switch_to_tuned_profile_sap_hana has been removed.
 - If sap_hana_preconfigure_use_tuned is set to `yes`, which is also the default, the role will configure the system for using tuned and also switch to tuned profile sap-hana.
   If sap_hana_preconfigure_use_tuned is set to `no`, the role will perform a static configuration, including the modification of the linux command line in grub.
 - The role can use tuned, or configure the kernel command line, or both.
+
+2) Previous versions of this role used variable sap_hana_preconfigure_selinux_state to set the SELinux state to disabled, which is mentioned in
+SAP notes 2292690 (RHEL 7) and 2777782 (RHEL 8). As role sap-preconfigure already allows to specify the desired SELinux state, and as
+sap-preconfigure is run before sap-hana-preconfigure, there is no need any more to let sap-hana-preconfigure configure the SELinux state.
+Same applies to the assertion of the SELinux state. Because of this, variable sap_hana_preconfigure_selinux_state has been removed from this role and
+tasks 2292690/08-disable-selinux.yml and 2777782/01-assert-selinux.yml have been commented out.
 
 Role Variables
 --------------
@@ -91,8 +97,8 @@ sap_hana_preconfigure_configuration
 ### Define configuration steps of SAP notes
 For defining one or more configuration steps of SAP notes to be executed or checked only, set variable `sap_hana_preconfigure_config_all` to `no`, `sap_hana_preconfigure_configuration` to `yes`, and one or more of the following variables to `yes`:
 ```yaml
-sap_hana_preconfigure_2777782_[01...10], example: sap_hana_preconfigure_2777782_05
-sap_hana_preconfigure_2292690_[01...10], example: sap_hana_preconfigure_2292690_02
+sap_hana_preconfigure_2777782_[02...10], example: sap_hana_preconfigure_2777782_05
+sap_hana_preconfigure_2292690_[01...07,09,10], example: sap_hana_preconfigure_2292690_02
 sap_hana_preconfigure_2009879_3_9
 sap_hana_preconfigure_2009879_3_14_[1...4]
 sap_hana_preconfigure_2009879_3_15
@@ -156,6 +162,19 @@ If you want the role to set the RHEL release to a certain fixed minor release (a
 sap_hana_preconfigure_set_minor_release
 ```
 
+### Minimum package check
+The following variable will make sure packages are installed at minimum required versions as defined in files `vars/*.yml`. Default is `yes`.
+```yaml
+sap_hana_preconfigure_min_package_check
+```
+
+### Perform a yum update
+If the following variable is set to `yes`, the role will run a `yum update` before performing configuration changes. Default is `no`. \
+*Note*: The outcome of a `yum update` depends on the managed node's configuration for sticky OS minor version, see the description of the release option in `man subscription-manager`. For SAP HANA installations, setting a certain minor version with `subscscription-manager release --set=X.Y` is a strict requirement.
+```yaml
+sap_hana_preconfigure_update
+```
+
 ### Add the repository for IBM service and productivity tools for POWER (ppc64le only)
 In case you do *not* want to automatically add the repository for the IBM service and productivity tools, set the following variable to `no`. Default is `yes`, meaning that the role will download and install the package specified in variable sap_hana_preconfigure_ibm_power_repo_url (see below) and also run the command /opt/ibm/lop/configure to accept the license.
 ```yaml
@@ -181,12 +200,6 @@ The following variable will cause the role to fail if a reboot is required, if u
 By setting the variable to `no`, the role will not fail if a reboot is required but just print a warning message.
 ```yaml
 sap_hana_preconfigure_fail_if_reboot_required
-```
-
-### Define SELinux state
-The following variable allows for defining the desired SELinux state. Default is `disabled`.
-```yaml
-sap_hana_preconfigure_selinux_state
 ```
 
 ### Use tuned profile sap-hana
@@ -227,7 +240,7 @@ into the variable sap_hana_preconfigure_kernel_parameters and add or change your
 ```yaml
 sap_hana_preconfigure_kernel_parameters:
   - { name: net.core.somaxconn, value: 4096 }
-  - { name: net.ipv4.tcp_max_syn_backlog, value: 8192}
+  - { name: net.ipv4.tcp_max_syn_backlog, value: 8192 }
   - { name: net.ipv4.tcp_timestamps, value: 1 }
   - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
 ```

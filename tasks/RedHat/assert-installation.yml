@@ -169,7 +169,7 @@
   args:
     warn: false
   changed_when: false
-  ignore_errors: "{{ sap_hana_preconfigure_ignore_errors|d(false) }}"
+  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
   when: sap_hana_preconfigure_update
 
 - name: Assert that there are no more possible package updates

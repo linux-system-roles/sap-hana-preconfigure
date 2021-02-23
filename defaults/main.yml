@@ -24,7 +24,6 @@
 ## examples for RHEL8:
 #sap_hana_preconfigure_2777782_03: yes
 #sap_hana_preconfigure_2777782_10: yes
-#sap_hana_preconfigure_2772999_09: yes
 ## both:
 #sap_hana_preconfigure_2382421: yes
 
@@ -107,7 +106,8 @@ sap_hana_preconfigure_ppcle_mtu9000_if: ''
 ## defaults to all interfaces
 sap_hana_preconfigure_ppcle_tso_if: "{{ ansible_interfaces| difference(['lo']) }}"
 
-sap_hana_preconfigure_selinux_state: "{{ __sap_hana_preconfigure_selinux_state }}"
+# SELinux is already configured in role sap-preconfigure:
+#sap_hana_preconfigure_selinux_state: "{{ __sap_hana_preconfigure_selinux_state }}"
 
 sap_hana_preconfigure_use_tuned: yes
 

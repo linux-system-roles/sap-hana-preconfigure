@@ -22,7 +22,7 @@
 - import_tasks: 2292690/07-disable-ksm.yml
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2292690_07|d(false)
 
-# We can skip the following task as it is already part of role sap-preconfigure:
+# SELinux is already configured in role sap-preconfigure:
 #- import_tasks: 2292690/08-disable-selinux.yml
 #  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2292690_08|d(false)
 
