@@ -97,8 +97,8 @@ sap_hana_preconfigure_configuration
 ### Define configuration steps of SAP notes
 For defining one or more configuration steps of SAP notes to be executed or checked only, set variable `sap_hana_preconfigure_config_all` to `no`, `sap_hana_preconfigure_configuration` to `yes`, and one or more of the following variables to `yes`:
 ```yaml
-sap_hana_preconfigure_2777782_[01...10], example: sap_hana_preconfigure_2777782_05
-sap_hana_preconfigure_2292690_[01...10], example: sap_hana_preconfigure_2292690_02
+sap_hana_preconfigure_2777782_[02...10], example: sap_hana_preconfigure_2777782_05
+sap_hana_preconfigure_2292690_[01...07,09,10], example: sap_hana_preconfigure_2292690_02
 sap_hana_preconfigure_2009879_3_9
 sap_hana_preconfigure_2009879_3_14_[1...4]
 sap_hana_preconfigure_2009879_3_15
