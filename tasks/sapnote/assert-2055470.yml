@@ -29,7 +29,7 @@
 #       exit 90
 #    fi
 #  register: __sap_hana_preconfigure_register_ibm_mtusize_assert
-#  changed_when: __sap_hana_preconfigure_register_ibm_mtusize_assert.rc == 0
+#  changed_when: __sap_hana_preconfigure_register_ibm_mtusize_assert is success
 #  failed_when: __sap_hana_preconfigure_register_ibm_mtusize_assert.rc > 0 and __sap_hana_preconfigure_register_ibm_mtusize_assert.rc != 90
 #  with_items: "{{ sap_hana_preconfigure_ppcle_mtu9000_if }}"
 #  when: not( (sap_hana_preconfigure_ppcle_mtu9000_if) or

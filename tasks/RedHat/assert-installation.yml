@@ -174,7 +174,7 @@
 
 - name: Assert that there are no more possible package updates
   assert:
-    that: __sap_hana_preconfigure_register_yum_check_update_assert.rc == 0
+    that: __sap_hana_preconfigure_register_yum_check_update_assert is success
     fail_msg: "FAIL: System needs to be updated!"
     success_msg: "PASS: There are no more outstanding package updates."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
@@ -221,7 +221,7 @@
 
 - name: Assert that system needs no restart
   assert:
-    that: __sap_hana_preconfigure_register_needs_restarting_assert.rc == 0
+    that: __sap_hana_preconfigure_register_needs_restarting_assert is success
     fail_msg: "FAIL: System needs to be restarted!"
     success_msg: "PASS: System needs no restart."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"

@@ -16,7 +16,7 @@
 
     - name: Assert that package pseries-energy is not installed
       assert:
-        that: __sap_hana_preconfigure_register_yum_pseries_energy_assert.rc == 1
+        that: __sap_hana_preconfigure_register_yum_pseries_energy_assert is failed
         fail_msg: "FAIL: Package 'pseries-energy' is installed!"
         success_msg: "PASS: Package 'pseries-energy' is not installed."
 
