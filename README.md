@@ -170,7 +170,7 @@ sap_hana_preconfigure_min_package_check
 
 ### Perform a yum update
 If the following variable is set to `yes`, the role will run a `yum update` before performing configuration changes. Default is `no`. \
-*Note*: The outcome of a `yum update` depends on the managed node's configuration for sticky OS minor version, see the description of the release option in `man subscription-manager`. For SAP HANA installations, setting a certain minor version with `subscscription-manager release --set=X.Y` is a strict requirement.
+*Note*: The outcome of a `yum update` depends on the managed node's configuration for sticky OS minor version, see the description of the release option in `man subscription-manager`. For SAP HANA installations, setting a certain minor version with `subscription-manager release --set=X.Y` is a strict requirement.
 ```yaml
 sap_hana_preconfigure_update
 ```
