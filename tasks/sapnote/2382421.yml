@@ -1,8 +1,7 @@
 ---
-# OS RELEASE: RHEL 7
 # SAP Note: 2382421 - Optimizing the Network Configuration on HANA- and OS-Level
 #
-- name: setting kernel tunables as in SAP NOTE 2382421
+- name: setting kernel tunables as per SAP note 2382421
   sysctl:
     sysctl_file: "{{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}"
     name: "{{ line_item.name }}"

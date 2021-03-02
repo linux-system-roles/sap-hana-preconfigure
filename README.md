@@ -103,6 +103,7 @@ sap_hana_preconfigure_2009879_3_9
 sap_hana_preconfigure_2009879_3_14_[1...4]
 sap_hana_preconfigure_2009879_3_15
 sap_hana_preconfigure_2382421
+sap_hana_preconfigure_3024346
 ```
 
 ### Run the role in assert mode
@@ -175,6 +176,35 @@ If the following variable is set to `yes`, the role will run a `yum update` befo
 sap_hana_preconfigure_update
 ```
 
+###  HANA kernel parameters
+[SAP Note 238241](https://launchpad.support.sap.com/#/notes/238241) defines kernel parameters that all Linux systems need to set.
+The default parameter recomendations are dependent on the OS release. Hence the OS dependant default setting is defined in
+./vars/{{ansible_os_release}}.yml. If you need to add or change parameters for your system, copy these parameters from the vars file
+into the variable sap_hana_preconfigure_kernel_parameters and add or change your settings, as in the following example:
+
+```yaml
+sap_hana_preconfigure_kernel_parameters:
+  - { name: net.core.somaxconn, value: 4096 }
+  - { name: net.ipv4.tcp_max_syn_backlog, value: 8192 }
+  - { name: net.ipv4.tcp_timestamps, value: 1 }
+  - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
+```
+
+###  HANA kernel parameters for NetApp NFS
+[SAP Note 3024346](https://launchpad.support.sap.com/#/notes/3024346) defines kernel parameter settings for NetApp NFS.
+In case you want the role to set or check these parameters, set the following variable to `yes`. Default is `no`.
+
+```yaml
+sap_hana_preconfigure_use_netapp_settings_nfs
+
+###  HANA kernel parameters for NetApp NFSv3
+[SAP Note 3024346](https://launchpad.support.sap.com/#/notes/3024346) also contains an additional parameter setting for NetApp when using NFSv3.
+In case you want the role to set or check this parameter, set the following variable to `yes`. Default is `no`.
+
+```yaml
+sap_hana_preconfigure_use_netapp_settings_nfsv3
+```
+
 ### Add the repository for IBM service and productivity tools for POWER (ppc64le only)
 In case you do *not* want to automatically add the repository for the IBM service and productivity tools, set the following variable to `no`. Default is `yes`, meaning that the role will download and install the package specified in variable sap_hana_preconfigure_ibm_power_repo_url (see below) and also run the command /opt/ibm/lop/configure to accept the license.
 ```yaml
@@ -229,20 +259,6 @@ These variables are used in all sap-hana roles so that they are only prefixed wi
 ```yaml
 sap_hana_version: "2"
 sap_hana_sps: "0"
-```
-
-###  HANA kernel parameters
-[SAP Note 238241](https://launchpad.support.sap.com/#/notes/238241) defines kernel parameters that all Linux systems need to set.
-The default parameter recomendations are dependent on the OS release. Hence the OS dependant default setting is defined in
-./vars/{{ansible_os_release}}.yml. If you need to add or change parameters for your system, copy these parameters from the vars file
-into the variable sap_hana_preconfigure_kernel_parameters and add or change your settings, as in the following example:
-
-```yaml
-sap_hana_preconfigure_kernel_parameters:
-  - { name: net.core.somaxconn, value: 4096 }
-  - { name: net.ipv4.tcp_max_syn_backlog, value: 8192 }
-  - { name: net.ipv4.tcp_timestamps, value: 1 }
-  - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
 ```
 
 Example Playbook

@@ -62,7 +62,7 @@ __sap_hana_preconfigure_sapnotes:
   - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
   - "2777782"
   - "2382421"
-#  - "2235581" # no specific requirements for RHEL 8 yet
+  - "3024346"
 
 # In SAP Note 2777782, certain minimal required packages for the different RHEL 8 minor releases are listed.
 # The following will assign them properly to __sap_hana_preconfigure_min_pkgs.
@@ -204,3 +204,20 @@ __sap_hana_preconfigure_kernel_parameters_default:
 # The following only applies to HANA 1 <= 122.14 and HANA 2 SPS00.
 # So we do not change the default.
 #  - { name: net.ipv4.tcp_syn_retries, value: 8 }
+
+# Network related kernel parameters for NetApp NFS, as set in SAP Note 3024346:
+__sap_hana_preconfigure_kernel_parameters_netapp_nfs:
+  - { name: net.core.rmem_max, value: 16777216 }
+  - { name: net.core.wmem_max, value: 16777216 }
+  - { name: net.ipv4.tcp_rmem, value: "4096 131072 16777216" }
+  - { name: net.ipv4.tcp_wmem, value: "4096 16384 16777216" }
+  - { name: net.core.netdev_max_backlog, value: 300000 }
+# already set in SAP note 2382421:
+#  - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
+  - { name: net.ipv4.tcp_no_metrics_save, value: 1 }
+  - { name: net.ipv4.tcp_moderate_rcvbuf, value: 1 }
+  - { name: net.ipv4.tcp_window_scaling, value: 1 }
+# already set in SAP note 2382421:
+#  - { name: net.ipv4.tcp_timestamps, value: 1 }
+  - { name: net.ipv4.tcp_sack, value: 1 }
+
