@@ -72,7 +72,7 @@
   register: __sap_hana_preconfigure_register_tcp_max_slot_table_entries_assert
   changed_when: no
   ignore_errors: yes
-  when: 
+  when:
     - __sap_hana_preconfigure_register_etc_modprobe_sunrpc_conf_assert.stat.exists
     - sap_hana_preconfigure_use_netapp_settings_nfsv3|d(false)
     - sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_3024346|d(false)
