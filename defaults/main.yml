@@ -92,6 +92,8 @@ sap_hana_preconfigure_fail_if_reboot_required: yes
 
 sap_hana_preconfigure_kernel_parameters: "{{ __sap_hana_preconfigure_kernel_parameters_default }}"
 
+sap_hana_preconfigure_kernel_parameters_ppc64le: "{{ __sap_hana_preconfigure_kernel_parameters_default_ppc64le }}"
+
 sap_hana_preconfigure_use_netapp_settings_nfs: no
 
 sap_hana_preconfigure_use_netapp_settings_nfsv3: no
