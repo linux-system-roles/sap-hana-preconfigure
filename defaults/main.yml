@@ -92,6 +92,8 @@ sap_hana_preconfigure_fail_if_reboot_required: yes
 
 sap_hana_preconfigure_kernel_parameters: "{{ __sap_hana_preconfigure_kernel_parameters_default }}"
 
+sap_hana_preconfigure_kernel_parameters_ppc64le: "{{ __sap_hana_preconfigure_kernel_parameters_default_ppc64le }}"
+
 sap_hana_preconfigure_add_ibm_power_repo: yes
 
 # sap_hana_preconfigure_ibm_power_repo_url: 'http://public.dhe.ibm.com/software/server/POWER/Linux/yum/download/ibm-power-repo-3.0.0-19.noarch.rpm'

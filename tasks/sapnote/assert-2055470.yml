@@ -74,7 +74,7 @@
 
 - name: Get and assert kernel tunables for ppc64le
   include_tasks: ../RedHat/generic/sapnote-2055470-loop-block.yml
-  loop: "{{ __sap_hana_preconfigure_kernel_parameters_default_ppc64le }}"
+  loop: "{{ sap_hana_preconfigure_kernel_parameters_ppc64le }}"
   loop_control:
     loop_var: line_item
   when: 

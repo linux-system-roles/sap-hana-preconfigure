@@ -205,4 +205,12 @@ __sap_hana_preconfigure_kernel_parameters_default:
 # So we do not change the default.
 #  - { name: net.ipv4.tcp_syn_retries, value: 8 }
 
+# Network related kernel parameters for ppc64le:
+__sap_hana_preconfigure_kernel_parameters_default_ppc64le:
+   - { name: net.core.rmem_max, value: 56623104 }
+   - { name: net.core.wmem_max, value: 56623104 }
+   - { name: net.ipv4.tcp_rmem, value: "65536 262088 56623104" }
+   - { name: net.ipv4.tcp_wmem, value: "65536 262088 56623104" }
+   - { name: net.ipv4.tcp_mem, value: "56623104 56623104 56623104" }
+
 ...
