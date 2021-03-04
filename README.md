@@ -247,12 +247,12 @@ sap_hana_preconfigure_kernel_parameters:
 
 ###  HANA kernel parameters for IBM POWER servers
 [SAP Note 2055470](https://launchpad.support.sap.com/#/notes/2055470) contains links to IBM documents for SAP HANA on POWER.
-Among these is a document document which contains certain recommended Linux kernel settings for SAP HANA on POWER:
+Among these is a document which contains certain recommended Linux kernel settings for SAP HANA on POWER:
 Network_Configuration_for_HANA_Workloads_on_IBM_Power_Servers_V7.1.pdf.
 This document is linked from SAP note 2055470 via "SAP HANA on IBM Power Systems and IBM System Storage - Guides", then via
-"SAP on Linux and IBM Storage Guides (incl. HANA)", and then then via
+"SAP on Linux and IBM Storage Guides (incl. HANA)", and then via
 "SAP on Power Linux Network and Fibre Channel Guides".
-The default parameter recommendations are also defined in ./vars/{{ansible_os_release}}.yml. If you need to add or change parameters
+The default parameter recommendations are defined in ./vars/{{ansible_os_release}}.yml. If you need to add or change parameters
 for your system, copy these parameters from the vars file into the variable sap_hana_preconfigure_kernel_parameters_ppc64le and
 add or change your settings, similar to the previous example.
 
