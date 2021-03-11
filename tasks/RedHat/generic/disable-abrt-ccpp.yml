@@ -3,30 +3,7 @@
 - debug:
     msg: "imported RedHat/generic/disable-abrt-ccpp.yml"
 
-- name: Check if package abrt-addon-ccpp is installed
-  package:
-    name: abrt-addon-ccpp
-    state: present
-  check_mode: true
-  register: __sap_hana_preconfigure_register_abrt_ccpp_installed
-  ignore_errors: yes
-- debug:
-    var: __sap_hana_preconfigure_register_abrt_ccpp_installed
-
-- name: Disable abrt-ccpp if installed, and get status of abrtd
-  block:
-    - name: Disable abrt-ccpp if installed
-      systemd:
-        name: abrt-ccpp
-        state: stopped
-        enabled: no
-      when: not __sap_hana_preconfigure_register_abrt_ccpp_installed.changed
-
-    - name: Get status of abrt-ccpp
-      command: systemctl status abrt-ccpp
-      register: __sap_hana_preconfigure_register_abrt_ccpp_status
-      ignore_errors: true
-    - debug:
-        var: __sap_hana_preconfigure_register_abrt_ccpp_status.stdout_lines, __sap_hana_preconfigure_register_abrt_ccpp_status.stderr_lines
-
-  when: not __sap_hana_preconfigure_register_abrt_ccpp_installed.changed
+- name: Disable abrt-ccpp
+  include_tasks: disable-services.yml
+  vars:
+    line_item: abrt-ccpp

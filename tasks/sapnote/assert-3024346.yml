@@ -33,7 +33,7 @@
     - sap_hana_preconfigure_use_netapp_settings_nfs|d(false)
     - sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_3024346|d(false)
 
-- name: Get and assert kernel tunables for NetApp NFS as per SAP note 3024346
+- name: Get and assert kernel tunables for NetApp NFS
   include_tasks: ../RedHat/generic/sapnote-3024346-loop-block.yml
   loop: "{{ __sap_hana_preconfigure_kernel_parameters_netapp_nfs }}"
   loop_control:
@@ -73,8 +73,8 @@
   changed_when: no
   ignore_errors: yes
   when:
-    - __sap_hana_preconfigure_register_etc_modprobe_sunrpc_conf_assert.stat.exists
     - sap_hana_preconfigure_use_netapp_settings_nfsv3|d(false)
+    - __sap_hana_preconfigure_register_etc_modprobe_sunrpc_conf_assert.stat.exists
     - sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_3024346|d(false)
 
 - name: Assert that 'options sunrpc tcp_max_slot_table_entries' is set correctly in /etc/modprobe.d/sunrpc.conf
@@ -86,6 +86,6 @@
                   '{{ __sap_hana_preconfigure_register_tcp_max_slot_table_entries_assert.stdout }}'."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
   when:
-    - __sap_hana_preconfigure_register_etc_modprobe_sunrpc_conf_assert.stat.exists
     - sap_hana_preconfigure_use_netapp_settings_nfsv3|d(false)
+    - __sap_hana_preconfigure_register_etc_modprobe_sunrpc_conf_assert.stat.exists
     - sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_3024346|d(false)

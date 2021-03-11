@@ -50,6 +50,8 @@ sap_hana_preconfigure_req_repos_RedHat_7_x86_64: "{{ __sap_hana_preconfigure_req
 sap_hana_preconfigure_req_repos_RedHat_7_ppc64le: "{{ __sap_hana_preconfigure_req_repos_RedHat_7_ppc64le }}"
 sap_hana_preconfigure_req_repos_RedHat_8_x86_64: "{{ __sap_hana_preconfigure_req_repos_RedHat_8_x86_64 }}"
 sap_hana_preconfigure_req_repos_RedHat_8_ppc64le: "{{ __sap_hana_preconfigure_req_repos_RedHat_8_ppc64le }}"
+sap_hana_preconfigure_req_repos_RedHat_9_x86_64: "{{ __sap_hana_preconfigure_req_repos_RedHat_9_x86_64 }}"
+sap_hana_preconfigure_req_repos_RedHat_9_ppc64le: "{{ __sap_hana_preconfigure_req_repos_RedHat_9_ppc64le }}"
 
 # Set to "yes" if you want the role to set the RHEL minor release, which is required for SAP HANA. Default is "no".
 sap_hana_preconfigure_set_minor_release: no

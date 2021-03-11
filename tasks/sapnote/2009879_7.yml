@@ -77,7 +77,7 @@
 #  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2009879_3_13|d(false)
 
 ### 3.14 - Disable ABRT
-- include_tasks: ../RedHat/generic/disable-abrt.yml
+- include_tasks: ../RedHat/generic/disable-abrtd.yml
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2009879_3_14_1|d(false)
 
 - include_tasks: ../RedHat/generic/disable-abrt-ccpp.yml
@@ -96,7 +96,7 @@
 ### otherwise disable firewall
 ### NYI: Set proper firewall rules if SID/instance number is known
 ###
-- include_tasks: ../RedHat/generic/disable-firewall.yml
+- include_tasks: ../RedHat/generic/disable-firewalld.yml
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2009879_3_15|d(false)
 
 ### Firewall Calculation for SID=xx

@@ -4,39 +4,10 @@
     msg: "imported RedHat/generic/assert-auto-numa-balancing.yml"
 
 # can be configured by tuned profile sap-hana, entry "kernel.numa_balancing = 0"
-- name: Check numad if tuned is not to be used
-  block:
-
-    - name: Check numad
-      block:
-        - name: Get status of numad
-          command: systemctl status numad
-          register: __sap_hana_preconfigure_register_numad_status_assert
-          ignore_errors: yes
-          changed_when: no
-#      no_log: yes
-
-        - name: Assert that numad is disabled
-          assert:
-            that: "'/usr/lib/systemd/system/numad.service; disabled' in __sap_hana_preconfigure_register_numad_status_assert.stdout"
-            fail_msg: "FAIL: Service 'numad' is not disabled!"
-            success_msg: "PASS: Service 'numad' is disabled."
-          ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-
-        - name: Assert that numad is inactive
-          assert:
-            that: "'inactive (dead)' in __sap_hana_preconfigure_register_numad_status_assert.stdout"
-            fail_msg: "FAIL: Service 'numad' is active!"
-            success_msg: "PASS: Service 'numad' is inactive."
-          ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-
-      when: "'numad' in ansible_facts.packages"
-
-    - name: Report numad install status
-      debug:
-        msg: "PASS: Service 'numad' is not installed."
-
-      when: "'numad' not in ansible_facts.packages"
+- name: Assert that service numad is disabled, and inactive or stopped, if tuned is not to be used
+  include_tasks: assert-services.yml
+  vars:
+    line_item: numad
 
   when: not sap_hana_preconfigure_use_tuned or
         sap_hana_preconfigure_assert_all_config|d(false)

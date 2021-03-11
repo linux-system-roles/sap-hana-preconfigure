@@ -4,33 +4,8 @@
     msg: "imported RedHat/generic/turn-off-auto-numa-balancing.yml"
 
 # can be configured by tuned profile sap-hana, entry "kernel.numa_balancing = 0"
-- block:
-    - name: Check if numad is installed
-      package:
-        name: numad
-        state: present
-      check_mode: true
-      register: __sap_hana_preconfigure_register_numad_installed
-      ignore_errors: yes
-    - debug:
-        var: __sap_hana_preconfigure_register_numad_installed
-
-    - name: Disable numad if installed, and get status of numad
-      block:
-        - name: Disable numad if installed
-          systemd:
-            name: numad
-            state: stopped
-            enabled: no
-          when: not __sap_hana_preconfigure_register_numad_installed.changed
-
-        - name: Get status of numad
-          command: systemctl status numad
-          register: __sap_hana_preconfigure_register_numad_status
-          ignore_errors: true
-        - debug:
-            var: __sap_hana_preconfigure_register_numad_status.stdout_lines, __sap_hana_preconfigure_register_numad_status.stderr_lines
-      when: not __sap_hana_preconfigure_register_numad_installed.changed
-
-  when:
-    - not sap_hana_preconfigure_use_tuned
+- name: Disable numad
+  include_tasks: disable-services.yml
+  vars:
+    line_item: numad
+  when: not sap_hana_preconfigure_use_tuned
