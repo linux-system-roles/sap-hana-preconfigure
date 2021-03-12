@@ -28,7 +28,7 @@ echo "Test 1: Run role in check mode."
 ansible-playbook default-settings.yml -l ${MANAGED_NODE} --check
 # ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e "{sap_hana_preconfigure_fail_if_reboot_required: no}" --check
 RC=$?
-echo "RC=${RC}"
+echo "Test 1: RC=${RC}"
 if [[ ${RC} -ne 0 ]]; then
    exit ${RC}
 fi
@@ -39,7 +39,7 @@ rm -f ${_TMPFILE}
 ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e \
 "{sap_hana_preconfigure_assert: yes}"
 RC=$?
-echo "RC=${RC}"
+echo "Test 2: RC=${RC}"
 if [[ ${RC} -ne 0 ]]; then
    exit ${RC}
 fi
@@ -52,7 +52,7 @@ ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e \
   sap_hana_preconfigure_assert_ignore_errors: yes,\
   sap_hana_preconfigure_update: yes}"
 RC=$?
-echo "RC=${RC}"
+echo "Test 3: RC=${RC}"
 if [[ ${RC} -ne 0 ]]; then
    exit ${RC}
 fi
@@ -78,13 +78,14 @@ awk '{sub ("    \"msg\": ", "")}
         printf ("\033[31mFATAL ERROR!!! Playbook might have been aborted!!!\033['${FONT_COLOR}' Last TASK and fatal output:\n"); print task_line, fatal_line
      }
      else printf ("\033[31mFAIL: %d  \033[33mWARN: %d  \033[32mPASS: %d\033['${FONT_COLOR}'\n", nfail[var], nwarn[var], npass[var])}}'
+echo "Test 4 finished."
 
 echo
 echo "Test 5: Run role in normal mode. Do not fail if a reboot is required."
 ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e \
 "{sap_hana_preconfigure_fail_if_reboot_required: no}"
 RC=$?
-echo "RC=${RC}"
+echo "Test 5: RC=${RC}"
 if [[ ${RC} -ne 0 ]]; then
    exit ${RC}
 fi
@@ -93,7 +94,7 @@ echo
 echo "Test 6: Run role in check mode again:"
 ansible-playbook default-settings.yml -l ${MANAGED_NODE} --check
 RC=$?
-echo "RC=${RC}"
+echo "Test 6: RC=${RC}"
 if [[ ${RC} -ne 0 ]]; then
    exit ${RC}
 fi
@@ -103,7 +104,7 @@ echo "Test 7: Run the role in assert mode. Let it fail in case of FAIL:"
 ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e \
 "{sap_hana_preconfigure_assert: yes}"
 RC=$?
-echo "RC=${RC}"
+echo "Test 7: RC=${RC}"
 if [[ ${RC} -ne 0 ]]; then
    exit ${RC}
 fi
@@ -128,6 +129,7 @@ awk '{sub ("    \"msg\": ", "")}
         printf ("\033[31mFATAL ERROR!!! Playbook might have been aborted!!!\033['${FONT_COLOR}' Last TASK and fatal output:\n"); print task_line, fatal_line
      }
      else printf ("\033[31mFAIL: %d  \033[33mWARN: %d  \033[32mPASS: %d\033['${FONT_COLOR}'\n", nfail[var], nwarn[var], npass[var])}}'
+echo "Test 8 finished."
 
 echo
 echo "Test 9: Run role in normal mode. Allow a reboot."
@@ -137,7 +139,7 @@ ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e \
   sap_hana_preconfigure_update: yes, \
   sap_hana_preconfigure_reboot_ok: yes}"
 RC=$?
-echo "RC=${RC}"
+echo "Test 9: RC=${RC}"
 if [[ ${RC} -ne 0 ]]; then
    exit ${RC}
 fi
@@ -146,7 +148,7 @@ echo
 echo "Test 10: Run the role in assert mode. Let it fail in case of FAIL:"
 ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e "{sap_hana_preconfigure_assert: yes}"
 RC=$?
-echo "RC=${RC}"
+echo "Test 10: RC=${RC}"
 if [[ ${RC} -ne 0 ]]; then
    exit ${RC}
 fi
@@ -171,6 +173,7 @@ awk '{sub ("    \"msg\": ", "")}
         printf ("\033[31mFATAL ERROR!!! Playbook might have been aborted!!!\033['${FONT_COLOR}' Last TASK and fatal output:\n"); print task_line, fatal_line
      }
      else printf ("\033[31mFAIL: %d  \033[33mWARN: %d  \033[32mPASS: %d\033['${FONT_COLOR}'\n", nfail[var], nwarn[var], npass[var])}}'
+echo "Test 11 finished."
 
 echo
 echo "Test 12: Run role in normal mode. Do not use tuned. Allow a reboot."
@@ -181,7 +184,7 @@ ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e \
   sap_hana_preconfigure_use_tuned: no, \
   sap_hana_preconfigure_reboot_ok: yes}"
 RC=$?
-echo "RC=${RC}"
+echo "Test 12: RC=${RC}"
 if [[ ${RC} -ne 0 ]]; then
    exit ${RC}
 fi
@@ -208,3 +211,6 @@ awk '{sub ("    \"msg\": ", "")}
         printf ("\033[31mFATAL ERROR!!! Playbook might have been aborted!!!\033['${FONT_COLOR}' Last TASK and fatal output:\n"); print task_line, fatal_line
      }
      else printf ("\033[31mFAIL: %d  \033[33mWARN: %d  \033[32mPASS: %d\033['${FONT_COLOR}'\n", nfail[var], nwarn[var], npass[var])}}'
+echo "Test 13 finished."
+echo
+echo "All Tests finished."
