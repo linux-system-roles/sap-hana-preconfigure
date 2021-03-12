@@ -39,8 +39,13 @@ rm -f ${_TMPFILE}
 ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e \
 "{sap_hana_preconfigure_assert: yes}"
 RC=$?
-echo "Test 2: RC=${RC} (ignored)"
+echo "Test 2: RC=${RC}"
+if [[ ${RC} -ne 0 ]]; then
+   echo "Failed - see result of last task."
+fi
 
+echo
+echo "Continung..."
 echo
 echo "Test 3: Run the role in assert mode, ignoring any error."
 rm -f ${_TMPFILE}
@@ -97,15 +102,17 @@ if [[ ${RC} -ne 0 ]]; then
 fi
 
 echo
-echo "Test 7: Run the role in assert mode. Let it fail in case of FAIL:"
+echo "Test 7: Run the role in assert mode. Let it fail in case of FAIL but continue with the next test."
 ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e \
 "{sap_hana_preconfigure_assert: yes}"
 RC=$?
 echo "Test 7: RC=${RC}"
 if [[ ${RC} -ne 0 ]]; then
-   exit ${RC}
+   echo "Failed - see result of last task."
 fi
 
+echo
+echo "Continung..."
 echo
 echo "Test 8: Run the role in assert mode again, with compact output:"
 ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e \
@@ -142,7 +149,7 @@ if [[ ${RC} -ne 0 ]]; then
 fi
 
 echo
-echo "Test 10: Run the role in assert mode. Let it fail in case of FAIL:"
+echo "Test 10: Run the role in assert mode. Let it fail in case of FAIL but continue with the next test."
 ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e "{sap_hana_preconfigure_assert: yes}"
 RC=$?
 echo "Test 10: RC=${RC}"
@@ -183,9 +190,11 @@ ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e \
 RC=$?
 echo "Test 12: RC=${RC}"
 if [[ ${RC} -ne 0 ]]; then
-   exit ${RC}
+   echo "Failed - see result of last task."
 fi
 
+echo
+echo "Continung..."
 echo
 echo "Test 13: Run the role in assert mode again, with compact output:"
 ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e \
