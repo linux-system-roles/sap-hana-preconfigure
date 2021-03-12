@@ -28,7 +28,7 @@
   register: __sap_hana_preconfigure_register_limits_sap_conf_core_hard_assert
   changed_when: no
   ignore_errors: yes
-  when: __sap_hana_preconfigure_register_stat_limits_sap_conf_assert.stat.isreg
+  when: __sap_hana_preconfigure_register_stat_limits_sap_conf_assert.stat.exists
 
 - name: Assert that the hard limit of core file creation is 0 for all users
   assert:
@@ -38,14 +38,14 @@
     success_msg: "PASS: The hard limit of core file creation for all users in /etc/security/limits.d/99-sap.conf is
                   '{{ __sap_hana_preconfigure_register_limits_sap_conf_core_hard_assert.stdout }}'."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-  when: __sap_hana_preconfigure_register_stat_limits_sap_conf_assert.stat.isreg
+  when: __sap_hana_preconfigure_register_stat_limits_sap_conf_assert.stat.exists
 
 - name: Check if the soft limit of core file creation is 0 for all users
   command: awk '$1=="*"&&/core/&&/soft/{print $NF}' /etc/security/limits.d/99-sap.conf
   register: __sap_hana_preconfigure_register_limits_sap_conf_core_soft_assert
   changed_when: no
   ignore_errors: yes
-  when: __sap_hana_preconfigure_register_stat_limits_sap_conf_assert.stat.isreg
+  when: __sap_hana_preconfigure_register_stat_limits_sap_conf_assert.stat.exists
 
 - name: Assert that the soft limit of core file creation is 0 for all users
   assert:
@@ -55,4 +55,4 @@
     success_msg: "PASS: The soft limit of core file creation for all users in /etc/security/limits.d/99-sap.conf is
                   '{{ __sap_hana_preconfigure_register_limits_sap_conf_core_soft_assert.stdout }}'."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-  when: __sap_hana_preconfigure_register_stat_limits_sap_conf_assert.stat.isreg
+  when: __sap_hana_preconfigure_register_stat_limits_sap_conf_assert.stat.exists
