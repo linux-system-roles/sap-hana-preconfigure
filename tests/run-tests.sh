@@ -34,18 +34,15 @@ if [[ ${RC} -ne 0 ]]; then
 fi
 
 echo
-echo "Test 2: Run the role in assert mode. Let it fail in case of FAIL."
+echo "Test 2: Run the role in assert mode. Let it fail in case of FAIL but continue with the next test."
 rm -f ${_TMPFILE}
 ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e \
 "{sap_hana_preconfigure_assert: yes}"
 RC=$?
-echo "Test 2: RC=${RC}"
-if [[ ${RC} -ne 0 ]]; then
-   exit ${RC}
-fi
+echo "Test 2: RC=${RC} (ignored)"
 
 echo
-echo "Test 3: Run the role in assert mode."
+echo "Test 3: Run the role in assert mode, ignoring any error."
 rm -f ${_TMPFILE}
 ansible-playbook default-settings.yml -l ${MANAGED_NODE} -e \
 "{sap_hana_preconfigure_assert: yes, \
