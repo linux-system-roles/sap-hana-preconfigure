@@ -256,7 +256,7 @@ for par1 in __tests:
    else:
       print('Test ' + par1['number'] + ' finished with return code ' + par1['rc'] + '.')
 
-print ('\nResults for: ' + _managed_node + ' - ' + _mn_rhel_release + ' - ' + _mn_hw_arch + ':')
+print ('\nResults for: ' + _managed_node + ' - RHEL ' + _mn_rhel_release + ' - ' + _mn_hw_arch + ':')
 
 print ('\n#' + _field_delimiter +
      'RC' + _field_delimiter +
@@ -270,5 +270,9 @@ for par1 in __tests:
      par1['rc'] + _field_delimiter +
      par1['name'] + _field_delimiter +
      par1['command_line_parameter'] + _field_delimiter +
-     str(par1['compact_assert_output']) + _field_delimiter +
-     str(par1['role_vars']))
+     str(par1['compact_assert_output']) + _field_delimiter, end='')
+   if (len(par1['role_vars']) == 0):
+      print ("")
+   else:
+      for par2 in par1['role_vars']:
+         print (str(par2))
