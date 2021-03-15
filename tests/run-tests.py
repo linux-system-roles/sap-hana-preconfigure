@@ -112,7 +112,7 @@ __tests = [
    },
    {
       'number': '9',
-      'name': 'Run in normal mode. Allow a reboot.',
+      'name': 'Run in normal mode. Update to the latest packages. Allow a reboot.',
       'command_line_parameter': '',
       'ignore_error_final': False,
       'compact_assert_output': False,
