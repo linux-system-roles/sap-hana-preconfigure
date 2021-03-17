@@ -188,7 +188,7 @@ __tests = [
         'number': '13',
         'name': 'Run in assert mode again, check for possible RHEL update, check all config, compact output, ignore any assert or final error.',
         'command_line_parameter': '',
-        'ignore_error_final': False,
+        'ignore_error_final': True,
         'compact_assert_output': True,
         'rc': '99',
         'role_vars': [
