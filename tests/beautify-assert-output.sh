@@ -25,5 +25,8 @@ awk '{sub ("    \"msg\": ", "")}
   /changed/&&/unreachable/{print "\033['${__FONT_COLOR}'[" host"] "$0}
   END{print ("---"); for (var in npass) {printf ("[%s] ", var); if (nfatal[var]>0) {
         printf ("\033[31mFATAL ERROR!!! Playbook might have been aborted!!!\033['${__FONT_COLOR}' Last TASK and fatal output:\n"); print task_line, fatal_line
+        exit 199
      }
-     else printf ("\033[31mFAIL: %d  \033[33mWARN: %d  \033[32mPASS: %d\033['${__FONT_COLOR}'\n", nfail[var], nwarn[var], npass[var])}}'
+     else printf ("\033[31mFAIL: %d  \033[33mWARN: %d  \033[32mPASS: %d\033['${__FONT_COLOR}'\n", nfail[var], nwarn[var], npass[var])}
+     if (nfail[var] != 0) exit (nfail[var])
+  }'
