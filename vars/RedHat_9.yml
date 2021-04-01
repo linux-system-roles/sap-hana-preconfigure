@@ -32,7 +32,7 @@ __sap_hana_preconfigure_min_packages_9_0_x86_64:
   - [ 'kernel' , '5.11.0-1.el9' ]
 
 __sap_hana_preconfigure_min_packages_9_0_ppc64le:
-  - [ 'kernel' , '5.11.0-1.el9' ]
+  - [ 'kernel' , '5.11.0-2.el9' ]
 
 __sap_hana_preconfigure_min_packages_9_1_x86_64:
 
@@ -70,6 +70,8 @@ __sap_hana_preconfigure_min_pkgs: "{{ lookup('vars','__sap_hana_preconfigure_min
 
 __sap_hana_preconfigure_packages:
 # SAP NOTE 2772999:
+# package chkconfig: chkconfig command needed by the SAP HANA installer
+  - chkconfig
   - expect
   - graphviz
   - iptraf-ng
@@ -78,6 +80,7 @@ __sap_hana_preconfigure_packages:
   - libcanberra-gtk2
   - libibverbs
   - libicu
+# package libpng12: only needed by the SAP HANA 1 installer
 #  - libpng12
   - lm_sensors
   - nfs-utils
