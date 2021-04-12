@@ -73,7 +73,7 @@
 
         - name: Assert that the current status of the CPU Governor for performance is performance (x86_64 platform only)
           assert:
-            that: "'performance' in __sap_hana_preconfigure_register_cpupower_frequency_info_assert.stdout_lines"
+            that: "'performance' in __sap_hana_preconfigure_register_cpupower_frequency_info_assert.stdout"
             fail_msg: "FAIL: The current status of the CPU Governor for performance is not 'performance'!"
             success_msg: "PASS: The current status of the CPU Governor for performance is 'performance'."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
