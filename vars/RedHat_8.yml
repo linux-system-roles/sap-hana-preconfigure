@@ -5,6 +5,7 @@ __sap_hana_preconfigure_supported_rhel_minor_releases:
   - "8.0"
   - "8.1"
   - "8.2"
+  - "8.4"
 
 # required repos for RHEL 8:
 __sap_hana_preconfigure_req_repos_RedHat_8_0_x86_64:
@@ -118,16 +119,22 @@ __sap_hana_preconfigure_min_pkgs: "{{ lookup('vars','__sap_hana_preconfigure_min
 __sap_hana_preconfigure_packages:
 # SAP NOTE 2772999:
   - expect
+# package graphwiz: graph visualization toos, for supportability)
   - graphviz
+# package iptraf-ng: TCP/IP network monitor, for supportability)
   - iptraf-ng
   - krb5-workstation
   - libatomic
   - libcanberra-gtk2
   - libibverbs
   - libicu
-  - libpng12
-  - libssh2
+# package libpng12: only needed by the SAP HANA 1 installer
+#  - libpng12
+# package libssh2: only needed for scaleout installation of SAP HANA 2.0 before SPS04 rev 48.02 or before SPS05 rev 51
+#  - libssh2
+# package lm-sensors: TCP/IP network monitor, for supportability)
   - lm_sensors
+# package nfs-utils: support utilities for NFS, for supportability)
   - nfs-utils
   - numactl
   - PackageKit-gtk3-module
@@ -136,12 +143,53 @@ __sap_hana_preconfigure_packages:
   - cairo
   - libaio
   - krb5-libs
+# package net-tools: contains deprecated command line network interface management tools
   - net-tools
   - openssl
   - rsyslog
   - sudo
   - xfsprogs
+# package gtk2: only needed if the SAP HANA installation tools hdblcmgui and hdbsetup are used
   - gtk2
+  - libtool-ltdl
+# SAP NOTE 2777782:
+  - tuned-profiles-sap-hana
+
+__sap_hana_preconfigure_packages_min_install:
+# SAP NOTE 2772999:
+  - expect
+# package graphwiz: graph visualization toos, for supportability)
+#  - graphviz
+# package iptraf-ng: TCP/IP network monitor, for supportability)
+#  - iptraf-ng
+  - krb5-workstation
+  - libatomic
+  - libcanberra-gtk2
+  - libibverbs
+  - libicu
+# package libpng12: only needed by the SAP HANA 1 installer
+#  - libpng12
+# package libssh2: only needed for scaleout installation of SAP HANA 2.0 before SPS04 rev 48.02 or before SPS05 rev 51
+#  - libssh2
+# package lm-sensors: TCP/IP network monitor, for supportability)
+#  - lm_sensors
+# package nfs-utils: support utilities for NFS, for supportability)
+#  - nfs-utils
+  - numactl
+  - PackageKit-gtk3-module
+  - xorg-x11-xauth
+  - bind-utils
+  - cairo
+  - libaio
+  - krb5-libs
+# package net-tools: contains deprecated command line network interface management tools
+#  - net-tools
+  - openssl
+  - rsyslog
+  - sudo
+  - xfsprogs
+# package gtk2: only needed if the SAP HANA installation tools hdblcmgui and hdbsetup are used
+#  - gtk2
   - libtool-ltdl
 # SAP NOTE 2777782:
   - tuned-profiles-sap-hana

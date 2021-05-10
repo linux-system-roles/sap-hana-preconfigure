@@ -61,7 +61,12 @@ sap_hana_preconfigure_set_minor_release: no
 sap_hana_version: "2" 
 sap_hana_sps: "0"
 
-# SAP HANA requires minimum packages installed to be supported. These min levels are listed in SAP Note 2235581
+# List of RHEL packages to be installed for SAP HANA. For RHEL 8 and later, you can choose to install either the default list
+#   or a list of the minimum required packages for SAP HANA server:
+sap_hana_preconfigure_packages: "{{ __sap_hana_preconfigure_packages }}"
+#sap_hana_preconfigure_packages: "{{ __sap_hana_preconfigure_packages_min_install }}"
+
+# SAP HANA requires certain minimum package versions to be supported. These mininum levels are listed in SAP Note 2235581.
 # Set to no if you want to ignore these requirements.
 sap_hana_preconfigure_min_package_check: yes
 

@@ -1,6 +1,7 @@
 ---
 
-- assert:
+- name: Assert that the RHEL release is supported for SAP HANA
+  assert:
     that: ansible_distribution_version in "{{ sap_hana_preconfigure_supported_rhel_minor_releases }}"
     fail_msg: "The RHEL release {{ ansible_distribution_version }} is not supported for SAP HANA!"
     success_msg: "The RHEL release {{ ansible_distribution_version }} is supported for SAP HANA."
@@ -38,11 +39,11 @@
 - name: Ensure required packages are installed
   package:
     state: present
-    name: "{{ __sap_hana_preconfigure_packages }}"
+    name: "{{ sap_hana_preconfigure_packages }}"
 
 - name: Get status of installed packages
   yum:
-    name: "{{ __sap_hana_preconfigure_packages }}"
+    name: "{{ sap_hana_preconfigure_packages }}"
   register: __sap_hana_preconfigure_register_required_packages
   ignore_errors: True
   changed_when: false

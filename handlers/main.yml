@@ -19,6 +19,7 @@
   command: grub2-mkconfig -o /boot/grub2/grub.cfg
   register: __sap_hana_preconfigure_register_grub2_mkconfig_bios_mode
   listen: __sap_hana_preconfigure_regenerate_grub2_conf_handler
+  notify: __sap_hana_preconfigure_reboot_handler
   when:
     - not __sap_hana_preconfigure_register_stat_sys_firmware_efi.stat.exists
     - sap_hana_preconfigure_run_grub2_mkconfig|d(true)
@@ -35,6 +36,7 @@
   command: grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg
   register: __sap_hana_preconfigure_register_grub2_mkconfig_uefi_mode
   listen: __sap_hana_preconfigure_regenerate_grub2_conf_handler
+  notify: __sap_hana_preconfigure_reboot_handler
   when:
     - __sap_hana_preconfigure_register_stat_sys_firmware_efi.stat.exists
     - sap_hana_preconfigure_run_grub2_mkconfig|d(true)

@@ -73,7 +73,9 @@ __sap_hana_preconfigure_packages:
 # package chkconfig: chkconfig command needed by the SAP HANA installer
   - chkconfig
   - expect
+# package graphwiz: graph visualization toos, for supportability)
   - graphviz
+# package iptraf-ng: TCP/IP network monitor, for supportability)
   - iptraf-ng
   - krb5-workstation
   - libatomic
@@ -82,7 +84,9 @@ __sap_hana_preconfigure_packages:
   - libicu
 # package libpng12: only needed by the SAP HANA 1 installer
 #  - libpng12
+# package lm-sensors: TCP/IP network monitor, for supportability)
   - lm_sensors
+# package nfs-utils: support utilities for NFS, for supportability)
   - nfs-utils
   - numactl
   - PackageKit-gtk3-module
@@ -91,12 +95,53 @@ __sap_hana_preconfigure_packages:
   - cairo
   - libaio
   - krb5-libs
+# package net-tools: contains deprecated command line network interface management tools
   - net-tools
   - openssl
   - rsyslog
   - sudo
   - xfsprogs
+# package gtk2: only needed if the SAP HANA installation tools hdblcmgui and hdbsetup are used
   - gtk2
+  - libtool-ltdl
+# SAP NOTE 2777782:
+  - tuned-profiles-sap-hana
+
+__sap_hana_preconfigure_packages_min_install:
+# SAP NOTE 2772999:
+# package chkconfig: chkconfig command needed by the SAP HANA installer
+  - chkconfig
+  - expect
+# package graphwiz: graph visualization toos, for supportability)
+#  - graphviz
+# package iptraf-ng: TCP/IP network monitor, for supportability)
+#  - iptraf-ng
+  - krb5-workstation
+  - libatomic
+  - libcanberra-gtk2
+  - libibverbs
+  - libicu
+# package libpng12: only needed by the SAP HANA 1 installer
+#  - libpng12
+# package lm-sensors: TCP/IP network monitor, for supportability)
+#  - lm_sensors
+# package nfs-utils: support utilities for NFS, for supportability)
+#  - nfs-utils
+  - numactl
+  - PackageKit-gtk3-module
+  - xorg-x11-xauth
+  - bind-utils
+  - cairo
+  - libaio
+  - krb5-libs
+# package net-tools: contains deprecated command line network interface management tools
+#  - net-tools
+  - openssl
+  - rsyslog
+  - sudo
+  - xfsprogs
+# package gtk2: only needed if the SAP HANA installation tools hdblcmgui and hdbsetup are used
+#  - gtk2
   - libtool-ltdl
 # SAP NOTE 2777782:
   - tuned-profiles-sap-hana
