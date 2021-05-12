@@ -28,6 +28,20 @@
         success_msg: "PASS: 'tsx=on' is in /proc/cmdline."
       ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
+# We are counting the number of cpuinfo lines which contain "flags" and subtracting those lines
+#   which contain "flags" and " rtm ". If the result is 0, all CPUs contain flag "rtm".
+    - name: Get rtm status of all CPUs
+      shell: awk '$1=="flags"{n++}$1=="flags"&&$0~" rtm" {a++}END{print n-a}' /proc/cpuinfo
+      register: __sap_hana_preconfigure_register_cpuinfo_flags_contain_rtm
+      changed_when: no
+
+    - name: Assert that all CPUs contain flag rtm
+      assert:
+        that: "__sap_hana_preconfigure_register_cpuinfo_flags_contain_rtm.stdout == '0'"
+        fail_msg: "FAIL: At least one of the CPUs does not contain flag 'rtm'!"
+        success_msg: "PASS: All CPUs contain flag 'rtm'."
+      ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
   when: ansible_architecture == 'x86_64' and
         ansible_distribution == 'RedHat' and
         ansible_distribution_major_version == '8' and
