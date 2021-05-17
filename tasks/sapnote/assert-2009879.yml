@@ -16,5 +16,3 @@
 ### Package installation is done in installation.yml
 
 - include_tasks: assert-2009879_{{ ansible_distribution_major_version }}.yml
-
-...

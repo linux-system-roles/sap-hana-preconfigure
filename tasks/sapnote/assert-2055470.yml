@@ -7,7 +7,8 @@
 
 ## On the above page you will find more PDF documents, the following is used in this config file:
 ## Configuring your Network for SAP HANA (Ethernet connectivity): 
-## http://www-03.ibm.com/support/techdocs/atsmastr.nsf/5cb5ed706d254a8186256c71006d2e0a/c32b40501f4f76c886257de0004fa1d4/$FILE/Network_Configuration_for_HANA_Workloads_on_IBM_Power_Servers_V4.pdf
+## http://www-03.ibm.com/support/techdocs/atsmastr.nsf/5cb5ed706d254a8186256c71006d2e0a/c32b40501f4f76c886257de0004fa1d4/$FILE/
+#    Network_Configuration_for_HANA_Workloads_on_IBM_Power_Servers_V4.pdf
 
 - debug:
     msg: "SAP note 2055470: HANA on POWER: OS settings"
@@ -27,11 +28,14 @@
 #    else
 #       exit 90
 #    fi
-#  register: sapnote_2055470_mtusize
-#  changed_when: sapnote_2055470_mtusize.rc == 0
-#  failed_when: sapnote_2055470_mtusize.rc > 0 and sapnote_2055470_mtusize.rc != 90
+#  register: __sap_hana_preconfigure_register_ibm_mtusize_assert
+#  changed_when: __sap_hana_preconfigure_register_ibm_mtusize_assert is success
+#  failed_when: __sap_hana_preconfigure_register_ibm_mtusize_assert.rc > 0 and __sap_hana_preconfigure_register_ibm_mtusize_assert.rc != 90
 #  with_items: "{{ sap_hana_preconfigure_ppcle_mtu9000_if }}"
-#  when: not( (sap_hana_preconfigure_ppcle_mtu9000_if) or ( sap_hana_preconfigure_ppcle_mtu9000_if is none) or (sap_hana_preconfigure_ppcle_mtu9000_if | trim == '') )
+#  when: not( (sap_hana_preconfigure_ppcle_mtu9000_if) or
+#             ( sap_hana_preconfigure_ppcle_mtu9000_if is none) or
+#             (sap_hana_preconfigure_ppcle_mtu9000_if | trim == '')
+#           )
 #  loop_control:
 #    loop_var: line_item
 
@@ -53,32 +57,30 @@
   - name: Get info about file /etc/sysctl.d/ibm_largesend.conf
     stat:
       path: /etc/sysctl.d/ibm_largesend.conf
-    register: __stat_ibm_largesend_conf
+    register: __sap_hana_preconfigure_register_stat_sysctl_ibm_largesend_conf_assert
 
   - name: Assert that file /etc/sysctl.d/ibm_largesend.conf exists
     assert:
-      that: __stat_ibm_largesend_conf.stat.exists
+      that: __sap_hana_preconfigure_register_stat_sysctl_ibm_largesend_conf_assert.stat.exists
       fail_msg: "FAIL: File /etc/sysctl.d/ibm_largesend.conf does not exist!"
       success_msg: "PASS: File /etc/sysctl.d/ibm_largesend.conf exists."
     ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
-  - name: Assert that file /etc/sysctl.d/ibm_largesend.conf exists
+  - name: Assert that file /etc/sysctl.d/ibm_largesend.conf is a regular file
     assert:
-      that: __stat_ibm_largesend_conf.stat.isreg
+      that: __sap_hana_preconfigure_register_stat_sysctl_ibm_largesend_conf_assert.stat.isreg
       fail_msg: "FAIL: File /etc/sysctl.d/ibm_largesend.conf is not a regular file!"
       success_msg: "PASS: File /etc/sysctl.d/ibm_largesend.conf is a regular file."
     ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-    when: __stat_ibm_largesend_conf.stat.exists
+    when: __sap_hana_preconfigure_register_stat_sysctl_ibm_largesend_conf_assert.stat.exists
 
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2055470|d(false)
 
 - name: Get and assert kernel tunables for ppc64le
   include_tasks: ../RedHat/generic/sapnote-2055470-loop-block.yml
-  loop: "{{ __sap_hana_preconfigure_kernel_parameters_default_ppc64le }}"
+  loop: "{{ sap_hana_preconfigure_kernel_parameters_ppc64le }}"
   loop_control:
     loop_var: line_item
   when: 
-    - __stat_ibm_largesend_conf.stat.exists
+    - __sap_hana_preconfigure_register_stat_sysctl_ibm_largesend_conf_assert.stat.exists
     - sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2055470|d(false)
-
-...

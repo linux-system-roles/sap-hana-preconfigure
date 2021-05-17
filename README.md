@@ -62,7 +62,7 @@ Do not run this role against an SAP HANA or other production system. The role wi
 
 Changes
 -------
-The previous version of this role used variable sap_hana_preconfigure_use_tuned_where_possible to switch between either tuned settings or kernel command line settings (where applicable).
+1) Previous versions of this role used variable sap_hana_preconfigure_use_tuned_where_possible to switch between either tuned settings or kernel command line settings (where applicable).
 The current version modifies this behavior:
 - The variable sap_hana_preconfigure_use_tuned_where_possible has been renamed to sap_hana_preconfigure_use_tuned
 - The variable sap_hana_preconfigure_switch_to_tuned_profile_sap_hana has been removed.
@@ -70,13 +70,19 @@ The current version modifies this behavior:
   If sap_hana_preconfigure_use_tuned is set to `no`, the role will perform a static configuration, including the modification of the linux command line in grub.
 - The role can use tuned, or configure the kernel command line, or both.
 
+2) Previous versions of this role used variable sap_hana_preconfigure_selinux_state to set the SELinux state to disabled, which is mentioned in
+SAP notes 2292690 (RHEL 7) and 2777782 (RHEL 8). As role sap-preconfigure already allows to specify the desired SELinux state, and as
+sap-preconfigure is run before sap-hana-preconfigure, there is no need any more to let sap-hana-preconfigure configure the SELinux state.
+Same applies to the assertion of the SELinux state. Because of this, variable sap_hana_preconfigure_selinux_state has been removed from this role and
+tasks 2292690/08-disable-selinux.yml and 2777782/01-assert-selinux.yml have been commented out.
+
 Role Variables
 --------------
 
 - set in `defaults/main.yml`:
 
 ### Execute only certain steps of SAP notes
-If the following variable is set to no, only certain steps of SAP notes will be executed or checked as per setting of variable `sap_hana_preconfigure_<sap_note_number>_<step>`. If this variable is undefined or set to no, all installation and configuration steps of applicable SAP notes will be executed.
+If the following variable is set to `no`, only certain steps of SAP notes will be executed or checked as per setting of variable `sap_hana_preconfigure_<sap_note_number>_<step>`. If this variable is undefined or set to `yes`, all installation and configuration steps of applicable SAP notes will be executed.
 ```yaml
 sap_hana_preconfigure_config_all
 ```
@@ -91,12 +97,13 @@ sap_hana_preconfigure_configuration
 ### Define configuration steps of SAP notes
 For defining one or more configuration steps of SAP notes to be executed or checked only, set variable `sap_hana_preconfigure_config_all` to `no`, `sap_hana_preconfigure_configuration` to `yes`, and one or more of the following variables to `yes`:
 ```yaml
-sap_hana_preconfigure_2777782_[01...10], example: sap_hana_preconfigure_2777782_05
-sap_hana_preconfigure_2292690_[01...10], example: sap_hana_preconfigure_2292690_02
+sap_hana_preconfigure_2777782_[02...10], example: sap_hana_preconfigure_2777782_05
+sap_hana_preconfigure_2292690_[01...07,09,10], example: sap_hana_preconfigure_2292690_02
 sap_hana_preconfigure_2009879_3_9
 sap_hana_preconfigure_2009879_3_14_[1...4]
 sap_hana_preconfigure_2009879_3_15
 sap_hana_preconfigure_2382421
+sap_hana_preconfigure_3024346
 ```
 
 ### Run the role in assert mode
@@ -156,6 +163,59 @@ If you want the role to set the RHEL release to a certain fixed minor release (a
 sap_hana_preconfigure_set_minor_release
 ```
 
+### Minimum package check
+The following variable will make sure packages are installed at minimum required versions as defined in files `vars/*.yml`. Default is `yes`.
+```yaml
+sap_hana_preconfigure_min_package_check
+```
+
+### Perform a yum update
+If the following variable is set to `yes`, the role will run a `yum update` before performing configuration changes. Default is `no`. \
+*Note*: The outcome of a `yum update` depends on the managed node's configuration for sticky OS minor version, see the description of the release option in `man subscription-manager`. For SAP HANA installations, setting a certain minor version with `subscription-manager release --set=X.Y` is a strict requirement.
+```yaml
+sap_hana_preconfigure_update
+```
+
+###  HANA kernel parameters
+[SAP Note 238241](https://launchpad.support.sap.com/#/notes/238241) defines kernel parameters that all Linux systems need to set.
+The default parameter recomendations are dependent on the OS release. Hence the OS dependant default setting is defined in
+./vars/{{ansible_os_release}}.yml. If you need to add or change parameters for your system, copy these parameters from the vars file
+into the variable sap_hana_preconfigure_kernel_parameters and add or change your settings, as in the following example:
+
+```yaml
+sap_hana_preconfigure_kernel_parameters:
+  - { name: net.core.somaxconn, value: 4096 }
+  - { name: net.ipv4.tcp_max_syn_backlog, value: 8192 }
+  - { name: net.ipv4.tcp_timestamps, value: 1 }
+  - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
+```
+
+###  HANA kernel parameters for IBM POWER servers
+[SAP Note 2055470](https://launchpad.support.sap.com/#/notes/2055470) contains links to IBM documents for SAP HANA on POWER.
+Among these is a document which contains certain recommended Linux kernel settings for SAP HANA on POWER:
+Network_Configuration_for_HANA_Workloads_on_IBM_Power_Servers_V7.1.pdf.
+This document is linked from SAP note 2055470 via "SAP HANA on IBM Power Systems and IBM System Storage - Guides", then via
+"SAP on Linux and IBM Storage Guides (incl. HANA)", and then via
+"SAP on Power Linux Network and Fibre Channel Guides".
+The default parameter recommendations are defined in ./vars/{{ansible_os_release}}.yml. If you need to add or change parameters
+for your system, copy these parameters from the vars file into the variable sap_hana_preconfigure_kernel_parameters_ppc64le and
+add or change your settings, similar to the previous example.
+
+###  HANA kernel parameters for NetApp NFS
+[SAP Note 3024346](https://launchpad.support.sap.com/#/notes/3024346) defines kernel parameter settings for NetApp NFS.
+In case you want the role to set or check these parameters, set the following variable to `yes`. Default is `no`.
+
+```yaml
+sap_hana_preconfigure_use_netapp_settings_nfs
+
+###  HANA kernel parameters for NetApp NFSv3
+[SAP Note 3024346](https://launchpad.support.sap.com/#/notes/3024346) also contains an additional parameter setting for NetApp when using NFSv3.
+In case you want the role to set or check this parameter, set the following variable to `yes`. Default is `no`.
+
+```yaml
+sap_hana_preconfigure_use_netapp_settings_nfsv3
+```
+
 ### Add the repository for IBM service and productivity tools for POWER (ppc64le only)
 In case you do *not* want to automatically add the repository for the IBM service and productivity tools, set the following variable to `no`. Default is `yes`, meaning that the role will download and install the package specified in variable sap_hana_preconfigure_ibm_power_repo_url (see below) and also run the command /opt/ibm/lop/configure to accept the license.
 ```yaml
@@ -181,12 +241,6 @@ The following variable will cause the role to fail if a reboot is required, if u
 By setting the variable to `no`, the role will not fail if a reboot is required but just print a warning message.
 ```yaml
 sap_hana_preconfigure_fail_if_reboot_required
-```
-
-### Define SELinux state
-The following variable allows for defining the desired SELinux state. Default is `disabled`.
-```yaml
-sap_hana_preconfigure_selinux_state
 ```
 
 ### Use tuned profile sap-hana
@@ -216,20 +270,6 @@ These variables are used in all sap-hana roles so that they are only prefixed wi
 ```yaml
 sap_hana_version: "2"
 sap_hana_sps: "0"
-```
-
-###  HANA kernel parameters
-[SAP Note 238241](https://launchpad.support.sap.com/#/notes/238241) defines kernel parameters that all Linux systems need to set.
-The default parameter recomendations are dependent on the OS release. Hence the OS dependant default setting is defined in
-./vars/{{ansible_os_release}}.yml. If you need to add or change parameters for your system, copy these parameters from the vars file
-into the variable sap_hana_preconfigure_kernel_parameters and add or change your settings, as in the following example:
-
-```yaml
-sap_hana_preconfigure_kernel_parameters:
-  - { name: net.core.somaxconn, value: 4096 }
-  - { name: net.ipv4.tcp_max_syn_backlog, value: 8192}
-  - { name: net.ipv4.tcp_timestamps, value: 1 }
-  - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
 ```
 
 Example Playbook
@@ -289,8 +329,15 @@ awk '{sub ("    \"msg\": ", "")}
      }
      else printf ("\033[31mFAIL: %d  \033[33mWARN: %d  \033[32mPASS: %d\033[30m\n", nfail[var], nwarn[var], npass[var])}}'
 ```
-Note: For terminals with white font on dark background, replace the color code `30m` by `37m`.
-In case you need to reset terminal font colors to the default, run: `tput init`.
+Note: For terminals with dark background, replace the color code `30m` by `37m`.
+In case you need to make an invisible font readable on a terminal with dark background, run the following command in the terminal:
+```yaml
+printf "\033[37mreadable font\n"
+```
+In case you need to make an invisible font readable on a terminal with bright background, run the following command in the terminal:
+```yaml
+printf "\033[30mreadable font\n"
+```
 
 Contribution
 ------------

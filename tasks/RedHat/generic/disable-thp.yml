@@ -20,5 +20,3 @@
   tags: grubconfig
   loop_control:
     loop_var: line_item
-
-...

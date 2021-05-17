@@ -5,6 +5,7 @@ __sap_hana_preconfigure_supported_rhel_minor_releases:
   - "8.0"
   - "8.1"
   - "8.2"
+  - "8.4"
 
 # required repos for RHEL 8:
 __sap_hana_preconfigure_req_repos_RedHat_8_0_x86_64:
@@ -62,7 +63,7 @@ __sap_hana_preconfigure_sapnotes:
   - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
   - "2777782"
   - "2382421"
-#  - "2235581" # no specific requirements for RHEL 8 yet
+  - "3024346"
 
 # In SAP Note 2777782, certain minimal required packages for the different RHEL 8 minor releases are listed.
 # The following will assign them properly to __sap_hana_preconfigure_min_pkgs.
@@ -118,16 +119,22 @@ __sap_hana_preconfigure_min_pkgs: "{{ lookup('vars','__sap_hana_preconfigure_min
 __sap_hana_preconfigure_packages:
 # SAP NOTE 2772999:
   - expect
+# package graphwiz: graph visualization toos, for supportability)
   - graphviz
+# package iptraf-ng: TCP/IP network monitor, for supportability)
   - iptraf-ng
   - krb5-workstation
   - libatomic
   - libcanberra-gtk2
   - libibverbs
   - libicu
-  - libpng12
-  - libssh2
+# package libpng12: only needed by the SAP HANA 1 installer
+#  - libpng12
+# package libssh2: only needed for scaleout installation of SAP HANA 2.0 before SPS04 rev 48.02 or before SPS05 rev 51
+#  - libssh2
+# package lm-sensors: TCP/IP network monitor, for supportability)
   - lm_sensors
+# package nfs-utils: support utilities for NFS, for supportability)
   - nfs-utils
   - numactl
   - PackageKit-gtk3-module
@@ -136,12 +143,53 @@ __sap_hana_preconfigure_packages:
   - cairo
   - libaio
   - krb5-libs
+# package net-tools: contains deprecated command line network interface management tools
   - net-tools
   - openssl
   - rsyslog
   - sudo
   - xfsprogs
+# package gtk2: only needed if the SAP HANA installation tools hdblcmgui and hdbsetup are used
   - gtk2
+  - libtool-ltdl
+# SAP NOTE 2777782:
+  - tuned-profiles-sap-hana
+
+__sap_hana_preconfigure_packages_min_install:
+# SAP NOTE 2772999:
+  - expect
+# package graphwiz: graph visualization toos, for supportability)
+#  - graphviz
+# package iptraf-ng: TCP/IP network monitor, for supportability)
+#  - iptraf-ng
+  - krb5-workstation
+  - libatomic
+  - libcanberra-gtk2
+  - libibverbs
+  - libicu
+# package libpng12: only needed by the SAP HANA 1 installer
+#  - libpng12
+# package libssh2: only needed for scaleout installation of SAP HANA 2.0 before SPS04 rev 48.02 or before SPS05 rev 51
+#  - libssh2
+# package lm-sensors: TCP/IP network monitor, for supportability)
+#  - lm_sensors
+# package nfs-utils: support utilities for NFS, for supportability)
+#  - nfs-utils
+  - numactl
+  - PackageKit-gtk3-module
+  - xorg-x11-xauth
+  - bind-utils
+  - cairo
+  - libaio
+  - krb5-libs
+# package net-tools: contains deprecated command line network interface management tools
+#  - net-tools
+  - openssl
+  - rsyslog
+  - sudo
+  - xfsprogs
+# package gtk2: only needed if the SAP HANA installation tools hdblcmgui and hdbsetup are used
+#  - gtk2
   - libtool-ltdl
 # SAP NOTE 2777782:
   - tuned-profiles-sap-hana
@@ -205,4 +253,33 @@ __sap_hana_preconfigure_kernel_parameters_default:
 # So we do not change the default.
 #  - { name: net.ipv4.tcp_syn_retries, value: 8 }
 
-...
+# Network related kernel parameters for ppc64le:
+__sap_hana_preconfigure_kernel_parameters_default_ppc64le:
+   - { name: net.core.rmem_max, value: 56623104 }
+   - { name: net.core.wmem_max, value: 56623104 }
+   - { name: net.ipv4.tcp_rmem, value: "65536 262088 56623104" }
+   - { name: net.ipv4.tcp_wmem, value: "65536 262088 56623104" }
+   - { name: net.ipv4.tcp_mem, value: "56623104 56623104 56623104" }
+
+# Network related kernel parameters for NetApp NFS, as set in SAP Note 3024346:
+__sap_hana_preconfigure_kernel_parameters_netapp_nfs:
+  - { name: net.core.rmem_max, value: 16777216 }
+  - { name: net.core.wmem_max, value: 16777216 }
+  - { name: net.ipv4.tcp_rmem, value: "4096 131072 16777216" }
+  - { name: net.ipv4.tcp_wmem, value: "4096 16384 16777216" }
+  - { name: net.core.netdev_max_backlog, value: 300000 }
+# already set in SAP note 2382421:
+#  - { name: net.ipv4.tcp_slow_start_after_idle, value: 0 }
+  - { name: net.ipv4.tcp_no_metrics_save, value: 1 }
+  - { name: net.ipv4.tcp_moderate_rcvbuf, value: 1 }
+  - { name: net.ipv4.tcp_window_scaling, value: 1 }
+# already set in SAP note 2382421:
+#  - { name: net.ipv4.tcp_timestamps, value: 1 }
+  - { name: net.ipv4.tcp_sack, value: 1 }
+
+__sap_hana_preconfigure_packages_and_services:
+  abrtd:     { pkg: 'abrt',            svc: 'abrtd',     systemd_enabled: 'no', systemd_state: 'stopped', svc_status: 'disabled', svc_state: 'inactive' }
+  abrt-ccpp: { pkg: 'abrt-addon-ccpp', svc: 'abrt-ccpp', systemd_enabled: 'no', systemd_state: 'stopped', svc_status: 'disabled', svc_state: 'inactive' }
+  numad:     { pkg: 'numad',           svc: 'numad',     systemd_enabled: 'no', systemd_state: 'stopped', svc_status: 'disabled', svc_state: 'inactive' }
+  kdump:     { pkg: 'kexec-tools',     svc: 'kdump',     systemd_enabled: 'no', systemd_state: 'stopped', svc_status: 'disabled', svc_state: 'inactive' }
+  firewalld: { pkg: 'firewalld',       svc: 'firewalld', systemd_enabled: 'no', systemd_state: 'stopped', svc_status: 'disabled', svc_state: 'inactive' }

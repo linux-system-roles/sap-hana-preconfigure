@@ -24,7 +24,6 @@
 ## examples for RHEL8:
 #sap_hana_preconfigure_2777782_03: yes
 #sap_hana_preconfigure_2777782_10: yes
-#sap_hana_preconfigure_2772999_09: yes
 ## both:
 #sap_hana_preconfigure_2382421: yes
 
@@ -51,6 +50,8 @@ sap_hana_preconfigure_req_repos_RedHat_7_x86_64: "{{ __sap_hana_preconfigure_req
 sap_hana_preconfigure_req_repos_RedHat_7_ppc64le: "{{ __sap_hana_preconfigure_req_repos_RedHat_7_ppc64le }}"
 sap_hana_preconfigure_req_repos_RedHat_8_x86_64: "{{ __sap_hana_preconfigure_req_repos_RedHat_8_x86_64 }}"
 sap_hana_preconfigure_req_repos_RedHat_8_ppc64le: "{{ __sap_hana_preconfigure_req_repos_RedHat_8_ppc64le }}"
+sap_hana_preconfigure_req_repos_RedHat_9_x86_64: "{{ __sap_hana_preconfigure_req_repos_RedHat_9_x86_64 }}"
+sap_hana_preconfigure_req_repos_RedHat_9_ppc64le: "{{ __sap_hana_preconfigure_req_repos_RedHat_9_ppc64le }}"
 
 # Set to "yes" if you want the role to set the RHEL minor release, which is required for SAP HANA. Default is "no".
 sap_hana_preconfigure_set_minor_release: no
@@ -60,7 +61,12 @@ sap_hana_preconfigure_set_minor_release: no
 sap_hana_version: "2" 
 sap_hana_sps: "0"
 
-# SAP HANA requires minimum packages installed to be supported. These min levels are listed in SAP Note 2235581
+# List of RHEL packages to be installed for SAP HANA. For RHEL 8 and later, you can choose to install either the default list
+#   or a list of the minimum required packages for SAP HANA server:
+sap_hana_preconfigure_packages: "{{ __sap_hana_preconfigure_packages }}"
+#sap_hana_preconfigure_packages: "{{ __sap_hana_preconfigure_packages_min_install }}"
+
+# SAP HANA requires certain minimum package versions to be supported. These mininum levels are listed in SAP Note 2235581.
 # Set to no if you want to ignore these requirements.
 sap_hana_preconfigure_min_package_check: yes
 
@@ -93,6 +99,12 @@ sap_hana_preconfigure_fail_if_reboot_required: yes
 
 sap_hana_preconfigure_kernel_parameters: "{{ __sap_hana_preconfigure_kernel_parameters_default }}"
 
+sap_hana_preconfigure_kernel_parameters_ppc64le: "{{ __sap_hana_preconfigure_kernel_parameters_default_ppc64le }}"
+
+sap_hana_preconfigure_use_netapp_settings_nfs: no
+
+sap_hana_preconfigure_use_netapp_settings_nfsv3: no
+
 sap_hana_preconfigure_add_ibm_power_repo: yes
 
 # sap_hana_preconfigure_ibm_power_repo_url: 'http://public.dhe.ibm.com/software/server/POWER/Linux/yum/download/ibm-power-repo-3.0.0-19.noarch.rpm'
@@ -107,7 +119,8 @@ sap_hana_preconfigure_ppcle_mtu9000_if: ''
 ## defaults to all interfaces
 sap_hana_preconfigure_ppcle_tso_if: "{{ ansible_interfaces| difference(['lo']) }}"
 
-sap_hana_preconfigure_selinux_state: "{{ __sap_hana_preconfigure_selinux_state }}"
+# SELinux is already configured in role sap-preconfigure:
+#sap_hana_preconfigure_selinux_state: "{{ __sap_hana_preconfigure_selinux_state }}"
 
 sap_hana_preconfigure_use_tuned: yes
 
@@ -119,5 +132,3 @@ sap_hana_preconfigure_run_grub2_mkconfig: "{{ __sap_hana_preconfigure_run_grub2_
 # (if it exists, it will be used to configure process limits as per step
 #  "Configuring Process Resource Limits" of SAP note 2772999):
 # sap_hana_preconfigure_db_group_name: dba
-
-...

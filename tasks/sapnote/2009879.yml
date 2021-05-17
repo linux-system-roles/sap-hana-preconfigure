@@ -29,5 +29,3 @@
 ### Package installation is done in installation.yml
 
 - include_tasks: 2009879_{{ ansible_distribution_major_version }}.yml
-
-...

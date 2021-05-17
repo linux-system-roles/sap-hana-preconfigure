@@ -21,4 +21,3 @@
 - name: 2578899 - insserv-compat package
   package:
     name: "insserv-compat"
-...

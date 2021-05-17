@@ -5,5 +5,3 @@
 - debug:
     msg: "SAP note 2292690 Step 6: Configure Energy Performance Bias (EPB, x86_64 platform only)"
 - import_tasks: ../../RedHat/generic/assert-epb.yml
-
-...

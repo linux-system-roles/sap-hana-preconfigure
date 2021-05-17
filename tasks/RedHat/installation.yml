@@ -1,6 +1,7 @@
 ---
 
-- assert:
+- name: Assert that the RHEL release is supported for SAP HANA
+  assert:
     that: ansible_distribution_version in "{{ sap_hana_preconfigure_supported_rhel_minor_releases }}"
     fail_msg: "The RHEL release {{ ansible_distribution_version }} is not supported for SAP HANA!"
     success_msg: "The RHEL release {{ ansible_distribution_version }} is supported for SAP HANA."
@@ -9,22 +10,22 @@
 - block:
 # repos required for SAP HANA on RHEL 7 and RHEL 8:
   - set_fact:
-      __sap_hana_preconfigure_required_repos: "{{ lookup('vars','__sap_hana_preconfigure_req_repos_RedHat_' +
+      __sap_hana_preconfigure_fact_required_repos: "{{ lookup('vars','__sap_hana_preconfigure_req_repos_RedHat_' +
       ansible_distribution_version|string|replace (\".\", \"_\") + '_' + ansible_architecture|string) }}"
 
   - debug:
-      var: __sap_hana_preconfigure_required_repos
+      var: __sap_hana_preconfigure_fact_required_repos
 
   - name: Enable required repositories
     rhsm_repository:
-      name: "{{ __sap_hana_preconfigure_required_repos }}"
+      name: "{{ __sap_hana_preconfigure_fact_required_repos }}"
       state: present
 
   when: sap_hana_preconfigure_enable_sap_hana_repos
 
 - name: Detect if the minor RHEL release is set
   shell: subscription-manager release --show | awk '{print $NF}'
-  register: subscription_manager_release_result
+  register: __sap_hana_preconfigure_register_subscription_manager_release
   changed_when: false
   when:
     - sap_hana_preconfigure_set_minor_release
@@ -33,23 +34,22 @@
   shell: subscription-manager release --set="{{ ansible_distribution_version }}"
   when:
     - sap_hana_preconfigure_set_minor_release
-    - subscription_manager_release_result.stdout != ansible_distribution_version
+    - __sap_hana_preconfigure_register_subscription_manager_release.stdout != ansible_distribution_version
 
 - name: Ensure required packages are installed
   package:
     state: present
-    name: "{{ __sap_hana_preconfigure_packages }}"
-  register: sap_hana_preconfigure_register_groupinstall
+    name: "{{ sap_hana_preconfigure_packages }}"
 
 - name: Get status of installed packages
   yum:
-    name: "{{ __sap_hana_preconfigure_packages }}"
-  register: result
+    name: "{{ sap_hana_preconfigure_packages }}"
+  register: __sap_hana_preconfigure_register_required_packages
   ignore_errors: True
   changed_when: false
 
 - debug:
-    var: result.results
+    var: __sap_hana_preconfigure_register_required_packages.results
 
 ### If this task fails, you need to enable the IBM PowerTools repository
 ### see https://www14.software.ibm.com/support/customercare/sas/f/lopdiags/home.html for details
@@ -81,13 +81,13 @@
 - name: Get status of installed IBM tools
   yum:
     name: "{{ __sap_hana_preconfigure_required_ppc64le }}"
-  register: ibm_result
+  register: __sap_hana_preconfigure_register_required_ppc64le_packages
   ignore_errors: True
   changed_when: false
   when: ansible_architecture == "ppc64le"
 
 - debug:
-    var: ibm_result.results
+    var: __sap_hana_preconfigure_register_required_ppc64le_packages.results
   when: ansible_architecture == "ppc64le"
 
 - name: Ensure minimum required package versions are installed
@@ -153,31 +153,36 @@
     name: "*"
   when: sap_hana_preconfigure_update|bool
 
-- set_fact:
-    needs_restarting_command: "needs-restarting -r"
+- name: "Set needs-restarting command in case of RHEL 7"
+  set_fact:
+    __sap_hana_preconfigure_fact_needs_restarting_command: "needs-restarting -r"
   when:
     - ansible_os_family == 'RedHat'
     - ansible_distribution_major_version == '7'
 
-- set_fact:
-    needs_restarting_command: "yum needs-restarting -r"
+- name: "Set needs-restarting command in case of RHEL 8 or RHEL 9, except RHEL 8.0"
+  set_fact:
+    __sap_hana_preconfigure_fact_needs_restarting_command: "yum needs-restarting -r"
   when:
     - ansible_os_family == 'RedHat'
-    - ansible_distribution_major_version == '8'
+    - (ansible_distribution_major_version == '8' or
+         ansible_distribution_major_version == '9'
+      )
     - ansible_distribution_version != '8.0'
 
-- set_fact:
-    needs_restarting_command: "_IKRNL=$(rpm -q --last kernel | awk 'NR==1{sub(/kernel-/,\"\"); print $1}'); _CKRNL=$(uname -r); if [ ${_IKRNL} != ${_CKRNL} ]; then exit 1; else exit 0; fi"
+- name: "Set customized needs-restarting command in case of RHEL 8.0"
+  set_fact:
+    __sap_hana_preconfigure_fact_needs_restarting_command: "_IKRNL=$(rpm -q --last kernel | awk 'NR==1{sub(/kernel-/,\"\"); print $1}'); _CKRNL=$(uname -r); if [ ${_IKRNL} != ${_CKRNL} ]; then exit 1; else exit 0; fi"
   when:
     - ansible_os_family == 'RedHat'
     - ansible_distribution_version == '8.0'
 
 - debug:
-    var: needs_restarting_command
+    var: __sap_hana_preconfigure_fact_needs_restarting_command
 
 - name: Check if system needs to be restarted
-  shell: "{{ needs_restarting_command }}"
-  register: needs_restarting_result
+  shell: "{{ __sap_hana_preconfigure_fact_needs_restarting_command }}"
+  register: __sap_hana_preconfigure_register_needs_restarting
   ignore_errors: true
   changed_when: false
   args:
@@ -185,11 +190,9 @@
   check_mode: false
 
 - debug:
-    var: needs_restarting_result
+    var: __sap_hana_preconfigure_register_needs_restarting
 
 - name: Call Reboot handler if necessary
   command: /bin/true
   notify: __sap_hana_preconfigure_reboot_handler
-  when: needs_restarting_result.rc == 1
-
-...
+  when: __sap_hana_preconfigure_register_needs_restarting is failed

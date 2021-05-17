@@ -14,5 +14,3 @@
 - name: include configuration actions for required sapnotes
   include_tasks: "sapnote/assert-{{ item }}.yml"
   with_items: "{{ __sap_hana_preconfigure_sapnotes | difference(['']) }}"
-
-...

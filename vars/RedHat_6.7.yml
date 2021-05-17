@@ -37,5 +37,3 @@ __sap_hana_preconfigure_kernel_parameters_default:
 #  - { name: kernel.shmmni, value: 65536 } - Invalid argument, the value not supported
   - { name: kernel.msgmni, value: 32768 }
   - { name: kernel.sysrq, value: 1 }
-
-...

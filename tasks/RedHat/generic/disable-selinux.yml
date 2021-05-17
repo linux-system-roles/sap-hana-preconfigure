@@ -7,11 +7,9 @@
   selinux:
     state: "{{ sap_hana_preconfigure_selinux_state }}"
     policy: targeted
-  register: selinux_result
+  register: __sap_hana_preconfigure_register_selinux_state
 
 - name: Call Reboot handler if necessary
   command: /bin/true
   notify: __sap_hana_preconfigure_reboot_handler
-  when: selinux_result.reboot_required == true
-
-...
+  when: __sap_hana_preconfigure_register_selinux_state.reboot_required

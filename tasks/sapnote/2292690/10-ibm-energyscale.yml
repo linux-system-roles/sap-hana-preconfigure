@@ -8,5 +8,3 @@
     name: pseries-energy
     state: absent
   when: ansible_architecture == "ppc64le"
-
-...

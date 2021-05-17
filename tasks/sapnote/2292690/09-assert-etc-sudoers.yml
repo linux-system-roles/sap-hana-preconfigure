@@ -5,16 +5,13 @@
 
 - name: Get contents of /etc/sudoers
   command: grep '^Defaults[ \s]*requiretty' /etc/sudoers
-  register: grep_result
+  register: __sap_hana_preconfigure_register_etc_sudoers_requiretty_assert
   changed_when: no
   ignore_errors: yes
 
 - name: Assert that "Defaults requiretty" is not set in /etc/sudoers
   assert:
-    that:
-      - grep_result.rc == 1
+    that: __sap_hana_preconfigure_register_etc_sudoers_requiretty_assert is failed
     fail_msg: "FAIL: The string 'Defaults requiretty' was found in /etc/sudoers!"
     success_msg: "PASS: The string 'Defaults requiretty' was not found in /etc/sudoers!"
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-
-...

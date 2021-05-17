@@ -32,7 +32,7 @@
         - name: Get info about file /usr/lib64/libssl.so.1.0.1
           stat:
             path: /usr/lib64/libssl.so.1.0.1
-          register: __stat_libssl_1
+          register: __sap_hana_preconfigure_register_stat_libssl_rhel_72_assert
 
         - name: Assert that file /usr/lib64/libssl.so.1.0.1 exists
           assert:
@@ -43,47 +43,47 @@
 
         - name: Assert that file /usr/lib64/libssl.so.1.0.1 is a link
           assert:
-            that: __stat_libssl_1.stat.islnk
+            that: __sap_hana_preconfigure_register_stat_libssl_rhel_72_assert.stat.islnk
             fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 is not a link!"
             success_msg: "PASS: File /usr/lib64/libssl.so.1.0.1 is a link."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-          when: __stat_libssl_1.stat.exists
+          when: __sap_hana_preconfigure_register_stat_libssl_rhel_72_assert.stat.exists
 
         - name: Assert that file /usr/lib64/libssl.so.1.0.1 is a link to /usr/lib64/libssl.so.1.0.1e
           assert:
-            that: "__stat_libssl_1.stat.lnk_target == '/usr/lib64/libssl.so.1.0.1e'"
+            that: "__sap_hana_preconfigure_register_stat_libssl_rhel_72_assert.stat.lnk_target == '/usr/lib64/libssl.so.1.0.1e'"
             fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 is not a link to /usr/lib64/libssl.so.1.0.1e!"
             success_msg: "PASS: File /usr/lib64/libssl.so.1.0.1 is a link to /usr/lib64/libssl.so.1.0.1e."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-          when: __stat_libssl_1.stat.exists
+          when: __sap_hana_preconfigure_register_stat_libssl_rhel_72_assert.stat.exists
 
         - name: Get info about file /usr/lib64/libcrypto.so.1.0.1
           stat:
             path: /usr/lib64/libcrypto.so.1.0.1
-          register: __stat_libcrypto_1
+          register: __sap_hana_preconfigure_register_stat_libcrypto_rhel_72_assert
 
         - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 exists
           assert:
-            that: __stat_libcrypto_1.stat.exists
+            that: __sap_hana_preconfigure_register_stat_libcrypto_rhel_72_assert.stat.exists
             fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 does not exist!"
             success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 exist."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
         - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 exists and is a link
           assert:
-            that: __stat_libcrypto_1.stat.islnk
+            that: __sap_hana_preconfigure_register_stat_libcrypto_rhel_72_assert.stat.islnk
             fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 is not a link!"
             success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 is a link."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-          when: __stat_libcrypto_1.stat.exists
+          when: __sap_hana_preconfigure_register_stat_libcrypto_rhel_72_assert.stat.exists
 
         - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 is a link to /usr/lib64/libcrypto.so.1.0.1e
           assert:
-            that: "__stat_libcrypto_1.stat.lnk_target == '/usr/lib64/libcrypto.so.1.0.1e'"
+            that: "__sap_hana_preconfigure_register_stat_libcrypto_rhel_72_assert.stat.lnk_target == '/usr/lib64/libcrypto.so.1.0.1e'"
             fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 is not a link to /usr/lib64/libcrypto.so.1.0.1e!"
             success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 is a link to /usr/lib64/libcrypto.so.1.0.1e."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-          when: __stat_libcrypto_1.stat.exists
+          when: __sap_hana_preconfigure_register_stat_libcrypto_rhel_72_assert.stat.exists
 
       when: "ansible_distribution_version  == '7.2'"
 
@@ -92,58 +92,58 @@
         - name: Get info about file /usr/lib64/libssl.so.1.0.1
           stat:
             path: /usr/lib64/libssl.so.1.0.1
-          register: __stat_libssl_2
+          register: __sap_hana_preconfigure_register_stat_libssl_rhel_7_assert
 
         - name: Assert that file /usr/lib64/libssl.so.1.0.1 exists
           assert:
-            that: __stat_libssl_2.stat.exists
+            that: __sap_hana_preconfigure_register_stat_libssl_rhel_7_assert.stat.exists
             fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 does not exist!"
             success_msg: "PASS: File /usr/lib64/libssl.so.1.0.1 exist."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
         - name: Assert that file /usr/lib64/libssl.so.1.0.1 is a link
           assert:
-            that: __stat_libssl_2.stat.islnk
+            that: __sap_hana_preconfigure_register_stat_libssl_rhel_7_assert.stat.islnk
             fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 is not a link!"
             success_msg: "PASS: File /usr/lib64/libssl.so.1.0.1 is a link."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-          when: __stat_libssl_2.stat.exists
+          when: __sap_hana_preconfigure_register_stat_libssl_rhel_7_assert.stat.exists
 
         - name: Assert that file /usr/lib64/libssl.so.1.0.1 is a link to /usr/lib64/libssl.so.10
           assert:
-            that: "__stat_libssl_2.stat.lnk_target == '/usr/lib64/libssl.so.10'"
+            that: "__sap_hana_preconfigure_register_stat_libssl_rhel_7_assert.stat.lnk_target == '/usr/lib64/libssl.so.10'"
             fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 is not a link to /usr/lib64/libssl.so.10!"
             success_msg: "PASS: File /usr/lib64/libssl.so.1.0.1 is a link to /usr/lib64/libssl.so.10."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-          when: __stat_libssl_2.stat.exists
+          when: __sap_hana_preconfigure_register_stat_libssl_rhel_7_assert.stat.exists
 
         - name: Get info about file /usr/lib64/libcrypto.so.1.0.1
           stat:
             path: /usr/lib64/libcrypto.so.1.0.1
-          register: __stat_libcrypto_2
+          register: __sap_hana_preconfigure_register_stat_libcrypto_rhel_7_assert
 
         - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 exists
           assert:
-            that: __stat_libcrypto_2.stat.exists
+            that: __sap_hana_preconfigure_register_stat_libcrypto_rhel_7_assert.stat.exists
             fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 does not exist!"
             success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 exist."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
         - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 is a link
           assert:
-            that: __stat_libcrypto_2.stat.islnk
+            that: __sap_hana_preconfigure_register_stat_libcrypto_rhel_7_assert.stat.islnk
             fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 is not a link!"
             success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 is a link."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-          when: __stat_libcrypto_2.stat.exists
+          when: __sap_hana_preconfigure_register_stat_libcrypto_rhel_7_assert.stat.exists
 
         - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 is a link to /usr/lib64/libcrypto.so.10
           assert:
-            that: "__stat_libcrypto_2.stat.lnk_target == '/usr/lib64/libcrypto.so.10'"
+            that: "__sap_hana_preconfigure_register_stat_libcrypto_rhel_7_assert.stat.lnk_target == '/usr/lib64/libcrypto.so.10'"
             fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 is not a link to /usr/lib64/libcrypto.so.10!"
             success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 is a link to /usr/lib64/libcrypto.so.10."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-          when: __stat_libcrypto_2.stat.exists
+          when: __sap_hana_preconfigure_register_stat_libcrypto_rhel_7_assert.stat.exists
 
       when: "ansible_distribution_version != '7.2'"
 
@@ -219,7 +219,7 @@
 ### otherwise disable firewall
 ### NYI: Set proper firewall rules if SID/instance number is known
 ###
-- include_tasks: ../RedHat/generic/assert-firewall.yml
+- include_tasks: ../RedHat/generic/assert-firewalld.yml
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2009879_3_15|d(false)
 # - name: 3.15 Ensure firewall is disabled when instance ID unknown
 #   service: name=firewalld state=stopped enabled=no

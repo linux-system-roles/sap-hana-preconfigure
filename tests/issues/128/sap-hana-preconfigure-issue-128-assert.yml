@@ -42,4 +42,3 @@
         - "ksm_running_result.stdout == '0'"
       fail_msg: "FAIL: KSM is currently configured!"
       success_msg: "PASS: KSM is not configured currently."
-

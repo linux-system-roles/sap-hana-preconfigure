@@ -17,4 +17,3 @@
       - "{{ __sap_hana_preconfigure_packages }}"
     loop_control:
       loop_var: line_item
-

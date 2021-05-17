@@ -4,4 +4,3 @@
     file:
       path: /etc/init.d/boot.local
       state: absent
-
