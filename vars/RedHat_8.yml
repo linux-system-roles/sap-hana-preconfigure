@@ -58,6 +58,46 @@ __sap_hana_preconfigure_req_repos_RedHat_8_4_ppc64le:
   - "rhel-8-for-ppc64le-appstream-e4s-rpms"
   - "rhel-8-for-ppc64le-sap-solutions-e4s-rpms"
 
+__sap_hana_preconfigure_req_repos_RedHat_8_5_x86_64:
+  - "rhel-8-for-x86_64-baseos-rpms"
+  - "rhel-8-for-x86_64-appstream-rpms"
+  - "rhel-8-for-x86_64-sap-solutions-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_5_ppc64le:
+  - "rhel-8-for-ppc64le-baseos-rpms"
+  - "rhel-8-for-ppc64le-appstream-rpms"
+  - "rhel-8-for-ppc64le-sap-solutions-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_6_x86_64:
+  - "rhel-8-for-x86_64-baseos-e4s-rpms"
+  - "rhel-8-for-x86_64-appstream-e4s-rpms"
+  - "rhel-8-for-x86_64-sap-solutions-e4s-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_6_ppc64le:
+  - "rhel-8-for-ppc64le-baseos-e4s-rpms"
+  - "rhel-8-for-ppc64le-appstream-e4s-rpms"
+  - "rhel-8-for-ppc64le-sap-solutions-e4s-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_7_x86_64:
+  - "rhel-8-for-x86_64-baseos-rpms"
+  - "rhel-8-for-x86_64-appstream-rpms"
+  - "rhel-8-for-x86_64-sap-solutions-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_7_ppc64le:
+  - "rhel-8-for-ppc64le-baseos-rpms"
+  - "rhel-8-for-ppc64le-appstream-rpms"
+  - "rhel-8-for-ppc64le-sap-solutions-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_8_x86_64:
+  - "rhel-8-for-x86_64-baseos-e4s-rpms"
+  - "rhel-8-for-x86_64-appstream-e4s-rpms"
+  - "rhel-8-for-x86_64-sap-solutions-e4s-rpms"
+
+__sap_hana_preconfigure_req_repos_RedHat_8_8_ppc64le:
+  - "rhel-8-for-ppc64le-baseos-e4s-rpms"
+  - "rhel-8-for-ppc64le-appstream-e4s-rpms"
+  - "rhel-8-for-ppc64le-sap-solutions-e4s-rpms"
+
 # required SAP notes for RHEL 8:
 __sap_hana_preconfigure_sapnotes:
   - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
