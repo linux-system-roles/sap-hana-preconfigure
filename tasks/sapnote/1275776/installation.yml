@@ -7,4 +7,3 @@
 - name: 1275776 - Installation saptune
   package:
     name: "saptune"
-...

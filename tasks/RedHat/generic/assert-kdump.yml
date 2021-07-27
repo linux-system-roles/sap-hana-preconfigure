@@ -1,0 +1,9 @@
+---
+
+- debug:
+    msg: "imported RedHat/generic/assert-kdump.yml"
+
+- name: Assert that service kdump is disabled, and inactive or stopped
+  include_tasks: assert-services.yml
+  vars:
+    line_item: kdump

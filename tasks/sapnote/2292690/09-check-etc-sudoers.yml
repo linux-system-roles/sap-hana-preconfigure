@@ -8,5 +8,3 @@
     state: absent
     regexp: '^Defaults[ \s]*requiretty'
     validate: '/usr/sbin/visudo -cf %s'
-
-...

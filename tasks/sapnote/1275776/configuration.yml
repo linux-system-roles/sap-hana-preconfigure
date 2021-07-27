@@ -20,5 +20,3 @@
 
 - name: "1275776 - Configuration saptune sap note 2205917"
   command: "saptune note apply 2205917"
-
-...

@@ -1,0 +1,25 @@
+---
+# SAP Note: 3024346 - Linux Kernel Settings for NetApp NFS
+#
+- name: Set kernel tunables as per SAP note 3024346
+  sysctl:
+    sysctl_file: "{{ __sap_hana_preconfigure_etc_sysctl_netapp_hana_conf }}"
+    name: "{{ line_item.name }}"
+    value: "{{ line_item.value }}"
+    state: present
+    sysctl_set: yes
+    reload: yes
+  with_items: "{{ __sap_hana_preconfigure_kernel_parameters_netapp_nfs }}"
+  loop_control:
+    loop_var: line_item
+  when:
+    - sap_hana_preconfigure_use_netapp_settings_nfs|d(false)
+    - sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_3024346|d(false)
+
+- name: Set kernel tunable for NFSv3 as per SAP note 3024346
+  lineinfile:
+    regexp: '^options sunrpc tcp_max_slot_table_entries'
+    line: options sunrpc tcp_max_slot_table_entries=128
+    path: /etc/modprobe.d/sunrpc.conf
+    create: yes
+  when: sap_hana_preconfigure_use_netapp_settings_nfsv3

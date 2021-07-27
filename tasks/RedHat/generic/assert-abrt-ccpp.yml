@@ -1,0 +1,9 @@
+---
+
+- debug:
+    msg: "imported RedHat/generic/assert-abrt-ccpp.yml"
+
+- name: Assert that service abrt-ccpp is disabled, and inactive or stopped
+  include_tasks: assert-services.yml
+  vars:
+    line_item: abrt-ccpp

@@ -7,13 +7,14 @@
 #   in included tuned profile throughput-performance
 - block:
     - name: Check if system is able to set CPU Governor for performance
-      command: bash -lc "LC_ALL=C cpupower frequency-info -g | awk '/available cpufreq governors/{print $(NF-1), $NF}'"
+      shell: LC_ALL=C cpupower frequency-info -g | awk '/available cpufreq governors/{print $(NF-1), $NF}'
       check_mode: no
-      register: command_check_result
+      register: __sap_hana_preconfigure_register_cpupower_frequency_info_supported
       ignore_errors: true
       changed_when: false
     - debug:
-        var: command_check_result.stdout_lines, command_check_result.stderr_lines
+        var: __sap_hana_preconfigure_register_cpupower_frequency_info_supported.stdout_lines,
+             __sap_hana_preconfigure_register_cpupower_frequency_info_supported.stderr_lines
 
     - name: Configure CPU Governor for performance if possible
       block:
@@ -29,25 +30,22 @@
             line: "cpupower frequency-set -g performance"
 
         - name: Configure CPU Governor for performance on the running system (x86_64 platform only)
-          command: bash -lc "cpupower frequency-set -g performance"
-          register: command_result
+          command: cpupower frequency-set -g performance
+          register: __sap_hana_preconfigure_register_cpupower_frequency_set
         - debug:
-            var: command_result.stdout_lines, command_result.stderr_lines
+            var: __sap_hana_preconfigure_register_cpupower_frequency_set.stdout_lines, __sap_hana_preconfigure_register_cpupower_frequency_set.stderr_lines
 
         - name: Get status of CPU Governor
-          command: bash -lc "cpupower frequency-info -g"
-          register: command_result
+          command: cpupower frequency-info -g
+          register: __sap_hana_preconfigure_register_cpupower_frequency_info
           ignore_errors: true
           changed_when: false
         - debug:
-            var: command_result.stdout_lines, command_result.stderr_lines
+            var: __sap_hana_preconfigure_register_cpupower_frequency_info.stdout_lines, __sap_hana_preconfigure_register_cpupower_frequency_info.stderr_lines
 
       when:
-       - command_check_result.stdout != 'Not Available'
+        - __sap_hana_preconfigure_register_cpupower_frequency_info_supported.stdout != 'Not Available'
 
   when:
     - ansible_architecture == 'x86_64'
-    - ansible_os_family == 'RedHat'
-    - not sap_hana_preconfigure_use_tuned_where_possible
-
-...
+    - not sap_hana_preconfigure_use_tuned
