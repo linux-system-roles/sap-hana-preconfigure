@@ -1,0 +1,40 @@
+---
+# OS RELEASE: RHEL 7
+# SAP Note: 2382421 - Optimizing the Network Configuration on HANA- and OS-Level
+#
+
+- debug:
+    msg: "SAP note 2382421: Recommended network settings for SAP HANA"
+
+- debug:
+    msg: "sapnote/assert-2382421.yml"
+
+- block:
+    - name: Get info about file {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}
+      stat:
+        path: "{{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }}"
+      register: __sap_hana_preconfigure_register_stat_sysctl_saphana_conf_assert
+
+    - name: Assert that file {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} exists
+      assert:
+        that: __sap_hana_preconfigure_register_stat_sysctl_saphana_conf_assert.stat.exists
+        fail_msg: "FAIL: File {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} does not exist!"
+        success_msg: "PASS: File {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} exists."
+      ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+
+    - name: Assert that file {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} is a regular file
+      assert:
+        that: __sap_hana_preconfigure_register_stat_sysctl_saphana_conf_assert.stat.isreg
+        fail_msg: "FAIL: File {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} is not a regular file!"
+        success_msg: "PASS: File {{ __sap_hana_preconfigure_etc_sysctl_saphana_conf }} is a regular file."
+      ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+      when: __sap_hana_preconfigure_register_stat_sysctl_saphana_conf_assert.stat.exists
+
+  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2382421|d(false)
+
+- name: Get and assert kernel tunables
+  include_tasks: ../RedHat/generic/sapnote-2382421-loop-block.yml
+  loop: "{{ __sap_hana_preconfigure_kernel_parameters_default }}"
+  loop_control:
+    loop_var: line_item
+  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2382421|d(false)

@@ -10,7 +10,7 @@
     line: "\\1 {{ item }}\""
   with_items:
      - "elevator=noop"
-  notify: "Regenerate grub2 conf handler"
+  notify: __sap_hana_preconfigure_regenerate_grub2_conf_handler
   when: ansible_architecture == "x86_64" and
         ansible_os_family == 'Suse' and
         ansible_distribution_major_version == '15'
@@ -34,6 +34,3 @@
     name: uuidd
     enabled: true
     state: started
-
-
-...

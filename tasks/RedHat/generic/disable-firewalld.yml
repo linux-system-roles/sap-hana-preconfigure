@@ -1,0 +1,9 @@
+---
+
+- debug:
+    msg: "imported RedHat/generic/configure-firewalld.yml"
+
+- name: Disable firewalld
+  include_tasks: disable-services.yml
+  vars:
+    line_item: firewalld

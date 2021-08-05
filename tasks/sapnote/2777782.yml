@@ -1,7 +1,7 @@
 ---
 # tasks file for sap-hana-preconfigure configuration
 
-# We can skip the following task, as it is already part of role sap-preconfigure:
+# SELinux is already configured in role sap-preconfigure:
 #- import_tasks: 2777782/01-disable-selinux.yml
 #  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2777782_01|d(false)
 
@@ -32,3 +32,5 @@
 - import_tasks: 2777782/10-increase-pidmax.yml
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2777782_10|d(false)
 
+- import_tasks: 2777782/11-enable-tsx.yml
+  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2777782_11|d(false)

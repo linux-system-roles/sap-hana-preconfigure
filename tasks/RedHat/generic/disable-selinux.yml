@@ -3,16 +3,13 @@
 - debug:
     msg: "imported RedHat/generic/disable-selinux.yml"
 
-- name: Disable SELinux
+- name: Set SELinux state
   selinux:
-    state: disabled
+    state: "{{ sap_hana_preconfigure_selinux_state }}"
     policy: targeted
+  register: __sap_hana_preconfigure_register_selinux_state
 
-- name: Check for SELinux
-  command: getenforce
-  changed_when: false
-  register: getenforce_result
-- debug:
-    var: getenforce_result.stdout_lines
-
-...
+- name: Call Reboot handler if necessary
+  command: /bin/true
+  notify: __sap_hana_preconfigure_reboot_handler
+  when: __sap_hana_preconfigure_register_selinux_state.reboot_required

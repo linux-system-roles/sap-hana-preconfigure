@@ -11,5 +11,3 @@
     state: present
     sysctl_set: yes
     reload: yes
-
-...
