@@ -32,7 +32,7 @@
     loop_var: line_item
 
 ## This only works if interfacename=device name, otherwise it fails 
-- name: add largesend options to interface
+- name: Add largesend options to interfaces
   lineinfile:
     regexp: '^ETHTOOL_OPTIONS_tso='
     line: ETHTOOL_OPTIONS_tso='-K iface tso on'
@@ -45,8 +45,9 @@
         )
   loop_control:
     loop_var: line_item
+  ignore_errors: true
 
-- name: Add largesend parameters for ppc64le
+- name: Add largesend kernel parameters for ppc64le
   sysctl:
     sysctl_file: /etc/sysctl.d/ibm_largesend.conf
     name: "{{ line_item.name }}"

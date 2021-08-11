@@ -3,7 +3,16 @@
 - debug:
     msg: "imported RedHat/generic/enable-tsx.yml"
 
-- name: Enable TSX at boot time
+- name: Get the CPU flags
+  shell: lscpu | grep "^Flags"
+  register: __sap_hana_preconfigure_register_lscpu
+  when:
+    - ansible_architecture == 'x86_64'
+    - ansible_distribution == 'RedHat'
+    - ansible_distribution_major_version == '8'
+    - __sap_hana_preconfigure_fact_ansible_distribution_minor_version >= '3'
+
+- name: Enable TSX at boot time if CPU flag rtm is not present
   lineinfile:
     path: /etc/default/grub
     backup: yes
@@ -14,10 +23,12 @@
   with_items:
      - "tsx=on"
   notify: __sap_hana_preconfigure_regenerate_grub2_conf_handler
-  when: ansible_architecture == 'x86_64' and
-        ansible_distribution == 'RedHat' and
-        ansible_distribution_major_version == '8' and
-        __sap_hana_preconfigure_fact_ansible_distribution_minor_version >= '3'
+  when:
+    - ansible_architecture == 'x86_64'
+    - ansible_distribution == 'RedHat'
+    - ansible_distribution_major_version == '8'
+    - __sap_hana_preconfigure_fact_ansible_distribution_minor_version >= '3'
+    - not ' rtm' in __sap_hana_preconfigure_register_lscpu.stdout
   tags: grubconfig
   loop_control:
     loop_var: line_item
