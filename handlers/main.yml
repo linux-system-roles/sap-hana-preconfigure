@@ -49,6 +49,12 @@
     - __sap_hana_preconfigure_register_stat_sys_firmware_efi.stat.exists
     - sap_hana_preconfigure_run_grub2_mkconfig|d(true)
 
+- name: "Run grubby"
+  command: grubby --args="tsx=on" --update-kernel=ALL
+  register: __sap_hana_preconfigure_register_grubby_update
+  listen: __sap_hana_preconfigure_grubby_update_handler
+  notify: __sap_hana_preconfigure_reboot_handler
+
 - name: Reboot the managed node
   reboot:
     test_command: /bin/true

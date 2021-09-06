@@ -135,6 +135,7 @@ __sap_hana_preconfigure_min_packages_8_3_x86_64:
 __sap_hana_preconfigure_min_packages_8_3_ppc64le:
 
 __sap_hana_preconfigure_min_packages_8_4_x86_64:
+  - [ 'kernel' , '4.18.0-305.3.1.el8_4' ]
 
 __sap_hana_preconfigure_min_packages_8_4_ppc64le:
 
