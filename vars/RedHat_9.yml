@@ -22,6 +22,19 @@ __sap_hana_preconfigure_sapnotes:
   - "2382421"
   - "3024346"
 
+__sap_hana_preconfigure_sapnotes_versions_x86_64:
+  - { number: '2777782', version: '22' }
+  - { number: '2382421', version: '40' }
+  - { number: '3024346', version: '3' }
+
+__sap_hana_preconfigure_sapnotes_versions_ppc64le:
+  - { number: '2055470', version: '85' }
+  - { number: '2777782', version: '22' }
+  - { number: '2382421', version: '40' }
+  - { number: '3024346', version: '3' }
+
+__sap_hana_preconfigure_sapnotes_versions: "{{ lookup('vars','__sap_hana_preconfigure_sapnotes_versions_' + ansible_architecture) }}"
+
 # In SAP Note XXX, certain minimal required packages for the different RHEL 9 minor releases are listed.
 # The following will assign them properly to __sap_hana_preconfigure_min_pkgs.
 # If variable __sap_hana_preconfigure_min_packages_VERSION_ARCH is not defined,

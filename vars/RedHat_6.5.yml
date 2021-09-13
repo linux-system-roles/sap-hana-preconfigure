@@ -6,6 +6,10 @@ __sap_hana_preconfigure_sapnotes:
   - "2235581"
   - "2013638"
 
+__sap_hana_preconfigure_sapnotes_versions:
+  - { number: '2235581', version: '65' }
+  - { number: '2013638', version: '13' }
+
 # Network related kernel parameters as set in SAP Note 2382421:
 # The following parameter does not work when communicating with hosts behind NAT firewall:
 #  - { name: net.ipv4.tcp_tw_reuse, value: 1 }
