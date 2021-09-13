@@ -3,8 +3,10 @@
 # SAP Note: 2382421 - Optimizing the Network Configuration on HANA- and OS-Level
 #
 
-- debug:
-    msg: "SAP note 2382421: Recommended network settings for SAP HANA"
+- name: Show note number and version
+  debug:
+    msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'equalto', '2382421') | first).number }}
+          (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'equalto', '2382421') | first).version }}): Recommended network settings for SAP HANA"
 
 - debug:
     msg: "sapnote/assert-2382421.yml"

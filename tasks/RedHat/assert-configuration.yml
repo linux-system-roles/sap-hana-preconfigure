@@ -6,11 +6,13 @@
 #
 - name: List required SAP Notes
   debug:
-    var: __sap_hana_preconfigure_sapnotes | difference([''])
+    var: __sap_hana_preconfigure_sapnotes_versions | difference([''])
 
 - name: Gather service facts
   service_facts:
 
-- name: include configuration actions for required sapnotes
-  include_tasks: "sapnote/assert-{{ item }}.yml"
-  with_items: "{{ __sap_hana_preconfigure_sapnotes | difference(['']) }}"
+- name: Include configuration actions for required sapnotes
+  include_tasks: "sapnote/assert-{{ sap_note_line_item.number }}.yml"
+  with_items: "{{ __sap_hana_preconfigure_sapnotes_versions | difference(['']) }}"
+  loop_control:
+    loop_var: sap_note_line_item
