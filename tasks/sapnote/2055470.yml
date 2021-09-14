@@ -10,13 +10,15 @@
 ## http://www-03.ibm.com/support/techdocs/atsmastr.nsf/5cb5ed706d254a8186256c71006d2e0a/c32b40501f4f76c886257de0004fa1d4/$FILE/
 #    Network_Configuration_for_HANA_Workloads_on_IBM_Power_Servers_V4.pdf
 
-- block:
+- name: Perform configuration changes for ppc64le
+  block:
+
   - name: Show note number and version
     debug:
       msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'equalto', '2055470') | first).number }}
             (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'equalto', '2055470') | first).version }}): SAP HANA on POWER settings"
 
-  - name: ensure MTU size is 9000 on all interfaces
+  - name: Ensure MTU size is 9000 on all interfaces
     shell: |
       mtu=$(nmcli conn show {{ line_item }} | grep 802-3-ethernet.mtu | awk -F: '{printf("%d", $2)}')
       if [ "$mtu" != "9000" ]; then
@@ -53,16 +55,34 @@
       loop_var: line_item
     ignore_errors: true
 
+#  - name: Add largesend kernel parameters for ppc64le
+#    sysctl:
+#      sysctl_file: /etc/sysctl.d/ibm_largesend.conf
+#      name: "{{ line_item.name }}"
+#      value: "{{ line_item.value }}"
+#      state: present
+#      sysctl_set: yes
+#      reload: yes
+#    with_items: "{{ sap_hana_preconfigure_kernel_parameters_ppc64le }}"
+#    loop_control:
+#      loop_var: line_item
+
   - name: Add largesend kernel parameters for ppc64le
-    sysctl:
-      sysctl_file: /etc/sysctl.d/ibm_largesend.conf
-      name: "{{ line_item.name }}"
-      value: "{{ line_item.value }}"
+    lineinfile:
+      path: /etc/sysctl.d/ibm_largesend.conf
+      regexp: ^{{ line_item.name }}.*
+      line: "{{ line_item.name }}={{ line_item.value }}"
       state: present
-      sysctl_set: yes
-      reload: yes
     with_items: "{{ sap_hana_preconfigure_kernel_parameters_ppc64le }}"
     loop_control:
       loop_var: line_item
+
+  - name: Reload kernel parameters from file '/etc/sysctl.d/ibm_largesend.conf'
+    command: sysctl -p /etc/sysctl.d/ibm_largesend.conf
+    register: __sap_hana_preconfigure_register_ibm_largesend_sysctl_p_output
+
+  - name: Print largesend kernel parameters
+    debug:
+      var: __sap_hana_preconfigure_register_ibm_largesend_sysctl_p_output.stdout_lines
 
   when: ansible_architecture == 'ppc64le'
