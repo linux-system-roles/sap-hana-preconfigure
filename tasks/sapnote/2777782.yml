@@ -3,8 +3,8 @@
 
 - name: Show note number and version
   debug:
-    msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '2777782') | first).number }}
-          (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '2777782') | first).version }}): SAP HANA settings for RHEL 8"
+    msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2777782$') | first).number }}
+          (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2777782$') | first).version }}): SAP HANA settings for RHEL 8"
 
 # Note: SELinux is already configured in role sap-preconfigure.
 

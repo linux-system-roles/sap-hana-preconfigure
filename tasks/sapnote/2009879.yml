@@ -30,8 +30,8 @@
 
 - name: Show note number and version
   debug:
-    msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '2009879') | first).number }}
-          (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '2009879') | first).version }}): SAP HANA Guidelines for R
+    msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2009879$') | first).number }}
+          (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2009879$') | first).version }}): SAP HANA Guidelines for R
 HEL 7 (pdf)"
 
 - include_tasks: 2009879_{{ ansible_distribution_major_version }}.yml
