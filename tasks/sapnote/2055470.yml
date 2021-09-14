@@ -13,8 +13,8 @@
 - block:
   - name: Show note number and version
     debug:
-      msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '2055470') | first).number }}
-            (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '2055470') | first).version }}): SAP HANA on POWER settings"
+      msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2055470$') | first).number }}
+            (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2055470$') | first).version }}): SAP HANA on POWER settings"
 
   - name: ensure MTU size is 9000 on all interfaces
     shell: |

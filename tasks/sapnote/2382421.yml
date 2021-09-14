@@ -3,8 +3,8 @@
 #
 - name: Show note number and version
   debug:
-    msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '2382421') | first).number }}
-          (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '2382421') | first).version }}): Recommended network settings for SAP HANA"
+    msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2382421$') | first).number }}
+          (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2382421$') | first).version }}): Recommended network settings for SAP HANA"
 
 - name: setting kernel tunables as per SAP note 2382421
   sysctl:
