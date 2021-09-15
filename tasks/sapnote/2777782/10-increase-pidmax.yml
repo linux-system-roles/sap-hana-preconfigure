@@ -3,15 +3,6 @@
 - debug:
     msg: "SAP note 2777782 Step 10: Increase kernel.pid_max"
 
-#- name: Set kernel parameter kernel.pid_max to 4194304
-#  sysctl:
-#    sysctl_file: /etc/sysctl.d/sap.conf
-#    name: kernel.pid_max
-#    value: '4194304'
-#    state: present
-#    sysctl_set: yes
-#    reload: yes
-
 - name: Set kernel parameter kernel.pid_max to 4194304
   lineinfile:
     path: /etc/sysctl.d/sap.conf
@@ -21,8 +12,8 @@
 
 - name: Reload kernel parameters from file '/etc/sysctl.d/sap.conf'
   command: sysctl -p /etc/sysctl.d/sap.conf
-  register: __sap_preconfigure_register_sap_conf_sysctl_p_output
+  register: __sap_hana_preconfigure_register_sap_conf_sysctl_p_output
 
 - name: Print kernel parameters after setting kernel.pid_max
   debug:
-    var: __sap_preconfigure_register_sap_conf_sysctl_p_output.stdout_lines
+    var: __sap_hana_preconfigure_register_sap_conf_sysctl_p_output.stdout_lines

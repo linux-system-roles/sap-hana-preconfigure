@@ -55,18 +55,6 @@
       loop_var: line_item
     ignore_errors: true
 
-#  - name: Add largesend kernel parameters for ppc64le
-#    sysctl:
-#      sysctl_file: /etc/sysctl.d/ibm_largesend.conf
-#      name: "{{ line_item.name }}"
-#      value: "{{ line_item.value }}"
-#      state: present
-#      sysctl_set: yes
-#      reload: yes
-#    with_items: "{{ sap_hana_preconfigure_kernel_parameters_ppc64le }}"
-#    loop_control:
-#      loop_var: line_item
-
   - name: Add largesend kernel parameters for ppc64le
     lineinfile:
       path: /etc/sysctl.d/ibm_largesend.conf
