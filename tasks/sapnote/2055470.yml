@@ -42,9 +42,9 @@
 ## This only works if interfacename=device name, otherwise it fails 
   - name: Add largesend options to interfaces
     lineinfile:
+      path: /etc/sysconfig/network-scripts/ifcfg-{{ line_item }}
       regexp: '^ETHTOOL_OPTIONS_tso='
       line: ETHTOOL_OPTIONS_tso='-K iface tso on'
-      path: /etc/sysconfig/network-scripts/ifcfg-{{ line_item }}
     with_items: "{{ sap_hana_preconfigure_ppcle_tso_if }}"
     when: not(
             (sap_hana_preconfigure_ppcle_tso_if is undefined) or
@@ -58,6 +58,7 @@
   - name: Add largesend kernel parameters for ppc64le
     lineinfile:
       path: /etc/sysctl.d/ibm_largesend.conf
+      create: yes
       regexp: ^{{ line_item.name }}.*
       line: "{{ line_item.name }}={{ line_item.value }}"
       state: present

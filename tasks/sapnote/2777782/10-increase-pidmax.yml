@@ -6,6 +6,7 @@
 - name: Set kernel parameter kernel.pid_max to 4194304
   lineinfile:
     path: /etc/sysctl.d/sap.conf
+    create: yes
     regexp: ^kernel.pid_max.*
     line: 'kernel.pid_max=4194304'
     state: present
