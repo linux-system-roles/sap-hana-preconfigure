@@ -10,9 +10,6 @@
 #
 
 - debug:
-    msg: "SAP note 2009879: Recommended RHEL 7 settings for SAP HANA (pdf)"
-
-- debug:
     msg: "sapnote/assert-2009879_7.yml"
 
 ### 3.1 - Basic OS installation is a prerequisite

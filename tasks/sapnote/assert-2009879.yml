@@ -7,8 +7,10 @@
 # We include the release specific stuff here
 #
 
-- debug:
-    msg: "SAP note 2009879: Recommended RHEL settings for SAP HANA (pdf)"
+- name: Show note number and version
+  debug:
+    msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2009879$') | first).number }}
+          (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2009879$') | first).version }}): SAP HANA Guidelines for RHEL 7 (pdf)"
 
 - debug:
     msg: "sapnote/assert-2009879.yml"

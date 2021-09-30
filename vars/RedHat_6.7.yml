@@ -8,6 +8,12 @@ __sap_hana_preconfigure_sapnotes:
   - "2247020"
   - "2382421"
 
+__sap_hana_preconfigure_sapnotes_versions:
+  - { number: '2235581', version: '65' }
+  - { number: '2009879', version: '28' }
+  - { number: '2247020', version: '13' }
+  - { number: '2382421', version: '40' }
+
 #__sap_hana_preconfigure_min_pkgs:
 #  - kernel-3.10.0-693.11.6.el7
 #  - tuned-profiles-sap-hana-2.8.0-5.el7_4.2
