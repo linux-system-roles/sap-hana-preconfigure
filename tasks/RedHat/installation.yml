@@ -191,7 +191,16 @@
 - debug:
     var: __sap_hana_preconfigure_register_needs_restarting
 
-- name: Call Reboot handler if necessary
+# Role sap-preconfigure is typically called right before this role.
+# We can avoid a second reboot by setting sap_preconfigure_reboot_ok
+# to 'no' and notifying the reboot handler of the current role
+# about the reboot requirement of role sap-preconfigure
+- name: Call reboot handler if necessary as per role sap-preconfigure
+  command: /bin/true
+  notify: __sap_hana_preconfigure_reboot_handler
+  when: sap_preconfigure_fact_reboot_required|d(false)
+
+- name: Call reboot handler if necessary as per this role
   command: /bin/true
   notify: __sap_hana_preconfigure_reboot_handler
   when: __sap_hana_preconfigure_register_needs_restarting is failed
