@@ -11,15 +11,13 @@
 #    Network_Configuration_for_HANA_Workloads_on_IBM_Power_Servers_V4.pdf
 
 - block:
-  - name: Show note number and version
+  - name: Assert - Display SAP note number 2055470 and its version
     debug:
       msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2055470$') | first).number }}
             (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2055470$') | first).version }}): SAP HANA on POWER settings"
 
-  - debug:
-      msg: "sapnote/assert-2055470.yml"
-
-  - debug:
+  - name: Display an info about checking the MTU size
+    debug:
       msg: "WARN: Checking of MTU size==9000 on all interfaces not yet implemented. Please check manually!"
 
 #- name: ensure MTU size is 9000 on all interfaces
@@ -43,7 +41,8 @@
 #    loop_var: line_item
 
 ## This only works if interfacename=device name, otherwise it fails 
-  - debug:
+  - name: Display an info about checking largesend options
+    debug:
       msg: "WARN: Checking of largesend options of interface {{ sap_hana_preconfigure_ppcle_tso_if }} not yet implemented. Please check manually!"
 
 #- name: add largesend options to interface
@@ -80,7 +79,7 @@
     when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2055470|d(false)
 
   - name: Get and assert kernel tunables for ppc64le
-    include_tasks: ../RedHat/generic/sapnote-2055470-loop-block.yml
+    include_tasks: ../RedHat/generic/assert-2055470-loop-block.yml
     loop: "{{ sap_hana_preconfigure_kernel_parameters_ppc64le }}"
     loop_control:
       loop_var: line_item

@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/assert-coredumps.yml"
-
 - name: Get info about file /etc/security/limits.d/99-sap.conf
   stat:
     path: /etc/security/limits.d/99-sap.conf

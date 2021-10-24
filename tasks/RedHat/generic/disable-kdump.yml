@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/disable-kdump.yml"
-
 - name: Disable kdump
   include_tasks: disable-services.yml
   vars:

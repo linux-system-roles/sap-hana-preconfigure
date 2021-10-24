@@ -13,7 +13,7 @@
 - name: Perform configuration changes for ppc64le
   block:
 
-  - name: Show note number and version
+  - name: Configure - Display SAP note number 2055470 and its version
     debug:
       msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2055470$') | first).number }}
             (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2055470$') | first).version }}): SAP HANA on POWER settings"
@@ -34,7 +34,7 @@
     when: not(
             (sap_hana_preconfigure_ppcle_mtu9000_if is undefined) or
             (sap_hana_preconfigure_ppcle_mtu9000_if is none) or
-            (sap_hana_preconfigure_ppcle_mtu9000_if | trim == '')
+            (sap_hana_preconfigure_ppcle_mtu9000_if | trim | length == 0)
           )
     loop_control:
       loop_var: line_item
@@ -49,7 +49,7 @@
     when: not(
             (sap_hana_preconfigure_ppcle_tso_if is undefined) or
             (sap_hana_preconfigure_ppcle_tso_if is none) or
-            (sap_hana_preconfigure_ppcle_tso_if | trim == '')
+            (sap_hana_preconfigure_ppcle_tso_if | trim | length == 0)
           )
     loop_control:
       loop_var: line_item
@@ -59,6 +59,7 @@
     lineinfile:
       path: /etc/sysctl.d/ibm_largesend.conf
       create: yes
+      mode: 0644
       regexp: ^{{ line_item.name }}.*
       line: "{{ line_item.name }}={{ line_item.value }}"
       state: present

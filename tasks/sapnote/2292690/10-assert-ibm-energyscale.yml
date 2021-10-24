@@ -1,7 +1,8 @@
 ---
 
 #### Special recommendations for Power 8
-- debug:
+- name: Assert 2292690-10
+  debug:
     msg: "SAP note 2292690 Step 10: IBM EnergyScale for POWER8 Processor-Based Systems"
 
 - name: Check of package pseries-energy

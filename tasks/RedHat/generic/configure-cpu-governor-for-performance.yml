@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/configure-cpu-governor-for-performance.yml"
-
 # can be configured by tuned profile sap-hana, entry "governor=performance"
 #   in included tuned profile throughput-performance
 - block:
@@ -12,7 +9,9 @@
       register: __sap_hana_preconfigure_register_cpupower_frequency_info_supported
       ignore_errors: true
       changed_when: false
-    - debug:
+
+    - name: Display the output of the cpupower frequency-info -g command
+      debug:
         var: __sap_hana_preconfigure_register_cpupower_frequency_info_supported.stdout_lines,
              __sap_hana_preconfigure_register_cpupower_frequency_info_supported.stderr_lines
 
@@ -32,15 +31,21 @@
         - name: Configure CPU Governor for performance on the running system (x86_64 platform only)
           command: cpupower frequency-set -g performance
           register: __sap_hana_preconfigure_register_cpupower_frequency_set
-        - debug:
-            var: __sap_hana_preconfigure_register_cpupower_frequency_set.stdout_lines, __sap_hana_preconfigure_register_cpupower_frequency_set.stderr_lines
+
+        - name: Display the output of the cpupower frequency-set command
+          debug:
+            var: __sap_hana_preconfigure_register_cpupower_frequency_set.stdout_lines,
+                 __sap_hana_preconfigure_register_cpupower_frequency_set.stderr_lines
 
         - name: Get status of CPU Governor
           command: cpupower frequency-info -g
           register: __sap_hana_preconfigure_register_cpupower_frequency_info
           ignore_errors: true
           changed_when: false
-        - debug:
+
+
+        - name: Display the output of the cpupower frequency-info -g command again
+          debug:
             var: __sap_hana_preconfigure_register_cpupower_frequency_info.stdout_lines, __sap_hana_preconfigure_register_cpupower_frequency_info.stderr_lines
 
       when:

@@ -28,7 +28,7 @@
 
 ### Package installation is done in installation.yml
 
-- name: Show note number and version
+- name: Configure - Display SAP note number 2009879 and its version
   debug:
     msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2009879$') | first).number }}
           (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2009879$') | first).version }}): SAP HANA Guidelines for R

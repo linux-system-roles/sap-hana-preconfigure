@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/assert-ksm.yml"
-
 - name: Get info about file /etc/init.d/boot.local
   stat:
     path: /etc/init.d/boot.local

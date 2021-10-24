@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/disable-thp.yml"
-
 # can be configured by tuned profile sap-hana, entry "transparent_hugepages=never"
 - name: Disable transparent hugepages at boot time
   lineinfile:

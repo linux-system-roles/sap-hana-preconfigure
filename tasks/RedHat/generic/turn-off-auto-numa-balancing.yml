@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/turn-off-auto-numa-balancing.yml"
-
 # can be configured by tuned profile sap-hana, entry "kernel.numa_balancing = 0"
 - name: Disable numad
   include_tasks: disable-services.yml

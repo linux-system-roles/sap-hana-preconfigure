@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/assert-tsx.yml"
-
 - block:
 # There are CPUs which are not capable of enabling the rtm flag, so we just report the status:
     - name: Get all CPU flags
