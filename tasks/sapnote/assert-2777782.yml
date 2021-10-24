@@ -9,9 +9,7 @@
 - debug:
     msg: "sapnote/assert-2777782.yml"
 
-# SELinux is already configured in role sap-preconfigure:
-#- import_tasks: 2777782/01-assert-selinux.yml
-#  when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2777782_01|d(false)
+# Note: SELinux is already configured in role sap-preconfigure.
 
 - import_tasks: 2777782/02-assert-tuned.yml
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2777782_02|d(false)
