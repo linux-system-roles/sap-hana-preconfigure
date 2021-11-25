@@ -1,6 +1,0 @@
-- hosts: all
-  tasks:
-  - name: Make sure that package libssh2 is not installed
-    package:
-      state: absent
-      name: libssh2

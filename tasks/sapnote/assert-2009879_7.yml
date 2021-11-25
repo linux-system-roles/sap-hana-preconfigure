@@ -2,7 +2,7 @@
 # OS RELEASE: RHEL  7.x
 # Check EUS Channels
 # https://launchpad.support.sap.com/#/notes/2009879
-# 
+#
 # This SAP Note Contains the general installation guides for all RHEL 7.x systems in PDF format
 #
 # Some of these tasks are documented already in SAP NOTE 2292690
@@ -11,31 +11,31 @@
 
 ### 3.1 - Basic OS installation is a prerequisite
 ### 3.2 - Additional Package installation is done in the installation.yml file
-### 3.3 - Hostname - is an SAP generic setting, already done with SAP Note 2002167 (sap-preconfigure) 
+### 3.3 - Hostname - is an SAP generic setting, already done with SAP Note 2002167 (sap-preconfigure)
 ### 3.4 - NTP/Chrony - is a generic SAP requirement, needs to be done by linux-system-roles.timesync
 ### 3.5 - Configure Storage - out of scooe, have a look at linux-system-roles.storage
 ### 3.6 - Activate SAP HANA specific tuned profile -> SAP Note 2292690
 ### 3.7 - Disable SE Linux -> SAP Note 2292690, SAP NOTE 2002167
-### 3.8 - Disable Numa Balancing -> SAP Note 2292690 
+### 3.8 - Disable Numa Balancing -> SAP Note 2292690
 
-### 3.9 - Create the compatibility links for HANA 
+### 3.9 - Create the compatibility links for HANA
 - name: Check if required links exist
   block:
     - name: ... in case of RHEL 7.2
       block:
-        - name: Get info about file /usr/lib64/libssl.so.1.0.1
+        - name: RHEL 7.2 - Get info about file /usr/lib64/libssl.so.1.0.1
           stat:
             path: /usr/lib64/libssl.so.1.0.1
           register: __sap_hana_preconfigure_register_stat_libssl_rhel_72_assert
 
-        - name: Assert that file /usr/lib64/libssl.so.1.0.1 exists
+        - name: RHEL 7.2 - Assert that file /usr/lib64/libssl.so.1.0.1 exists
           assert:
             that: __stat_lpbldap.stat.exists
             fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 does not exist!"
             success_msg: "PASS: File /usr/lib64/libssl.so.1.0.1 exist."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
-        - name: Assert that file /usr/lib64/libssl.so.1.0.1 is a link
+        - name: RHEL 7.2 - Assert that file /usr/lib64/libssl.so.1.0.1 is a link
           assert:
             that: __sap_hana_preconfigure_register_stat_libssl_rhel_72_assert.stat.islnk
             fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 is not a link!"
@@ -43,7 +43,7 @@
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
           when: __sap_hana_preconfigure_register_stat_libssl_rhel_72_assert.stat.exists
 
-        - name: Assert that file /usr/lib64/libssl.so.1.0.1 is a link to /usr/lib64/libssl.so.1.0.1e
+        - name: RHEL 7.2 - Assert that file /usr/lib64/libssl.so.1.0.1 is a link to /usr/lib64/libssl.so.1.0.1e
           assert:
             that: "__sap_hana_preconfigure_register_stat_libssl_rhel_72_assert.stat.lnk_target == '/usr/lib64/libssl.so.1.0.1e'"
             fail_msg: "FAIL: File /usr/lib64/libssl.so.1.0.1 is not a link to /usr/lib64/libssl.so.1.0.1e!"
@@ -51,19 +51,19 @@
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
           when: __sap_hana_preconfigure_register_stat_libssl_rhel_72_assert.stat.exists
 
-        - name: Get info about file /usr/lib64/libcrypto.so.1.0.1
+        - name: RHEL 7.2 - Get info about file /usr/lib64/libcrypto.so.1.0.1
           stat:
             path: /usr/lib64/libcrypto.so.1.0.1
           register: __sap_hana_preconfigure_register_stat_libcrypto_rhel_72_assert
 
-        - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 exists
+        - name: RHEL 7.2 - Assert that file /usr/lib64/libcrypto.so.1.0.1 exists
           assert:
             that: __sap_hana_preconfigure_register_stat_libcrypto_rhel_72_assert.stat.exists
             fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 does not exist!"
             success_msg: "PASS: File /usr/lib64/libcrypto.so.1.0.1 exist."
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
-        - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 exists and is a link
+        - name: RHEL 7.2 - Assert that file /usr/lib64/libcrypto.so.1.0.1 exists and is a link
           assert:
             that: __sap_hana_preconfigure_register_stat_libcrypto_rhel_72_assert.stat.islnk
             fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 is not a link!"
@@ -71,7 +71,7 @@
           ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
           when: __sap_hana_preconfigure_register_stat_libcrypto_rhel_72_assert.stat.exists
 
-        - name: Assert that file /usr/lib64/libcrypto.so.1.0.1 is a link to /usr/lib64/libcrypto.so.1.0.1e
+        - name: RHEL 7.2 - Assert that file /usr/lib64/libcrypto.so.1.0.1 is a link to /usr/lib64/libcrypto.so.1.0.1e
           assert:
             that: "__sap_hana_preconfigure_register_stat_libcrypto_rhel_72_assert.stat.lnk_target == '/usr/lib64/libcrypto.so.1.0.1e'"
             fail_msg: "FAIL: File /usr/lib64/libcrypto.so.1.0.1 is not a link to /usr/lib64/libcrypto.so.1.0.1e!"
@@ -143,17 +143,17 @@
 
   when: sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_2009879_3_9|d(false)
 
-### 3.10 - THP -> SAP Note 2292690 
+### 3.10 - THP -> SAP Note 2292690
 ### 3.11 - CPU Governor for performance -> TunedProfile -> SAP Note 2292690
 ### 3.12 - Processor C-States für x86_64 -> SAP Note 2292690
 
 ### Set by HANA installer
-#- name: increase file handles to 32800 for sapsys group
-#  pam_limits: 
+#- name: Assert - increase file handles to 32800 for sapsys group
+#  pam_limits:
 #    dest: /etc/security/limits.d/99-sapsys.conf
-#    domain: "@sapsys" 
-#    limit_item: nofile 
-#    limit_type: "{{ line_item }}" 
+#    domain: "@sapsys"
+#    limit_item: nofile
+#    limit_type: "{{ line_item }}"
 #    value: 32800
 #  with_items:
 #    - soft
@@ -163,7 +163,7 @@
 
 ### 3.13 - set number of process to unlimited for sapsys group
 # now in role sap-preconfigure
-#- name: 3.13 Set the hard and soft limit for the max number of processes per user (nproc) to unlimited for group sapsys
+#- name: Assert - 3.13 Set the hard and soft limit for the max number of processes per user (nproc) to unlimited for group sapsys
 #  block:
 #    - name: Get the hard limit of nproc for group sapsys
 #      command: awk '/sapsys/&&/nproc/&&/hard/{print $NF}' /etc/security/limits.d/99-sap.conf

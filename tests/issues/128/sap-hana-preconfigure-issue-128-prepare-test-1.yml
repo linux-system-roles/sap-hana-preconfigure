@@ -1,6 +1,0 @@
-- hosts: all
-  tasks:
-  - name: Make sure that file /etc/init.d/boot.local does not exist
-    file:
-      path: /etc/init.d/boot.local
-      state: absent

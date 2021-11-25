@@ -1,17 +1,13 @@
 ---
 
-#- name: Enable Debugging
-#  debug:
-#    verbosity: "{{ debuglevel }}"
-#
-- name: List required SAP Notes
+- name: Assert - List required SAP Notes
   debug:
     var: __sap_hana_preconfigure_sapnotes_versions | difference([''])
 
 - name: Gather service facts
   service_facts:
 
-- name: Include configuration actions for required sapnotes
+- name: Assert - Include configuration actions for required sapnotes
   include_tasks: "sapnote/assert-{{ sap_note_line_item.number }}.yml"
   with_items: "{{ __sap_hana_preconfigure_sapnotes_versions | difference(['']) }}"
   loop_control:

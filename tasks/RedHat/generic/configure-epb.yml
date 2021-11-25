@@ -48,7 +48,7 @@
             var: __sap_hana_preconfigure_register_cpupower_info.stdout_lines, __sap_hana_preconfigure_register_cpupower_info.stderr_lines
 
       when:
-       - __sap_hana_preconfigure_register_cpupower_info_epb_supported.stdout != 'does not support'
+        - __sap_hana_preconfigure_register_cpupower_info_epb_supported.stdout != 'does not support'
 
   when:
     - ansible_architecture == 'x86_64'

@@ -1,6 +1,4 @@
 ---
-# tasks file for sap-hana-preconfigure configuration
-
 - name: Assert - Display SAP note number 2292690 and its version
   debug:
     msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^2292690$') | first).number }}

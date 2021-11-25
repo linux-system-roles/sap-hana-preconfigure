@@ -19,7 +19,7 @@
 # repos required for SAP HANA on RHEL 7 and RHEL 8:
 - name: Fill the variable for the generic list of required repos
   set_fact:
-    __sap_hana_preconfigure_required_repos: "{{ lookup('vars','__sap_hana_preconfigure_req_repos_RedHat_' +
+    __sap_hana_preconfigure_required_repos: "{{ lookup('vars','__sap_hana_preconfigure_req_repos_redhat_' +
     ansible_distribution_version|string|replace (\".\", \"_\") + '_' + ansible_architecture|string) }}"
 
 - name: Get info about enabled repos
@@ -48,7 +48,7 @@
   debug:
     var: __sap_hana_preconfigure_register_subscription_manager_release_assert
 
-- name: Assert that the RHEL version is locked correctly
+- name: Assert that the RHEL release is locked correctly
   assert:
     that: "__sap_hana_preconfigure_register_subscription_manager_release_assert.stdout == '{{ ansible_distribution_version }}'"
     fail_msg: "FAIL: The RHEL release lock status is '{{ __sap_hana_preconfigure_register_subscription_manager_release_assert.stdout }}'
@@ -102,7 +102,7 @@
 
 - name: Minimum required package version check
   block:
-  - name: Check if minimum required package versions are installed
+    - name: Assert - Create a list of minimum required package versions to be installed
 # How does it work?
 # 1 - Print the required package name and version with a prefix "1" followed by a space.
 # 2 - In the same output sequence, list all installed versions of this package with a prefix "2" followed by a space.
@@ -119,7 +119,7 @@
 #              to be updated.
 # 8 - case 2b: If the first column of the last line of the output is "2", it means that at least of the installed
 #              versions the package is equal to or greater than the required package version.
-    shell: |
+      shell: |
            (echo "1 {{ pkg[0] }}-{{ pkg[1] }}";rpm -q --qf "%{NAME}-%{VERSION}-%{RELEASE}\n" {{ pkg[0] }} |
              awk '{printf ("2 %s\n", $0)}') |
              awk '{gsub ("\\.el", ".0.0"); print}' |
@@ -138,24 +138,24 @@
                          }
                       }
                    }'
-    with_list: "{{ __sap_hana_preconfigure_min_pkgs }}"
-    loop_control:
-      loop_var: pkg
-    check_mode: no
-    register: __sap_hana_preconfigure_register_minpkglist_assert
-    changed_when: no
+      with_list: "{{ __sap_hana_preconfigure_min_pkgs }}"
+      loop_control:
+        loop_var: pkg
+      check_mode: no
+      register: __sap_hana_preconfigure_register_minpkglist_assert
+      changed_when: no
 
-  - name: Assert that minimum required package versions are installed
+    - name: Assert that minimum required package versions are installed
 # If the output includes the string "is already installed" (case 2b), we have a PASS. Otherwise, it's a FAIL.
-    assert:
-      that: "'is already installed' in line_item.stdout"
-      fail_msg: "FAIL: {{ line_item.stdout }}"
-      success_msg: "PASS: {{ line_item.stdout }}"
-    with_items: "{{ __sap_hana_preconfigure_register_minpkglist_assert.results }}"
-    loop_control:
-      loop_var: line_item
-      label: ""
-    ignore_errors: yes
+      assert:
+        that: "'is already installed' in line_item.stdout"
+        fail_msg: "FAIL: {{ line_item.stdout }}"
+        success_msg: "PASS: {{ line_item.stdout }}"
+      with_items: "{{ __sap_hana_preconfigure_register_minpkglist_assert.results }}"
+      loop_control:
+        loop_var: line_item
+        label: ""
+      ignore_errors: yes
 
   when:
     - sap_hana_preconfigure_min_package_check|bool
@@ -189,14 +189,14 @@
     msg: "INFO: Not checking for possible package updates (variable sap_hana_preconfigure_update)."
   when: not sap_hana_preconfigure_update
 
-- name: "Set needs-restarting command in case of RHEL 7"
+- name: "Assert - Set needs-restarting command in case of RHEL 7"
   set_fact:
     __sap_hana_preconfigure_fact_needs_restarting_command_assert: "needs-restarting -r"
   when:
     - ansible_os_family == 'RedHat'
     - ansible_distribution_major_version == '7'
 
-- name: "Set needs-restarting command in case of RHEL 8 or RHEL 9, except RHEL 8.0"
+- name: "Assert - Set needs-restarting command in case of RHEL 8 or RHEL 9, except RHEL 8.0"
   set_fact:
     __sap_hana_preconfigure_fact_needs_restarting_command_assert: "yum needs-restarting -r"
   when:
@@ -206,7 +206,7 @@
       )
     - ansible_distribution_version != '8.0'
 
-- name: "Set customized needs-restarting command in case of RHEL 8.0"
+- name: "Assert - Set customized needs-restarting command in case of RHEL 8.0"
   set_fact:
     __sap_hana_preconfigure_fact_needs_restarting_command_assert: "_IKRNL=$(rpm -q --last kernel | awk 'NR==1{sub(/kernel-/,\"\"); print $1}');
       _CKRNL=$(uname -r); if [ ${_IKRNL} != ${_CKRNL} ]; then exit 1; else exit 0; fi"
@@ -214,12 +214,12 @@
     - ansible_os_family == 'RedHat'
     - ansible_distribution_version == '8.0'
 
-- name: Display the command for checking a reboot requirement
+- name: Assert - Display the command for checking a reboot requirement
   debug:
     var: __sap_hana_preconfigure_fact_needs_restarting_command_assert
 
 # Reason for noqa: The command to be executed might contain pipes
-- name: Check if system needs to be restarted # noqa command-instead-of-shell
+- name: Assert - Determine if system needs to be restarted # noqa command-instead-of-shell
   shell: "{{ __sap_hana_preconfigure_fact_needs_restarting_command_assert }}"
   register: __sap_hana_preconfigure_register_needs_restarting_assert
   changed_when: false

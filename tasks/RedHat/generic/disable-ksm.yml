@@ -6,7 +6,7 @@
     state: touch
     mode: 0755
 
-- name: Get info about file /etc/init.d/boot.local
+- name: Configure - Get info about file /etc/init.d/boot.local
   stat:
     path: /etc/init.d/boot.local
   register: __sap_hana_preconfigure_register_stat_boot_local_ksm
@@ -22,12 +22,7 @@
   register: __sap_hana_preconfigure_register_disable_ksm
   changed_when: true
 
-# The following should not really be necessary:
-#- name: Display the result of disabling KSM on the running system
-#  debug:
-#    var: __sap_hana_preconfigure_register_disable_ksm.stdout_lines, __sap_hana_preconfigure_register_disable_ksm.stderr_lines
-
-- name: Get status of KSM
+- name: Configure - Get status of KSM
   command: cat /sys/kernel/mm/ksm/run
   register: __sap_hana_preconfigure_register_ksm_status
   ignore_errors: true
