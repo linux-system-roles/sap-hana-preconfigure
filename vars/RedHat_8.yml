@@ -106,13 +106,13 @@ __sap_hana_preconfigure_sapnotes:
   - "3024346"
 
 __sap_hana_preconfigure_sapnotes_versions_x86_64:
-  - { number: '2777782', version: '23' }
+  - { number: '2777782', version: '22' }
   - { number: '2382421', version: '40' }
   - { number: '3024346', version: '3' }
 
 __sap_hana_preconfigure_sapnotes_versions_ppc64le:
   - { number: '2055470', version: '85' }
-  - { number: '2777782', version: '23' }
+  - { number: '2777782', version: '22' }
   - { number: '2382421', version: '40' }
   - { number: '3024346', version: '3' }
 
@@ -151,7 +151,6 @@ __sap_hana_preconfigure_min_packages_8_4_x86_64:
   - [ 'kernel' , '4.18.0-305.3.1.el8_4' ]
 
 __sap_hana_preconfigure_min_packages_8_4_ppc64le:
-  - [ 'kernel' , '4.18.0-305.17.1.el8_4' ]
 
 __sap_hana_preconfigure_min_packages_8_5_x86_64:
 
