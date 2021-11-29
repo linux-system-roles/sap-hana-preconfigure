@@ -7,7 +7,8 @@
     success_msg: "The RHEL release {{ ansible_distribution_version }} is supported for SAP HANA."
   ignore_errors: "{{ not sap_hana_preconfigure_min_rhel_release_check }}"
 
-- block:
+- name: Perform steps for enabling repos for SAP HANA
+  block:
 # repos required for SAP HANA on RHEL 7 and RHEL 8:
     - name: Fill the variable for the generic list of required repos
       set_fact:

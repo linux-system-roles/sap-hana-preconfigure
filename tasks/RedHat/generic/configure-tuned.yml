@@ -1,6 +1,7 @@
 ---
 
-- block:
+- name: Perform steps configuring tuned
+  block:
     - name: Enable and start tuned
       service:
         name: tuned
@@ -39,7 +40,8 @@
     - sap_hana_preconfigure_use_tuned
     - (ansible_architecture != "ppc64le" or (ansible_architecture == "ppc64le" and ansible_distribution_version != "8.0"))
 
-- block:
+- name: Perform additional steps for RHEL 8.0 ppc64le
+  block:
     - name: RHEL 8.0 ppc64le - create directory /etc/tuned/sap-hana-ppc64le
       file:
         path: /etc/tuned/sap-hana-ppc64le

@@ -3,7 +3,8 @@
 # can be configured by tuned profile sap-hana, entry "energy_perf_bias=performance"
 #   in included tuned profile throughput-performance
 # More details on EPB are in: https://github.com/torvalds/linux/blob/be1fcde604e429691771ce70230668af8097e29b/arch/x86/kernel/cpu/intel_epb.c
-- block:
+- name: Perform steps for configuring EPB
+  block:
     - name: Check if system supports Intel's performance bias setting
       shell: set -o pipefail && LC_ALL=C cpupower info | head -1 | awk '{print $2, $3, $4}'
       check_mode: no

@@ -7,7 +7,8 @@
     msg: "SAP note {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^3024346$') | first).number }}
           (version {{ (__sap_hana_preconfigure_sapnotes_versions | selectattr('number', 'match', '^3024346$') | first).version }}): Linux kernel settings for NetApp NFS"
 
-- block:
+- name: Check NetApp sysctl conf file for SAP HANA
+  block:
     - name: Get info about file {{ __sap_hana_preconfigure_etc_sysctl_netapp_hana_conf }}
       stat:
         path: "{{ __sap_hana_preconfigure_etc_sysctl_netapp_hana_conf }}"
@@ -41,7 +42,8 @@
     - sap_hana_preconfigure_use_netapp_settings_nfs|d(false)
     - sap_hana_preconfigure_config_all|d(true) or sap_hana_preconfigure_3024346|d(false)
 
-- block:
+- name: Check NetApp modprobe conf file for SAP HANA with NFSv3
+  block:
     - name: Get info about file /etc/modprobe.d/sunrpc.conf
       stat:
         path: /etc/modprobe.d/sunrpc.conf

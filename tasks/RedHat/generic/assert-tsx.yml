@@ -1,6 +1,7 @@
 ---
 
-- block:
+- name: Assert - Perform steps for checking TSX
+  block:
 # There are CPUs which are not capable of enabling the rtm flag, so we just report the status:
     - name: Get all CPU flags
       shell: lscpu | grep "^Flags:"

@@ -2,7 +2,8 @@
 
 # can be configured by tuned profile sap-hana, entry "governor=performance"
 #   in included tuned profile throughput-performance
-- block:
+- name: Assert - Perform steps for checking the CPU Governor for performance
+  block:
     - name: Check if system is able to set CPU Governor for performance (x86_64 platform only)
       shell: LC_ALL=C cpupower frequency-info -g | awk '/available cpufreq governors/{print $(NF-1), $NF}'
       check_mode: no
