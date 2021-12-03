@@ -3,6 +3,11 @@
 - debug:
     msg: "imported RedHat/generic/enable-tsx.yml"
 
+- name: get boot command line
+  slurp:
+    src: /proc/cmdline
+  register: boot_cmd
+
 - name: Enable TSX at boot time
   command: /bin/true
   notify: __sap_hana_preconfigure_grubby_update_handler
@@ -11,4 +16,6 @@
     - ansible_distribution == 'RedHat'
     - ansible_distribution_major_version == '8'
     - __sap_hana_preconfigure_fact_ansible_distribution_minor_version|int >= 3
+    - not ( boot_cmd['content'] | b64decode | regex_findall('tsx=on') )
   tags: grubconfig
+  
