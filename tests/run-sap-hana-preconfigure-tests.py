@@ -238,7 +238,7 @@ __tests = [
 
 for par1 in __tests:
     print ('\n' + 'Test ' + par1['number'] + ': ' + par1['name'])
-    command = ('ansible-playbook default-settings.yml '
+    command = ('ansible-playbook sap-hana-preconfigure-default-settings.yml '
                + par1['command_line_parameter']
                + '-l '
                + _managed_node

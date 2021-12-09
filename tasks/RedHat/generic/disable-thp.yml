@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/disable-thp.yml"
-
 # can be configured by tuned profile sap-hana, entry "transparent_hugepages=never"
 - name: Disable transparent hugepages at boot time
   lineinfile:
@@ -13,7 +10,7 @@
     regexp: '^(GRUB_CMDLINE_LINUX=(?!.* {{ line_item }}).*). *$'
     line: "\\1 {{ line_item }}\""
   with_items:
-     - "transparent_hugepage=never"
+    - "transparent_hugepage=never"
   notify: __sap_hana_preconfigure_regenerate_grub2_conf_handler
   when: not sap_hana_preconfigure_use_tuned or
         sap_hana_preconfigure_modify_grub_cmdline_linux

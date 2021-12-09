@@ -1,6 +1,6 @@
 ---
 ######################################
-# HANA Default Variables 
+# HANA Default Variables
 #
 
 # Want extensive debugging
@@ -46,19 +46,19 @@ sap_hana_preconfigure_supported_rhel_minor_releases: "{{ __sap_hana_preconfigure
 sap_hana_preconfigure_enable_sap_hana_repos: no
 
 # Change one or more of the following in case you want different repos to be enabled than defined in vars.
-sap_hana_preconfigure_req_repos_RedHat_7_x86_64: "{{ __sap_hana_preconfigure_req_repos_RedHat_7_x86_64 }}"
-sap_hana_preconfigure_req_repos_RedHat_7_ppc64le: "{{ __sap_hana_preconfigure_req_repos_RedHat_7_ppc64le }}"
-sap_hana_preconfigure_req_repos_RedHat_8_x86_64: "{{ __sap_hana_preconfigure_req_repos_RedHat_8_x86_64 }}"
-sap_hana_preconfigure_req_repos_RedHat_8_ppc64le: "{{ __sap_hana_preconfigure_req_repos_RedHat_8_ppc64le }}"
-sap_hana_preconfigure_req_repos_RedHat_9_x86_64: "{{ __sap_hana_preconfigure_req_repos_RedHat_9_x86_64 }}"
-sap_hana_preconfigure_req_repos_RedHat_9_ppc64le: "{{ __sap_hana_preconfigure_req_repos_RedHat_9_ppc64le }}"
+sap_hana_preconfigure_req_repos_redhat_7_x86_64: "{{ __sap_hana_preconfigure_req_repos_redhat_7_x86_64 }}"
+sap_hana_preconfigure_req_repos_redhat_7_ppc64le: "{{ __sap_hana_preconfigure_req_repos_redhat_7_ppc64le }}"
+sap_hana_preconfigure_req_repos_redhat_8_x86_64: "{{ __sap_hana_preconfigure_req_repos_redhat_8_x86_64 }}"
+sap_hana_preconfigure_req_repos_redhat_8_ppc64le: "{{ __sap_hana_preconfigure_req_repos_redhat_8_ppc64le }}"
+sap_hana_preconfigure_req_repos_redhat_9_x86_64: "{{ __sap_hana_preconfigure_req_repos_redhat_9_x86_64 }}"
+sap_hana_preconfigure_req_repos_redhat_9_ppc64le: "{{ __sap_hana_preconfigure_req_repos_redhat_9_ppc64le }}"
 
 # Set to "yes" if you want the role to set the RHEL minor release, which is required for SAP HANA. Default is "no".
 sap_hana_preconfigure_set_minor_release: no
 
 # HANA Major and minor version
 # These variables are used in other SAP HANA related roles, e.g. sap-hana-mediacheck.
-sap_hana_version: "2" 
+sap_hana_version: "2"
 sap_hana_sps: "0"
 
 # List of RHEL packages to be installed for SAP HANA. For RHEL 8 and later, you can choose to install either the default list
@@ -115,7 +115,7 @@ sap_hana_preconfigure_ibm_power_repo_url: "{{ __sap_hana_preconfigure_ibm_power_
 ## defaults to empty
 #sap_hana_preconfigure_ppcle_mtu9000_if: "{{ ansible_interfaces| difference(['lo']) }}" # all interfaces
 sap_hana_preconfigure_ppcle_mtu9000_if: ''
-## list where tso flag should be set 
+## list where tso flag should be set
 ## defaults to all interfaces
 sap_hana_preconfigure_ppcle_tso_if: "{{ ansible_interfaces| difference(['lo']) }}"
 

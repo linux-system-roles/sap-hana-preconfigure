@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/disable-abrt.yml"
-
 - name: Disable abrtd
   include_tasks: disable-services.yml
   vars:

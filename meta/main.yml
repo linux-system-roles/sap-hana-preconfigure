@@ -1,14 +1,12 @@
+---
 galaxy_info:
-  author: Markus Koch, Thomas Bludau, Bernd Finger <bfinger@redhat.com>, Than Ngo <than@redhat.com>
-  description: Configures a RHEL OS to be ready for SAP HANA installation
-  license: GNU General Public License v3.0
-  min_ansible_version: 2.5
+  author: Markus Koch, Thomas Bludau, Bernd Finger, Than Ngo
+  description: Performs SAP HANA specific preparation steps on a RHEL system
+  company: Red Hat, Inc.
+  license: Apache
+  min_ansible_version: 2.9
   platforms:
-  - name: EL
-    versions: [ 6, 7, 8 ]
-
-  galaxy_tags: [ 'system', 'sap', 'hana', 'beta' ]
-
+    - name: EL
+      versions: [ 7, 8 ]
+  galaxy_tags: [ 'sap', 'hana', 'rhel' ]
 dependencies: []
-  # List your role dependencies here, one per line. Be sure to remove the '[]' above,
-  # if you add dependencies to this list.

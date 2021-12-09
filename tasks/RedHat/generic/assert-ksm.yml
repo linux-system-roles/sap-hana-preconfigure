@@ -1,9 +1,6 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/assert-ksm.yml"
-
-- name: Get info about file /etc/init.d/boot.local
+- name: Assert - Get info about file /etc/init.d/boot.local
   stat:
     path: /etc/init.d/boot.local
   register: __sap_hana_preconfigure_register_stat_boot_local_ksm_assert
@@ -47,7 +44,7 @@
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
   when: __sap_hana_preconfigure_register_stat_boot_local_ksm_assert.stat.exists
 
-- name: Get status of KSM
+- name: Assert - Get status of KSM
   command: cat /sys/kernel/mm/ksm/run
   register: __sap_hana_preconfigure_register_ksm_active_assert
   ignore_errors: true

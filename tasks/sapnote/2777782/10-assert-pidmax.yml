@@ -1,56 +1,9 @@
 ---
 
-- debug:
-    msg: "SAP note 2777782 Step 10: Increase kernel.pid_max"
+- name: Assert 2777782-10
+  debug:
+    msg: "SAP note 2777782 Step 10: Increase pidmax"
 
-- name: Get info about file /etc/sysctl.d/sap.conf
-  stat:
-    path: /etc/sysctl.d/sap.conf
-  register: __sap_hana_preconfigure_register_stat_sysctl_sap_conf_assert
-
-- name: Assert that file /etc/sysctl.d/sap.conf exists
-  assert:
-    that: __sap_hana_preconfigure_register_stat_sysctl_sap_conf_assert.stat.exists
-    fail_msg: "FAIL: File /etc/sysctl.d/sap.conf does not exist!"
-    success_msg: "PASS: File /etc/sysctl.d/sap.conf exists."
-  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-
-- name: Assert that file /etc/sysctl.d/sap.conf is a regular file
-  assert:
-    that: __sap_hana_preconfigure_register_stat_sysctl_sap_conf_assert.stat.isreg
-    fail_msg: "FAIL: File /etc/sysctl.d/sap.conf is not a regular file!"
-    success_msg: "PASS: File /etc/sysctl.d/sap.conf is a regular file."
-  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-  when: __sap_hana_preconfigure_register_stat_sysctl_sap_conf_assert.stat.exists
-
-- name: Check if kernel.pid_max is set to 4194304 in /etc/sysctl.d/sap.conf
-  command: awk 'BEGIN{FS="="}/kernel.pid_max/{split ($2, a, " "); print a[1]}' /etc/sysctl.d/sap.conf
-  register: __sap_hana_preconfigure_register_sysctl_sap_conf_pid_max_assert
-  changed_when: no
-  ignore_errors: yes
-  when: __sap_hana_preconfigure_register_stat_sysctl_sap_conf_assert.stat.isreg
-
-- name: Assert that kernel.pid_max is set to 4194304 in /etc/sysctl.d/sap.conf
-  assert:
-    that: "__sap_hana_preconfigure_register_sysctl_sap_conf_pid_max_assert.stdout == '4194304'"
-    fail_msg: "FAIL: The value of 'kernel.pid_max' in /etc/sysctl.d/sap.conf is
-               '{{ __sap_hana_preconfigure_register_sysctl_sap_conf_pid_max_assert.stdout }}' but the expected value is '4194304'!"
-    success_msg: "PASS: The value of 'kernel.pid_max' in /etc/sysctl.d/sap.conf is
-                  '{{ __sap_hana_preconfigure_register_sysctl_sap_conf_pid_max_assert.stdout }}'."
-  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-  when: __sap_hana_preconfigure_register_stat_sysctl_sap_conf_assert.stat.isreg
-
-- name: Check if kernel.pid_max is set to 4194304 as per sysctl
-  command: sysctl -n kernel.pid_max
-  register: __sap_hana_preconfigure_register_sysctl_pid_max_assert
-  changed_when: no
-  ignore_errors: yes
-
-- name: Assert that kernel.pid_max is set to 4194304 as per sysctl
-  assert:
-    that: "__sap_hana_preconfigure_register_sysctl_pid_max_assert.stdout == '4194304'"
-    fail_msg: "FAIL: The current value of 'kernel.pid_max' as per sysctl is
-               '{{ __sap_hana_preconfigure_register_sysctl_pid_max_assert.stdout }}' but the expected value is '4194304'!"
-    success_msg: "PASS: The current value of 'kernel.pid_max' as per sysctl is
-                  '{{ __sap_hana_preconfigure_register_sysctl_pid_max_assert.stdout }}'."
-  ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
+- name: Notify about where pidmax is asserted
+  debug:
+    msg: "INFO: Kernel parameter pidmax is already asserted by role sap-preconfigure."

@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/enable-tsx.yml"
-
 - name: Enable TSX at boot time
   command: /bin/true
   notify: __sap_hana_preconfigure_grubby_update_handler
