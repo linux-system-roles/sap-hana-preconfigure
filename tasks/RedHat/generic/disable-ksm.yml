@@ -1,15 +1,12 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/disable-ksm.yml"
-
 - name: Create file /etc/init.d/boot.local if it does not exist
   file:
     path: /etc/init.d/boot.local
     state: touch
     mode: 0755
 
-- name: Get info about file /etc/init.d/boot.local
+- name: Configure - Get info about file /etc/init.d/boot.local
   stat:
     path: /etc/init.d/boot.local
   register: __sap_hana_preconfigure_register_stat_boot_local_ksm
@@ -23,13 +20,14 @@
 - name: Disable KSM on the running system
   shell: echo 0 > /sys/kernel/mm/ksm/run
   register: __sap_hana_preconfigure_register_disable_ksm
-- debug:
-    var: __sap_hana_preconfigure_register_disable_ksm.stdout_lines, __sap_hana_preconfigure_register_disable_ksm.stderr_lines
+  changed_when: true
 
-- name: Get status of KSM
+- name: Configure - Get status of KSM
   command: cat /sys/kernel/mm/ksm/run
   register: __sap_hana_preconfigure_register_ksm_status
   ignore_errors: true
   changed_when: false
-- debug:
+
+- name: Display the status of KSM
+  debug:
     var: __sap_hana_preconfigure_register_ksm_status.stdout_lines, __sap_hana_preconfigure_register_ksm_status.stderr_lines

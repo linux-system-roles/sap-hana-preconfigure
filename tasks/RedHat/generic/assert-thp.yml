@@ -1,11 +1,9 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/assert-thp.yml"
-
 # can be configured by tuned profile sap-hana, entry "transparent_hugepages=never"
-- block:
-    - name: Get contents of GRUB_CMDLINE_LINUX in /etc/default/grub
+- name: Perform steps for setting transparent_hugepage=never
+  block:
+    - name: THP - Get contents of GRUB_CMDLINE_LINUX in /etc/default/grub
       command: grep GRUB_CMDLINE_LINUX /etc/default/grub
       register: __sap_hana_preconfigure_register_default_grub_cmdline_thp_assert
       changed_when: no
@@ -17,7 +15,7 @@
         success_msg: "PASS: 'transparent_hugepage=never' is in GRUB_CMDLINE_LINUX in /etc/default/grub."
       ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
-    - name: Get contents of /proc/cmdline
+    - name: THP - Get contents of /proc/cmdline
       command: cat /proc/cmdline
       register: __sap_hana_preconfigure_register_proc_cmdline_thp_assert
       changed_when: no

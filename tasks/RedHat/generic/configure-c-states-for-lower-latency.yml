@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/configure-c-states-for-lower-latency.yml"
-
 # can be configured by tuned profile sap-hana, entry "force_latency=70"
 - name: Configure C-States for lower latency
   lineinfile:

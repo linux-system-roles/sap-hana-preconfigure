@@ -1,20 +1,10 @@
 ---
 
-#- name: Enable Debugging
-#  debug:
-#    verbosity: "{{ debuglevel }}"
-#
-- name: List required SAP Notes
+- name: Configure - List required SAP Notes
   debug:
     var: __sap_hana_preconfigure_sapnotes_versions | difference([''])
 
-# We want to disable firewalld, so we need to check if firewalld is installed
-# now in main.yml
-#- name: Gather facts about installed packages
-#  package_facts:
-#    manager: auto
-
-- name: Include configuration actions for required sapnotes
+- name: Configure - Include configuration actions for required sapnotes
   include_tasks: "sapnote/{{ sap_note_line_item.number }}.yml"
   with_items: "{{ __sap_hana_preconfigure_sapnotes_versions | difference(['']) }}"
   loop_control:

@@ -1,0 +1,20 @@
+---
+skip_list:
+# We do not intend to change the role name
+  - role-name
+  - ignore-errors # We use ignore_errors for all the assert tasks, which should be acceptable
+
+exclude_paths:
+  - tasks/SLES
+  - tasks/SLES15
+  - tasks/sapnote/1275776 # SLES - sapconf, saptune, etc
+  - tasks/sapnote/1944799 # SLES - HANA install and config guidelines
+  - tasks/sapnote/2013638.yml # RHEL 6.5 - OS settings
+  - tasks/sapnote/2136965.yml # RHEL 6.6 - OS settings
+  - tasks/sapnote/2247020.yml # RHEL 6.7 - OS settings
+  - tasks/sapnote/2578899 # SLES 15 - installation
+  - tasks/sapnote/2684254 # SLES 15 - OS settings for HANA
+  - vars/RedHat_6.5.yml
+  - vars/RedHat_6.6.yml
+  - vars/RedHat_6.7.yml
+  - vars/SLES_15.yml

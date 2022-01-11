@@ -1,10 +1,10 @@
 ---
 
-- name: Show the role path
+- name: Display the role path
   debug:
     var: role_path
 
-- name: include os specific vars
+- name: Include OS specific vars
   include_vars: '{{ item }}'
   with_first_found:
     - '{{ ansible_distribution }}_{{ ansible_distribution_version }}.yml'

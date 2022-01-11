@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/assert-services.yml"
-
 - name: Assert that service {{ __sap_hana_preconfigure_packages_and_services[line_item].svc }} is disabled
           if package {{ __sap_hana_preconfigure_packages_and_services[line_item].pkg }} is installed
   block:

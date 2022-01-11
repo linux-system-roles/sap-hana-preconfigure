@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/assert-abrtd.yml"
-
 - name: Assert that service abrtd is disabled, and inactive or stopped
   include_tasks: assert-services.yml
   vars:

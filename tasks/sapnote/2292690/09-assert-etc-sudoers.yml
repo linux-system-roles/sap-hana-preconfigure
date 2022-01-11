@@ -1,6 +1,7 @@
 ---
 
-- debug:
+- name: Assert 2292690-9
+  debug:
     msg: "SAP note 2292690 Step 9: Database startup fails with an error message - /etc/sudoers"
 
 - name: Get contents of /etc/sudoers

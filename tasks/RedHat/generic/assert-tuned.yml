@@ -1,9 +1,6 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/assert-tuned.yml"
-
-- name: Report tuned version
+- name: Display the version of tuned
   debug:
     msg: "INFO: The installed version of package tuned is: {{ ansible_facts.packages['tuned'][0].version }}"
   when: "'tuned' in ansible_facts.packages and
@@ -25,7 +22,7 @@
     fail_msg: "FAIL: Service 'tuned' is not enabled!"
     success_msg: "PASS: Service 'tuned' is enabled."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-  when: 
+  when:
     - "'tuned.service' in ansible_facts.services"
     - sap_hana_preconfigure_use_tuned
 
@@ -35,14 +32,14 @@
     fail_msg: "FAIL: Service 'tuned' is not active!"
     success_msg: "PASS: Service 'tuned' is active."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-  when: 
+  when:
     - "'tuned.service' in ansible_facts.services"
     - sap_hana_preconfigure_use_tuned
 
 - name: "Report if tuned.service does not exist - use_tuned: no"
   debug:
     msg: "PASS: Service 'tuned' could not be found."
-  when: 
+  when:
     - "'tuned.service' not in ansible_facts.services"
     - not sap_hana_preconfigure_use_tuned
 
@@ -52,7 +49,7 @@
     fail_msg: "FAIL: Service 'tuned' is not disabled!"
     success_msg: "PASS: Service 'tuned' is disabled."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-  when: 
+  when:
     - "'tuned.service' in ansible_facts.services"
     - not sap_hana_preconfigure_use_tuned
 
@@ -62,11 +59,11 @@
     fail_msg: "FAIL: Service 'tuned' is not inactive!"
     success_msg: "PASS: Service 'tuned' is inactive."
   ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
-  when: 
+  when:
     - "'tuned.service' in ansible_facts.services"
     - not sap_hana_preconfigure_use_tuned
 
-- name: Report tuned-profiles-sap-hana version
+- name: Display the version of tuned-profiles-sap-hana
   debug:
     msg: "INFO: The installed version of package 'tuned-profiles-sap-hana' is: {{ ansible_facts.packages['tuned-profiles-sap-hana'][0].version }}"
   when: "'tuned-profiles-sap-hana' in ansible_facts.packages and
@@ -83,8 +80,10 @@
   when: sap_hana_preconfigure_use_tuned or
         sap_hana_preconfigure_assert_all_config
 
-- debug:
-    var: __sap_hana_preconfigure_register_current_tuned_profile_assert.stdout_lines, __sap_hana_preconfigure_register_current_tuned_profile_assert.stderr_lines
+- name: Assert - Display the output of the tuned-adm active command
+  debug:
+    var: __sap_hana_preconfigure_register_current_tuned_profile_assert.stdout_lines,
+         __sap_hana_preconfigure_register_current_tuned_profile_assert.stderr_lines
   ignore_errors: yes
   when: sap_hana_preconfigure_use_tuned or
         sap_hana_preconfigure_assert_all_config

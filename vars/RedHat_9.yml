@@ -5,23 +5,17 @@ __sap_hana_preconfigure_supported_rhel_minor_releases:
   - "9.0"
 
 # required repos for RHEL r:
-__sap_hana_preconfigure_req_repos_RedHat_9_0_x86_64:
+__sap_hana_preconfigure_req_repos_redhat_9_0_x86_64:
   - "rhel-9-for-x86_64-baseos-e4s-rpms"
   - "rhel-9-for-x86_64-appstream-e4s-rpms"
   - "rhel-9-for-x86_64-sap-solutions-e4s-rpms"
 
-__sap_hana_preconfigure_req_repos_RedHat_9_0_ppc64le:
+__sap_hana_preconfigure_req_repos_redhat_9_0_ppc64le:
   - "rhel-9-for-ppc64le-baseos-e4s-rpms"
   - "rhel-9-for-ppc64le-appstream-e4s-rpms"
   - "rhel-9-for-ppc64le-sap-solutions-e4s-rpms"
 
 # required SAP notes for RHEL 9:
-__sap_hana_preconfigure_sapnotes:
-  - "{% if ansible_architecture == 'ppc64le' %}2055470{% endif %}"
-  - "2777782"
-  - "2382421"
-  - "3024346"
-
 __sap_hana_preconfigure_sapnotes_versions_x86_64:
   - { number: '2777782', version: '22' }
   - { number: '2382421', version: '40' }
@@ -42,10 +36,10 @@ __sap_hana_preconfigure_sapnotes_versions: "{{ lookup('vars','__sap_hana_preconf
 
 # Minimum required package levels for RHEL 9.0:
 __sap_hana_preconfigure_min_packages_9_0_x86_64:
-  - [ 'kernel' , '5.11.0-1.el9' ]
+  - [ 'kernel', '5.11.0-1.el9' ]
 
 __sap_hana_preconfigure_min_packages_9_0_ppc64le:
-  - [ 'kernel' , '5.11.0-2.el9' ]
+  - [ 'kernel', '5.11.0-2.el9' ]
 
 __sap_hana_preconfigure_min_packages_9_1_x86_64:
 
@@ -162,7 +156,7 @@ __sap_hana_preconfigure_packages_min_install:
 # The packages for RHEL8 are almost the same as for RHEL7.
 # IBM publishes the packages as a repository here:
 # https://public.dhe.ibm.com/software/server/POWER/Linux/yum/OSS/RHEL/8/ppc64le/
-# To install the packages, you need to create an appropriate repofile 
+# To install the packages, you need to create an appropriate repofile
 # or clone this repository (e.g. with Satellite product)
 __sap_hana_preconfigure_ibm_power_repo_url: 'http://public.dhe.ibm.com/software/server/POWER/Linux/yum/download/ibm-power-repo-latest.noarch.rpm'
 
@@ -220,11 +214,11 @@ __sap_hana_preconfigure_kernel_parameters_default:
 
 # Network related kernel parameters for ppc64le:
 __sap_hana_preconfigure_kernel_parameters_default_ppc64le:
-   - { name: net.core.rmem_max, value: 56623104 }
-   - { name: net.core.wmem_max, value: 56623104 }
-   - { name: net.ipv4.tcp_rmem, value: "65536 262088 56623104" }
-   - { name: net.ipv4.tcp_wmem, value: "65536 262088 56623104" }
-   - { name: net.ipv4.tcp_mem, value: "56623104 56623104 56623104" }
+  - { name: net.core.rmem_max, value: 56623104 }
+  - { name: net.core.wmem_max, value: 56623104 }
+  - { name: net.ipv4.tcp_rmem, value: "65536 262088 56623104" }
+  - { name: net.ipv4.tcp_wmem, value: "65536 262088 56623104" }
+  - { name: net.ipv4.tcp_mem, value: "56623104 56623104 56623104" }
 
 # Network related kernel parameters for NetApp NFS, as set in SAP Note 3024346:
 __sap_hana_preconfigure_kernel_parameters_netapp_nfs:
@@ -242,9 +236,11 @@ __sap_hana_preconfigure_kernel_parameters_netapp_nfs:
 #  - { name: net.ipv4.tcp_timestamps, value: 1 }
   - { name: net.ipv4.tcp_sack, value: 1 }
 
+# yamllint disable rule:commas rule:colons
 __sap_hana_preconfigure_packages_and_services:
   abrtd:     { pkg: 'abrt',            svc: 'abrtd',     systemd_enabled: 'no', systemd_state: 'stopped', svc_status: 'disabled', svc_state: 'inactive' }
   abrt-ccpp: { pkg: 'abrt-addon-ccpp', svc: 'abrt-ccpp', systemd_enabled: 'no', systemd_state: 'stopped', svc_status: 'disabled', svc_state: 'inactive' }
   numad:     { pkg: 'numad',           svc: 'numad',     systemd_enabled: 'no', systemd_state: 'stopped', svc_status: 'disabled', svc_state: 'inactive' }
   kdump:     { pkg: 'kexec-tools',     svc: 'kdump',     systemd_enabled: 'no', systemd_state: 'stopped', svc_status: 'disabled', svc_state: 'inactive' }
   firewalld: { pkg: 'firewalld',       svc: 'firewalld', systemd_enabled: 'no', systemd_state: 'stopped', svc_status: 'disabled', svc_state: 'inactive' }
+# yamllint enable rule:commas rule:colons

@@ -1,11 +1,9 @@
 ---
 
-- debug:
-    msg: "imported RedHat/generic/assert-c-states-for-lower-latency.yml"
-
 # can be configured by tuned profile sap-hana, entry "force_latency=70"
-- block:
-    - name: Get contents of GRUB_CMDLINE_LINUX in /etc/default/grub
+- name: Assert - Perform steps for checking the required C-State configuration
+  block:
+    - name: C-States - Get contents of GRUB_CMDLINE_LINUX in /etc/default/grub
       command: grep GRUB_CMDLINE_LINUX /etc/default/grub
       register: __sap_hana_preconfigure_register_default_grub_cmdline_cstate_assert
       changed_when: no
@@ -24,7 +22,7 @@
         success_msg: "PASS: 'intel_idle.max_cstate=1' is in GRUB_CMDLINE_LINUX in /etc/default/grub."
       ignore_errors: "{{ sap_hana_preconfigure_assert_ignore_errors|d(false) }}"
 
-    - name: Get contents of /proc/cmdline
+    - name: C-States - Get contents of /proc/cmdline
       command: cat /proc/cmdline
       register: __sap_hana_preconfigure_register_proc_cmdline_cstate_assert
       changed_when: no
