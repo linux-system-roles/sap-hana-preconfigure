@@ -1,3 +1,9 @@
+# **NOTE:** Development and maintenance of this software has stopped.
+The successor role is [sap_hana_preconfigure](https://github.com/sap-linuxlab/community.sap_install/tree/main/roles/sap_hana_preconfigure).
+
+For more information, see [DISCONTINUATION_NOTICE.md](DISCONTINUATION_NOTICE.md).
+***
+
 sap-hana-preconfigure
 =====================
 
