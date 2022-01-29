@@ -3,7 +3,6 @@ skip_list:
 # We do not intend to change the role name
   - role-name
   - ignore-errors # We use ignore_errors for all the assert tasks, which should be acceptable
-
 exclude_paths:
   - tasks/SLES
   - tasks/SLES15
