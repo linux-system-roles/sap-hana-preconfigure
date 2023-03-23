@@ -4,6 +4,17 @@
   debug:
     var: role_path
 
+- name: Print deprecation notice
+  pause:
+    prompt: |
+      ""
+      "*** NOTE: This role is deprecated. ***"
+      ""
+      "Role sap_hana_preconfigure provides all the features of this role, and more."
+      "You can find the role in repository https://www.github.com/sap-linuxlab/community.sap_install ."
+      ""
+      "Press RETURN to continue anyway, or <ctrl>c, a, to abort:"
+
 - name: Include OS specific vars
   include_vars: '{{ item }}'
   with_first_found:
